@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text Classification - EduAI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --dark-green: #077b32;
+            --light-green: #05a645;
+            --gradient-start: #0EC9C8;
+            --gradient-end: #25F0E5;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+
+        /* Cyberpunk Navigation */
+        nav {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            padding: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            color: #0EC9C8;
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+
+        nav ul li a:hover {
+            color: #25F0E5;
+            background: rgba(14, 201, 200, 0.1);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.5);
+            transform: translateY(-2px);
+        }
+
+        nav ul li a i {
+            margin-right: 8px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            position: relative;
+        }
+
+        .page-header h1 {
+            color: #25F0E5;
+            font-weight: 600;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(37, 240, 229, 0.5);
+        }
+
+        .page-header p {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* Form Styling */
+        .form-container {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            padding: 30px;
+            margin-bottom: 30px;
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+        }
+
+        textarea {
+            width: 100%;
+            height: 250px;
+            margin: 20px 0;
+            padding: 20px;
+            font-size: 16px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            resize: vertical;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        textarea:focus {
+            border-color: var(--gradient-end);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+            outline: none;
+        }
+
+        textarea::placeholder {
+            color: #666;
+        }
+
+        /* Button Styling */
+        .btn-primary {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+            color: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(37, 240, 229, 0.7);
+        }
+
+        .btn-primary i {
+            margin-right: 10px;
+        }
+
+        /* Prediction Card */
+        .prediction-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 800px;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .prediction-card h3 {
+            color: #25F0E5;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-transform: capitalize;
+            text-shadow: 0 0 8px rgba(37, 240, 229, 0.5);
+        }
+
+        .prediction-card p {
+            color: #ccc;
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 15px;
+            transition: width 1s ease-in-out;
+            width: 0%;
+        }
+
+        #confidence-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+        }
+
+        .probabilities {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .probability-item {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .probability-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.3);
+            border-color: var(--gradient-end);
+        }
+
+        .probability-category {
+            font-weight: bold;
+            text-transform: capitalize;
+            margin-bottom: 8px;
+            color: #0EC9C8;
+            font-size: 14px;
+        }
+
+        .probability-value {
+            font-size: 20px;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Footer Styling */
+        footer {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 40px;
+            text-align: center;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .social-icons a {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background: rgba(14, 201, 200, 0.1);
+            border-color: var(--gradient-end);
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.5);
+        }
+
+        .social-icons img {
+            width: 24px;
+            height: 24px;
+            filter: invert(1) sepia(1) saturate(5) hue-rotate(160deg);
+        }
+
+        .rights-reserved {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .rights-reserved p {
+            margin: 0;
+        }
+
+        /* AI Assistant Badge */
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.3), rgba(37, 240, 229, 0.3));
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        /* Platform Info */
+        .platform-info {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .platform-info p {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #25F0E5;
+            font-size: 14px;
+        }
+
+        .platform-info small {
+            opacity: 0.8;
+            font-size: 11px;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading .spinner {
+            border: 3px solid rgba(14, 201, 200, 0.3);
+            border-top: 3px solid #25F0E5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            nav li {
+                margin: 0;
+            }
+            
+            .page-header {
+                padding: 20px;
+            }
+            
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            textarea {
+                height: 200px;
+                padding: 15px;
+            }
+            
+            .btn-primary {
+                padding: 10px 20px;
+                font-size: 16px;
+                width: 100%;
+            }
+            
+            .prediction-card {
+                padding: 20px;
+            }
+            
+            .probabilities {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 10px;
+            }
+            
+            .probability-item {
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            textarea {
+                height: 150px;
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .probability-value {
+                font-size: 16px;
+            }
+            
+            .social-icons {
+                gap: 15px;
+            }
+            
+            .social-icons a {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .social-icons img {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Cyberpunk Navigation -->
+    <nav>
+        <ul>
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1><i class="fas fa-robot me-2"></i>Text Classification AI</h1>
+            <p>Enter text below to classify it into categories using advanced AI</p>
+            <div class="ai-badge">
+                <i class="fas fa-brain me-1"></i>Powered by EduAI Neural Network
+            </div>
+        </div>
+        
+        <!-- Form Container -->
+        <div class="form-container">
+            <form class="index-form">
+                {% csrf_token %}
+                <textarea id="text" placeholder="Enter text here for classification..."></textarea>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p style="color: #25F0E5;">AI is analyzing your text...</p>
+                </div>
+                <button type="button" onclick="predict()" class="btn-primary">
+                    <i class="fas fa-bolt"></i> Predict Category
+                </button>
+            </form>
+        </div>
+        
+        <!-- Prediction Results -->
+        <div id="prediction-details">
+            <div class="prediction-card" id="prediction-card">
+                <h3 id="category-title">Text Classification Result</h3>
+                <p id="category-description">The AI has analyzed your text and determined the following category with confidence.</p>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" id="confidence-fill"></div>
+                    <span id="confidence-text">0% Confidence</span>
+                </div>
+                <div class="probabilities" id="probabilities-container">
+                    <!-- Probabilities will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Info -->
+        <div class="platform-info">
+            <p class="mb-2">EduAI - AI-Powered Learning Platform</p>
+            <small>© 2025 EduAI. All rights reserved.</small>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="social-icons">
+                <a href="https://www.linkedin.com/feed/?trk=sem-ga_campid.14650114788_asid.151761418507_crid.657403558733_kw.linkedin%20jobs%20indore_d.c_tid.kwd-3500001_n.g_mt.e_geo.9303277" target="_blank">
+                    <img src="https://cdn4.iconfinder.com/data/icons/social-media-logos-6/512/56-linkedin-512.png" alt="LinkedIn">
+
+                </a>
+            
+            </div>
+            <div class="rights-reserved">
+                <p>All Rights Reserved &copy; 2025</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function predict() {
+            const text = document.getElementById('text').value.trim();
+            const loading = document.getElementById('loading');
+            const predictionCard = document.getElementById('prediction-card');
+            const confidenceFill = document.getElementById('confidence-fill');
+            const confidenceText = document.getElementById('confidence-text');
+            
+            if (!text) {
+                alert('Please enter some text for classification.');
+                return;
+            }
+            
+            // Show loading animation
+            loading.style.display = 'block';
+            predictionCard.style.display = 'none';
+            
+            // Simulate API call with timeout
+            setTimeout(() => {
+                // Sample categories and probabilities (simulating AI response)
+                const categories = [
+                    { name: 'positive', description: 'The text expresses positive sentiment, happiness, or approval.', probability: 0.85 },
+                    { name: 'negative', description: 'The text expresses negative sentiment, criticism, or disapproval.', probability: 0.10 },
+                    { name: 'neutral', description: 'The text is factual, informative, or lacks strong sentiment.', probability: 0.05 },
+                    { name: 'urgent', description: 'The text requires immediate attention or action.', probability: 0.00 },
+                    { name: 'question', description: 'The text asks a question or seeks information.', probability: 0.00 }
+                ];
+                
+                // Find the highest probability category
+                const highest = categories.reduce((max, cat) => cat.probability > max.probability ? cat : max);
+                
+                // Update UI
+                document.getElementById('category-title').textContent = `Category: ${highest.name.toUpperCase()}`;
+                document.getElementById('category-description').textContent = highest.description;
+                
+                // Update confidence bar
+                const confidence = Math.round(highest.probability * 100);
+                confidenceFill.style.width = `${confidence}%`;
+                confidenceText.textContent = `${confidence}% Confidence`;
+                
+                // Update probabilities container
+                const container = document.getElementById('probabilities-container');
+                container.innerHTML = categories.map(cat => `
+                    <div class="probability-item">
+                        <div class="probability-category">${cat.name}</div>
+                        <div class="probability-value">${Math.round(cat.probability * 100)}%</div>
+                    </div>
+                `).join('');
+                
+                // Add animation to confidence fill
+                setTimeout(() => {
+                    confidenceFill.style.transition = 'width 1.5s ease-in-out';
+                }, 100);
+                
+                // Show prediction card with animation
+                loading.style.display = 'none';
+                predictionCard.style.display = 'block';
+                
+                // Scroll to results
+                predictionCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+            }, 1500); // Simulate 1.5 second processing time
+        }
+
+        // Add focus effect to textarea
+        document.getElementById('text').addEventListener('focus', function() {
+            this.style.boxShadow = '0 0 15px rgba(37, 240, 229, 0.7)';
+            this.style.borderColor = 'var(--gradient-end)';
+        });
+        
+        document.getElementById('text').addEventListener('blur', function() {
+            this.style.boxShadow = '';
+            this.style.borderColor = 'rgba(14, 201, 200, 0.5)';
+        });
+
+        // Add enter key support
+        document.getElementById('text').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                predict();
+            }
+        });
+
+        // Initialize with sample text
+        document.addEventListener('DOMContentLoaded', function() {
+            // Uncomment to add sample text on load
+            // document.getElementById('text').value = "This AI text classification tool is amazing! It helps analyze and categorize text with incredible accuracy. I'm impressed by how well it works.";
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,791 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - EduAI Platform</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --dark-green: #077b32;
+            --light-green: #05a645;
+            --gradient-start: #0EC9C8;
+            --gradient-end: #25F0E5;
+            --dark-bg: rgba(0, 0, 0, 0.85);
+            --card-bg: rgba(0, 0, 0, 0.7);
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            line-height: 1.6;
+        }
+        
+        /* Cyberpunk Navbar */
+        .navbar {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.3);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #25F0E5 !important;
+            text-shadow: 0 0 10px rgba(37, 240, 229, 0.5);
+        }
+        
+        .nav-link {
+            color: #0EC9C8 !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #25F0E5 !important;
+            text-shadow: 0 0 5px rgba(37, 240, 229, 0.5);
+        }
+        
+        /* Cyberpunk Hero Section */
+        .hero-section {
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.8), rgba(37, 240, 229, 0.8)),
+                      url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1771&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+            box-shadow: 0 0 30px rgba(37, 240, 229, 0.3);
+        }
+        
+        .hero-section h1 {
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Cyberpunk Button */
+        .btn-neon {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            border-radius: 8px;
+            padding: 10px 25px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+            color: white;
+        }
+        
+        .btn-neon:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(37, 240, 229, 0.8);
+        }
+        
+        /* Cyberpunk Card */
+        .cyber-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 20px rgba(14, 201, 200, 0.5),
+                0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+        
+        .cyber-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 0 30px rgba(37, 240, 229, 0.7),
+                0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-header {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 600;
+            padding: 20px;
+            border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Section Title */
+        .section-title {
+            color: #25F0E5;
+            margin-bottom: 30px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+            text-shadow: 0 0 10px rgba(37, 240, 229, 0.3);
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.5);
+        }
+        
+        /* Team Cards */
+        .team-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.3);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(37, 240, 229, 0.7);
+            border-color: rgba(37, 240, 229, 0.5);
+        }
+        
+        .team-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(14, 201, 200, 0.5);
+            margin: 0 auto 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.3);
+        }
+        
+        .team-card:hover .team-img {
+            border-color: rgba(37, 240, 229, 0.8);
+            box-shadow: 0 0 20px rgba(37, 240, 229, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .team-name {
+            font-weight: 700;
+            color: #25F0E5;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(37, 240, 229, 0.3);
+        }
+        
+        .team-role {
+            color: #0EC9C8;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .team-details p {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .team-details i {
+            margin-right: 10px;
+            color: #0EC9C8;
+            width: 20px;
+        }
+        
+        /* Feature Cards */
+        .feature-card {
+            padding: 30px 20px;
+            text-align: center;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            height: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(37, 240, 229, 0.5);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #25F0E5;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(37, 240, 229, 0.5);
+        }
+        
+        .feature-card h4 {
+            color: #25F0E5;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+        }
+        
+        .feature-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .feature-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #25F0E5;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(37, 240, 229, 0.5);
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--gradient-start), var(--gradient-end));
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        }
+        
+        .timeline-item {
+            margin-bottom: 40px;
+            position: relative;
+            width: 50%;
+            padding-right: 40px;
+        }
+        
+        .timeline-item:nth-child(even) {
+            margin-left: 50%;
+            padding-right: 0;
+            padding-left: 40px;
+        }
+        
+        .timeline-content {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            position: relative;
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.3);
+        }
+        
+        .timeline-content:after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: -10px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 10px solid var(--card-bg);
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content:after {
+            right: auto;
+            left: -10px;
+            border-left: none;
+            border-right: 10px solid var(--card-bg);
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            top: 20px;
+            right: -13px;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.8);
+        }
+        
+        .timeline-item:nth-child(even) .timeline-dot {
+            right: auto;
+            left: -13px;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 50px;
+            border-top: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 20px rgba(14, 201, 200, 0.2);
+        }
+        
+        .footer-links a {
+            color: #0EC9C8;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .footer-links a:hover {
+            color: #25F0E5;
+            text-shadow: 0 0 5px rgba(37, 240, 229, 0.5);
+        }
+        
+        .highlight-box {
+            background: rgba(14, 201, 200, 0.1);
+            border-left: 4px solid var(--gradient-end);
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 30px 0;
+            color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.1);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .timeline:before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                width: 100%;
+                padding-right: 0;
+                padding-left: 50px;
+            }
+            
+            .timeline-item:nth-child(even) {
+                margin-left: 0;
+                padding-left: 50px;
+            }
+            
+            .timeline-content:after {
+                display: none;
+            }
+            
+            .timeline-dot {
+                left: 10px !important;
+                right: auto !important;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(14, 201, 200, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--gradient-end), var(--gradient-start));
+        }
+    </style>
+</head>
+<body>
+    <!-- Cyberpunk Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>EduAI Platform
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4">About EduAI Platform</h1>
+            <p class="lead mb-4">A comprehensive AI-powered educational platform designed to revolutionize learning and teaching through advanced technology</p>
+            <a href="#features" class="btn btn-neon">
+                <i class="fas fa-rocket me-2"></i>Explore Features
+            </a>
+        </div>
+    </section>
+
+    <!-- Project Aim Section -->
+    <section class="container mb-5 fade-in">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <h2 class="section-title">Project Aim</h2>
+                <p class="mb-4" style="color: rgba(255, 255, 255, 0.9);">The primary aim of this educational platform is to create a comprehensive digital learning environment that bridges the gap between traditional classroom education and modern technological solutions.</p>
+                
+                <div class="highlight-box">
+                    <p class="mb-0"><i class="fas fa-bullseye me-2" style="color: #25F0E5;"></i>Our platform provides a unified system for students, teachers, and administrators with AI-powered learning assistance, secure document management, interactive quizzes, and comprehensive progress tracking.</p>
+                </div>
+                
+                <p style="color: rgba(255, 255, 255, 0.9);">By leveraging cutting-edge technologies like Django, OpenAI API, and machine learning, we aim to enhance the educational experience for all stakeholders in the academic ecosystem.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Mentor Section -->
+    <section class="container mb-5 fade-in">
+        <h2 class="section-title text-center">Project Mentor</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="cyber-card">
+                    <div class="card-header">
+                        <i class="fas fa-chalkboard-teacher me-2"></i>Mentor Profile
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="team-card">
+                            <img src="{% static 'img/Ruchijain.png' %}" class="team-img" alt="Prof. Ruchi Jain">
+                            <h3 class="team-name">Prof. Ruchi Jain</h3>
+                            <p class="team-role">Assistant Professor</p>
+                            
+                            <div class="team-details">
+                                <p><i class="fas fa-building"></i> Department: Computer Science & Engineering (AIDS)</p>
+                                <p><i class="fas fa-envelope"></i> Email: ruchi.jain@example.edu</p>
+                                <p><i class="fas fa-phone"></i> Contact: +91 XXXXX XXXXX</p>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h5 style="color: #25F0E5;">Guidance & Support</h5>
+                                <p style="color: rgba(255, 255, 255, 0.8);">Prof. Ruchi Jain has been instrumental in guiding the development of this educational platform. Her expertise in software engineering and educational technology has helped shape the project's direction and implementation.</p>
+                                <p style="color: rgba(255, 255, 255, 0.8);">Under her mentorship, the team has successfully integrated advanced features like AI-powered recommendations, secure document management, and comprehensive analytics to create a robust learning environment.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Developers Section -->
+    <section class="container mb-5 fade-in">
+        <h2 class="section-title text-center">Project Developers</h2>
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="cyber-card h-100">
+                    <div class="card-header">
+                        <i class="fas fa-code me-2"></i>Backend Developer
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="team-card h-100">
+                            <img src="{% static 'img/vinod prajapati.png' %}" class="team-img" alt="Vinod Prajapati">
+                            <h3 class="team-name">Vinod Prajapati</h3>
+                            <p class="team-role">Backend & Models Developer</p>
+                            
+                            <div class="team-details">
+                                <p><i class="fas fa-user-graduate"></i> Student Developer</p>
+                                <p><i class="fas fa-building"></i> Department: Computer Science & Engineering (AIDS)</p>
+                                <p><i class="fas fa-calendar-alt"></i> Semester: 6th Semester</p>
+                                <p><i class="fas fa-envelope"></i> Email: vinod.prajapati@example.edu</p>
+                                <p><i class="fas fa-phone"></i> Contact: +91 XXXXX XXXXX</p>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h5 style="color: #25F0E5;">Key Contributions</h5>
+                                <p style="color: rgba(255, 255, 255, 0.8);">Vinod developed the core backend architecture, database models, and API integrations. He implemented the user authentication system, course management functionality, and the AI integration with OpenAI API.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 mb-4">
+                <div class="cyber-card h-100">
+                    <div class="card-header">
+                        <i class="fas fa-palette me-2"></i>Frontend Developer
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="team-card h-100">
+                            <img src="{% static 'img/Snapchat-1981398732.jpg' %}" class="team-img" alt="Sonam Lodhi">
+                            <h3 class="team-name">Sonam Lodhi</h3>
+                            <p class="team-role">UI/UX & Frontend Developer</p>
+                            
+                            <div class="team-details">
+                                <p><i class="fas fa-user-graduate"></i> Student Developer</p>
+                                <p><i class="fas fa-building"></i> Department: Computer Science & Engineering (AIDS)</p>
+                                <p><i class="fas fa-calendar-alt"></i> Semester: 6th Semester</p>
+                                <p><i class="fas fa-envelope"></i> Email: sonam.Lodhi@example.edu</p>
+                                <p><i class="fas fa-phone"></i> Contact: +91 XXXXX XXXXX</p>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h5 style="color: #25F0E5;">Key Contributions</h5>
+                                <p style="color: rgba(255, 255, 255, 0.8);">Sonam designed and implemented the user interface, created responsive layouts, and developed the frontend components. She focused on creating an intuitive user experience for students, teachers, and administrators.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features Section -->
+    <section id="features" class="container mb-5 fade-in">
+        <h2 class="section-title text-center">Key Features</h2>
+        
+        <div class="row">
+            <!-- For Students -->
+            <div class="col-lg-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-user-graduate feature-icon"></i>
+                    <h4>For Students</h4>
+                    <ul class="feature-list">
+                        <li>Personalized dashboard</li>
+                        <li>Course management</li>
+                        <li>Quiz system</li>
+                        <li>Assignments</li>
+                        <li>Notes & resources</li>
+                        <li>Document locker</li>
+                        <li>Progress tracking</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- For Teachers -->
+            <div class="col-lg-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-chalkboard-teacher feature-icon"></i>
+                    <h4>For Teachers</h4>
+                    <ul class="feature-list">
+                        <li>Dashboard with student statistics</li>
+                        <li>Course assignment management</li>
+                        <li>Content upload</li>
+                        <li>Quiz creation</li>
+                        <li>Student analytics</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- For Administrators -->
+            <div class="col-lg-4 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-user-shield feature-icon"></i>
+                    <h4>For Administrators</h4>
+                    <ul class="feature-list">
+                        <li>User management</li>
+                        <li>Course management</li>
+                        <li>Content oversight</li>
+                        <li>System settings</li>
+                        <li>Comprehensive analytics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <!-- AI Integration -->
+            <div class="col-lg-6 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-robot feature-icon"></i>
+                    <h4>AI Integration</h4>
+                    <ul class="feature-list">
+                        <li>Vibhavna AI chatbot</li>
+                        <li>Text classification</li>
+                        <li>Smart recommendations</li>
+                        <li>Personalized learning paths</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Security & Utilities -->
+            <div class="col-lg-6 mb-4">
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt feature-icon"></i>
+                    <h4>Security & Utilities</h4>
+                    <ul class="feature-list">
+                        <li>Secure authentication</li>
+                        <li>PIN-protected document storage</li>
+                        <li>File management</li>
+                        <li>PDF generation capabilities</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Development Timeline -->
+    <section class="container mb-5 fade-in">
+        <h2 class="section-title text-center">Project Development</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h5 style="color: #25F0E5;">Project Planning</h5>
+                    <p style="color: rgba(255, 255, 255, 0.8);">Initial research and requirement analysis for the educational platform</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h5 style="color: #25F0E5;">Backend Development</h5>
+                    <p style="color: rgba(255, 255, 255, 0.8);">Implementation of core Django architecture, models, and database design</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h5 style="color: #25F0E5;">Frontend Development</h5>
+                    <p style="color: rgba(255, 255, 255, 0.8);">Design and implementation of user interfaces and responsive layouts</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h5 style="color: #25F0E5;">AI Integration</h5>
+                    <p style="color: rgba(255, 255, 255, 0.8);">Implementation of Vibhavna AI chatbot and smart recommendation system</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <h5 style="color: #25F0E5;">Testing & Deployment</h5>
+                    <p style="color: rgba(255, 255, 255, 0.8);">Comprehensive testing and deployment of the platform</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <h4 style="color: #25F0E5;">
+                        <i class="fas fa-graduation-cap me-2"></i>EduAI Platform
+                    </h4>
+                    <p style="color: rgba(255, 255, 255, 0.8);">A comprehensive Django-based educational platform designed to facilitate learning and teaching through an integrated system.</p>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h5 style="color: #0EC9C8;">Quick Links</h5>
+                    <div class="footer-links">
+                        <a href="{% url 'home' %}"><i class="fas fa-home me-2"></i>Home</a>
+                        <a href="{% url 'courses' %}"><i class="fas fa-book me-2"></i>Courses</a>
+                        <a href="{% url 'resources' %}"><i class="fas fa-folder me-2"></i>Resources</a>
+                        <a href="{% url 'about' %}"><i class="fas fa-info-circle me-2"></i>About</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-4">
+                    <h5 style="color: #0EC9C8;">Contact</h5>
+                    <div class="footer-links">
+                        <a href="mailto:contact@eduaiplatform.edu">
+                            <i class="fas fa-envelope me-2"></i>Email Support
+                        </a>
+                        <a href="#">
+                            <i class="fas fa-phone me-2"></i>+91 XXXXX XXXXX
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <hr style="border-color: rgba(14, 201, 200, 0.3);">
+            <div class="text-center">
+                <p style="color: rgba(255, 255, 255, 0.8);">
+                    &copy; 2025 EduAI Platform. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add scroll animations
+            const observerOptions = {
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all sections
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

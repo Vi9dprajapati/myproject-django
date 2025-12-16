@@ -1,0 +1,28 @@
+<li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'courses' %}"><i class="fas fa-book"></i> My Courses</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'all_quiz' %}"><i class="fas fa-question-circle"></i> My Quizzes</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'assignments' %}"><i class="fas fa-tasks"></i> My Assignments</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'notes' %}"><i class="fas fa-sticky-note"></i> My Notes</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'student_list' %}"><i class="fas fa-users"></i> Students</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    </ul>
+=======
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
+                        {% if assigned_courses|length > 0 %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'courses' %}"><i class="fas fa-book"></i> My Courses</a></li>
+                        {% endif %}
+                        {% if my_quizzes|length > 0 %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'all_quiz' %}"><i class="fas fa-question-circle"></i> My Quizzes</a></li>
+                        {% endif %}
+                        {% if my_assignments|length > 0 %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'assignments' %}"><i class="fas fa-tasks"></i> My Assignments</a></li>
+                        {% endif %}
+                        {% if my_notes|length > 0 %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'notes' %}"><i class="fas fa-sticky-note"></i> My Notes</a></li>
+                        {% endif %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'student_list' %}"><i class="fas fa-users"></i> Students</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    </ul>

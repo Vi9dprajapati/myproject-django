@@ -1,0 +1,1200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Teacher Dashboard - EduAI Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.css" rel="stylesheet">
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --dark-green: #077b32;
+            --light-green: #05a645;
+            --gradient-start: #0EC9C8;
+            --gradient-end: #25F0E5;
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-tertiary: #151515;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b3c1;
+            --card-bg: rgba(0, 0, 0, 0.7);
+            --navbar-bg: linear-gradient(90deg, #0EC9C8, #25F0E5);
+            --sidebar-bg: rgba(0, 0, 0, 0.7);
+            --border-color: rgba(14, 201, 200, 0.3);
+            --shadow-sm: 0 0 10px rgba(14, 201, 200, 0.5);
+            --shadow-md: 0 0 25px rgba(14, 201, 200, 0.7);
+            --shadow-lg: 0 0 30px rgba(37, 240, 229, 0.8);
+            --shadow-hover: 0 12px 40px rgba(37, 240, 229, 0.4);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+           
+            background-size: cover;
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* Enhanced Navbar - Cyberpunk Style */
+        .navbar {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 25px rgba(14, 201, 200, 0.7);
+            padding: 0.75rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white !important;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .navbar-brand i {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        
+        /* Sidebar Styles - Cyberpunk */
+        .sidebar {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem;
+            height: calc(100vh - 100px);
+            position: sticky;
+            top: 20px;
+            overflow-y: auto;
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 10px;
+        }
+        
+        /* Profile Card - Cyberpunk */
+        .profile-card {
+            background: linear-gradient(135deg, rgba(14, 201, 200, 0.1), rgba(37, 240, 229, 0.1));
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(14, 201, 200, 0.5);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            margin-bottom: 1rem;
+        }
+        
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .profile-name {
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.25rem;
+            text-shadow: 0 0 5px rgba(37, 240, 229, 0.5);
+        }
+        
+        .profile-role {
+            color: var(--gradient-end);
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: rgba(37, 240, 229, 0.2);
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+        }
+        
+        /* Navigation Items - Cyberpunk */
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-link {
+            color: #0EC9C8;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            transform: translateX(5px);
+            border-color: var(--gradient-end);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Stats Cards - Cyberpunk */
+        .stats-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            border-left: 4px solid var(--gradient-start);
+            height: 100%;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--gradient-end);
+        }
+        
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .stats-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            line-height: 1;
+            text-shadow: 0 0 5px rgba(37, 240, 229, 0.5);
+        }
+        
+        .stats-label {
+            color: #aaa;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+        
+        /* Progress Bars */
+        .progress-wrapper {
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #0EC9C8;
+        }
+        
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 4px;
+        }
+        
+        /* Course Cards - Cyberpunk */
+        .course-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            border-top: 4px solid var(--gradient-start);
+        }
+        
+        .course-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--gradient-end);
+        }
+        
+        .course-title {
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .course-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+        
+        /* Action Buttons - Cyberpunk */
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        /* Activity Timeline */
+        .activity-timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        
+        .activity-timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gradient-end);
+        }
+        
+        .activity-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .activity-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gradient-start);
+            border: 2px solid #0a0a0a;
+            box-shadow: 0 0 0 3px rgba(37, 240, 229, 0.3);
+        }
+        
+        .activity-content {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            color: white;
+        }
+        
+        /* Charts Container */
+        .chart-container {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            height: 100%;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .action-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(14, 201, 200, 0.3);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            color: white;
+        }
+        
+        .action-btn:hover {
+            border-color: var(--gradient-end);
+            background: rgba(0, 0, 0, 0.7);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .action-btn i {
+            font-size: 1.5rem;
+            color: var(--gradient-start);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Main Dashboard Cards */
+        .card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: var(--shadow-sm);
+            color: white;
+        }
+        
+        .card-header {
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.2), rgba(37, 240, 229, 0.2));
+            border-bottom: 1px solid rgba(14, 201, 200, 0.3);
+            color: white;
+        }
+        
+        /* Badge Styles */
+        .badge {
+            padding: 0.35em 0.65em;
+            font-weight: 600;
+            border-radius: 6px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+        
+        /* Dropdown Menus */
+        .dropdown-menu {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: var(--shadow-md);
+            padding: 0.5rem;
+            color: white;
+        }
+        
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: var(--transition);
+            color: #0EC9C8;
+        }
+        
+        .dropdown-item:hover {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+        
+        /* Notification Badge */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4444;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px #ff4444;
+        }
+        
+        /* Button Styles */
+        .btn-outline-light {
+            border-color: rgba(14, 201, 200, 0.5);
+            color: #0EC9C8;
+        }
+        
+        .btn-outline-light:hover {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-color: var(--gradient-end);
+            color: white;
+        }
+        
+        .btn-outline-primary {
+            border-color: var(--gradient-start);
+            color: var(--gradient-start);
+        }
+        
+        .btn-outline-primary:hover {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-color: var(--gradient-end);
+            color: white;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid rgba(14, 201, 200, 0.3);
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Glow Animation */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+        }
+        
+        .navbar, .sidebar {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                position: fixed;
+                left: -300px;
+                top: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1050;
+                border-radius: 0;
+                padding-top: 4rem;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 1040;
+                display: none;
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            .sidebar-toggle {
+                position: fixed;
+                bottom: 2rem;
+                right: 2rem;
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+                color: white;
+                border: none;
+                box-shadow: var(--shadow-lg);
+                z-index: 1060;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.25rem;
+                transition: var(--transition);
+            }
+            
+            .sidebar-toggle:hover {
+                transform: scale(1.1);
+            }
+        }
+        
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #aaa;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        /* List Group Items */
+        .list-group-item {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.2);
+            color: white;
+        }
+        
+        /* Text Colors */
+        .text-muted {
+            color: #aaa !important;
+        }
+        
+        .text-dark {
+            color: white !important;
+        }
+        
+        .bg-light {
+            background-color: rgba(0, 0, 0, 0.5) !important;
+            color: white !important;
+        }
+        
+        .bg-white {
+            background-color: rgba(0, 0, 0, 0.7) !important;
+            color: white !important;
+        }
+        
+        .border-0 {
+            border: none !important;
+        }
+        
+        /* Custom scrollbar for body */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--gradient-end), var(--gradient-start));
+        }
+        
+        /* Additional Cyberpunk Effects */
+        .cyberpunk-glow {
+            text-shadow: 0 0 5px rgba(37, 240, 229, 0.5);
+        }
+        
+        .cyberpunk-border {
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-brain"></i>
+                <span>EduAI Teacher</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="d-none d-lg-flex align-items-center gap-3">
+                <div class="position-relative">
+                    <button class="btn btn-outline-light btn-sm position-relative">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-light btn-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle"></i>
+                        {{ user.username|truncatechars:15 }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'edit_profile' %}"><i class="fas fa-user-edit me-2"></i>Profile Settings</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Account Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMobile">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container-fluid py-4">
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <aside class="col-lg-3">
+                <div class="sidebar">
+                    <!-- Profile Section -->
+                    <div class="profile-card">
+                        <div class="position-relative d-inline-block">
+                            {% if user.teacherprofile.image %}
+                                <img src="{{ user.teacherprofile.image.url }}" class="profile-avatar" alt="Profile">
+                            {% else %}
+                                <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=4361ee&color=fff" class="profile-avatar" alt="Profile">
+                            {% endif %}
+                        </div>
+                        <h4 class="profile-name cyberpunk-glow">{{ user.username }}</h4>
+                        <span class="profile-role">Teacher</span>
+                        
+                        {% if user.teacherprofile %}
+                        <div class="mt-3 text-start">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="fas fa-graduation-cap" style="color: #0EC9C8;"></i>
+                                <small>{{ user.teacherprofile.department }}</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <i class="fas fa-phone" style="color: #0EC9C8;"></i>
+                                <small>{{ user.teacherprofile.phone }}</small>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fas fa-envelope" style="color: #0EC9C8;"></i>
+                                <small>{{ user.email }}</small>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Navigation -->
+                    <nav class="nav flex-column">
+                        <div class="sidebar-section mb-4">
+                            <h6 class="text-uppercase mb-3 small fw-bold" style="color: #0EC9C8;">Dashboard</h6>
+                            <div class="nav flex-column">
+                                <a class="nav-link active" href="#">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <span>Overview</span>
+                                </a>
+                                {% if assigned_courses|length > 0 %}
+                                <a class="nav-link" href="{% url 'courses' %}">
+                                    <i class="fas fa-book-open"></i>
+                                    <span>My Courses</span>
+                                    <span class="badge ms-auto">{{ assigned_courses|length }}</span>
+                                </a>
+                                {% endif %}
+                                <a class="nav-link" href="{% url 'student_list' %}">
+                                    <i class="fas fa-users"></i>
+                                    <span>Students</span>
+                                    <span class="badge ms-auto">{{ total_students }}</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section mb-4">
+                            <h6 class="text-uppercase mb-3 small fw-bold" style="color: #0EC9C8;">Content</h6>
+                            <div class="nav flex-column">
+                                {% if my_quizzes|length > 0 %}
+                                <a class="nav-link" href="{% url 'all_quiz' %}">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>Quizzes</span>
+                                    <span class="badge ms-auto">{{ my_quizzes|length }}</span>
+                                </a>
+                                {% endif %}
+                                {% if my_assignments|length > 0 %}
+                                <a class="nav-link" href="{% url 'assignments' %}">
+                                    <i class="fas fa-tasks"></i>
+                                    <span>Assignments</span>
+                                    <span class="badge ms-auto">{{ my_assignments|length }}</span>
+                                </a>
+                                {% endif %}
+                                {% if my_notes|length > 0 %}
+                                <a class="nav-link" href="{% url 'notes' %}">
+                                    <i class="fas fa-sticky-note"></i>
+                                    <span>Notes</span>
+                                    <span class="badge ms-auto">{{ my_notes|length }}</span>
+                                </a>
+                                {% endif %}
+                                <a class="nav-link" href="{% url 'documents' %}">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>Documents</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section mb-4">
+                            <h6 class="text-uppercase mb-3 small fw-bold" style="color: #0EC9C8;">AI Tools</h6>
+                            <div class="nav flex-column">
+                                <a class="nav-link" href="{% url 'img_to_text_ocr' %}">
+                                    <i class="fas fa-image"></i>
+                                    <span>Image to Text</span>
+                                </a>
+                                <a class="nav-link" href="{% url 'vibhavna_ai' %}">
+                                    <i class="fas fa-robot"></i> 
+                                    <span>Vibhavna AI</span>
+                                </a>
+                                <a class="nav-link" 
+                                    href="https://chat.openai.com/" target="_blank" rel="noopener noreferrer">
+                                    <i class="fas fa-brain"></i>
+                                    <span>OpenGPT</span>
+</a>
+
+                                <a class="nav-link" href="{% url 'teacher_subject_content' %}">
+                                    <i class="fas fa-upload"></i>
+                                    <span>Content Upload</span>
+                                </a>
+                                
+                            </div>
+                        </div>
+                    </nav>
+
+                    <!-- Course Progress -->
+                    <div class="sidebar-section">
+                        <h6 class="text-uppercase mb-3 small fw-bold" style="color: #0EC9C8;">Course Analytics</h6>
+                        {% for item in detailed_courses %}
+                        <div class="progress-wrapper">
+                            <div class="progress-label">
+                                <span>{{ item.course.title|truncatechars:15 }}</span>
+                                <span>{{ item.avg_score }}%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" style="width: {{ item.avg_score }}%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <small class="text-muted">{{ item.enrolled_count }} students</small>
+                                <small class="text-muted">{{ item.quiz_count }} quizzes</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Dashboard -->
+            <section class="col-lg-9">
+                <div class="dashboard-content">
+                    <!-- Welcome Header -->
+                    <div class="row mb-4 fade-in">
+                        <div class="col-12">
+                            <div class="card border-0 shadow-lg cyberpunk-border">
+                                <div class="card-body p-4">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-8">
+                                            <h1 class="display-6 fw-bold mb-2 cyberpunk-glow">Welcome back, {{ user.username }}! 👋</h1>
+                                            <p class="lead mb-0" style="color: #aaa;">Here's what's happening with your classes today.</p>
+                                        </div>
+                                        <div class="col-md-4 text-md-end">
+                                            <button class="btn btn-primary btn-lg px-4">
+                                                <i class="fas fa-plus me-2"></i>Create New
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="row g-4 mb-4 fade-in">
+                        <div class="col-xl-2 col-md-4 col-sm-6">
+                            <div class="stats-card">
+                                <div class="stats-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <h3 class="stats-value">{{ assigned_courses|length }}</h3>
+                                <p class="stats-label">Assigned Courses</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4 col-sm-6">
+                            <div class="stats-card">
+                                <div class="stats-icon" style="background: linear-gradient(90deg, #ff4444, #ff6b6b);">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h3 class="stats-value">{{ total_students }}</h3>
+                                <p class="stats-label">Total Students</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4 col-sm-6">
+                            <div class="stats-card">
+                                <div class="stats-icon" style="background: linear-gradient(90deg, #00ff88, #05a645);">
+                                    <i class="fas fa-question-circle"></i>
+                                </div>
+                                <h3 class="stats-value">{{ my_quizzes|length }}</h3>
+                                <p class="stats-label">My Quizzes</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4 col-sm-6">
+                            <div class="stats-card">
+                                <div class="stats-icon" style="background: linear-gradient(90deg, #f59e0b, #eab308);">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <h3 class="stats-value">{{ my_assignments|length }}</h3>
+                                <p class="stats-label">Assignments</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4 col-sm-6">
+                            <div class="stats-card">
+                                <div class="stats-icon" style="background: linear-gradient(90deg, #9b59b6, #8e44ad);">
+                                    <i class="fas fa-sticky-note"></i>
+                                </div>
+                                <h3 class="stats-value">{{ notes_count }}</h3>
+                                <p class="stats-label">Notes</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-2 col-md-4 col-sm-6">
+                            <div class="stats-card">
+                                <div class="stats-icon" style="background: linear-gradient(90deg, #e74c3c, #c0392b);">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h3 class="stats-value">{{ avg_completion }}%</h3>
+                                <p class="stats-label">Avg. Completion</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts & Courses -->
+                    <div class="row g-4 mb-4 fade-in">
+                        <!-- Performance Chart -->
+                        <div class="col-lg-8">
+                            <div class="chart-container">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="fw-bold mb-0 cyberpunk-glow">Course Performance</h5>
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            This Week
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="#">This Week</a></li>
+                                            <li><a class="dropdown-item" href="#">This Month</a></li>
+                                            <li><a class="dropdown-item" href="#">This Year</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div id="performanceChart" style="height: 300px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="col-lg-4">
+                            <div class="chart-container">
+                                <h5 class="fw-bold mb-4 cyberpunk-glow">Quick Actions</h5>
+                                <div class="quick-actions">
+                                    <div class="action-btn" onclick="window.location='{% url 'add_course' %}'">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <p class="mb-0 small fw-bold">Add Course</p>
+                                    </div>
+                                    <div class="action-btn" onclick="window.location='{% url 'add_quiz' %}'">
+                                        <i class="fas fa-question-circle"></i>
+                                        <p class="mb-0 small fw-bold">Create Quiz</p>
+                                    </div>
+                                    <div class="action-btn" onclick="window.location='{% url 'add_assignment' %}'">
+                                        <i class="fas fa-tasks"></i>
+                                        <p class="mb-0 small fw-bold">Add Assignment</p>
+                                    </div>
+                                    <div class="action-btn" onclick="window.location='{% url 'student_list' %}'">
+                                        <i class="fas fa-user-plus"></i>
+                                        <p class="mb-0 small fw-bold">View Students</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Courses Section -->
+                    <div class="row g-4 fade-in">
+                        <div class="col-12">
+                            <div class="card border-0 shadow">
+                                <div class="card-header py-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="fw-bold mb-0 cyberpunk-glow">My Courses</h5>
+                                        <a href="{% url 'add_course' %}" class="btn btn-primary">
+                                            <i class="fas fa-plus me-2"></i>Add Course
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {% if detailed_courses %}
+                                        <div class="row g-4">
+                                            {% for item in detailed_courses|slice:":4" %}
+                                            <div class="col-md-6 col-lg-3">
+                                                <div class="course-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                                        <div>
+                                                            <h6 class="course-title">{{ item.course.title }}</h6>
+                                                            <span class="badge {% if item.is_active %}badge-primary{% else %}bg-warning{% endif %}">
+                                                                {% if item.is_active %}Active{% else %}Draft{% endif %}
+                                                            </span>
+                                                        </div>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-link" type="button" data-bs-toggle="dropdown" style="color: #0EC9C8;">
+                                                                <i class="fas fa-ellipsis-v"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li><a class="dropdown-item" href="{% url 'course_notes' item.course.id %}">View Notes</a></li>
+                                                                <li><a class="dropdown-item" href="{% url 'add_quiz' %}">Add Quiz</a></li>
+                                                                <li><a class="dropdown-item" href="{% url 'add_assignment' %}">Add Assignment</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <p class="text-muted small mb-3">{{ item.course.description|truncatechars:80 }}</p>
+                                                    <div class="progress-wrapper">
+                                                        <div class="progress-label">
+                                                            <span>Progress</span>
+                                                            <span>{{ item.avg_score }}%</span>
+                                                        </div>
+                                                        <div class="progress">
+                                                            <div class="progress-bar" style="width: {{ item.avg_score }}%"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between mt-3">
+                                                        <span class="text-muted small">
+                                                            <i class="fas fa-users me-1"></i>{{ item.enrolled_count }}
+                                                        </span>
+                                                        <span class="text-muted small">
+                                                            <i class="fas fa-question-circle me-1"></i>{{ item.quiz_count }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% if detailed_courses|length > 4 %}
+                                        <div class="text-center mt-4">
+                                            <a href="{% url 'courses' %}" class="btn btn-outline-primary">View All Courses</a>
+                                        </div>
+                                        {% endif %}
+                                    {% else %}
+                                    <div class="empty-state">
+                                        <i class="fas fa-book-open text-muted"></i>
+                                        <h6 class="mt-2" style="color: #aaa;">No courses assigned yet</h6>
+                                        <p class="text-muted small mb-3">Get started by creating your first course</p>
+                                        <a href="{% url 'add_course' %}" class="btn btn-primary">Create Course</a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity & Quizzes -->
+                    <div class="row g-4 mt-4 fade-in">
+                        <!-- Recent Activity -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow">
+                                <div class="card-header py-3">
+                                    <h5 class="fw-bold mb-0 cyberpunk-glow">Recent Activity</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if recent_activities %}
+                                    <div class="activity-timeline">
+                                        {% for activity in recent_activities|slice:":5" %}
+                                        <div class="activity-item">
+                                            <div class="activity-content">
+                                                <p class="mb-1">{{ activity.description }}</p>
+                                                <small class="text-muted">{{ activity.timestamp|timesince }} ago</small>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    <div class="empty-state py-4">
+                                        <i class="fas fa-clock text-muted"></i>
+                                        <p class="text-muted mt-2">No recent activity</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Quizzes -->
+                        <div class="col-lg-6">
+                            <div class="card border-0 shadow">
+                                <div class="card-header py-3">
+                                    <h5 class="fw-bold mb-0 cyberpunk-glow">Recent Quizzes</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if my_quizzes %}
+                                    <div class="list-group list-group-flush">
+                                        {% for quiz in my_quizzes|slice:":5" %}
+                                        <div class="list-group-item px-0 py-3">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h6 class="fw-bold mb-1">{{ quiz.title }}</h6>
+                                                    <p class="text-muted small mb-1">{{ quiz.course.title }}</p>
+                                                    <span class="badge bg-light">
+                                                        {{ quiz.questions.count }} questions
+                                                    </span>
+                                                </div>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm btn-link" type="button" data-bs-toggle="dropdown" style="color: #0EC9C8;">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item" href="{% url 'edit_quiz' quiz.id %}">Edit</a></li>
+                                                        <li><a class="dropdown-item" href="#">View Results</a></li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li><a class="dropdown-item text-danger" href="{% url 'delete_quiz' quiz.id %}" onclick="return confirm('Are you sure?')">Delete</a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    <div class="empty-state py-4">
+                                        <i class="fas fa-question-circle text-muted"></i>
+                                        <p class="text-muted mt-2">No quizzes available</p>
+                                        <a href="{% url 'add_quiz' %}" class="btn btn-primary btn-sm">Create Quiz</a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Mobile Sidebar Toggle -->
+    <button class="sidebar-toggle d-lg-none" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+    <div class="sidebar-overlay d-lg-none" id="sidebarOverlay"></div>
+
+    <!-- Footer -->
+    <footer class="py-4 mt-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h6 class="fw-bold mb-0 cyberpunk-glow">EduAI Teacher Platform</h6>
+                    <p class="text-muted small mb-0">Empowering educators with AI technology</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0 small" style="color: #aaa;">&copy; 2024 EduAI Platform. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0"></script>
+    <script>
+        // Mobile Sidebar Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+            });
+            
+            sidebarOverlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+            });
+            
+            // Performance Chart
+            const chartOptions = {
+                series: [{
+                    name: 'Completion Rate',
+                    data: [65, 78, 90, 85, 70, 88, 92]
+                }],
+                chart: {
+                    type: 'area',
+                    height: '100%',
+                    toolbar: { show: false },
+                    zoom: { enabled: false }
+                },
+                colors: ['#0EC9C8'],
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 3 },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.7,
+                        opacityTo: 0.1,
+                        stops: [0, 90, 100]
+                    }
+                },
+                grid: { borderColor: 'rgba(14, 201, 200, 0.2)' },
+                xaxis: {
+                    categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    labels: { style: { colors: '#aaa' } }
+                },
+                yaxis: {
+                    labels: { 
+                        formatter: function(val) { return val + '%'; },
+                        style: { colors: '#aaa' }
+                    }
+                },
+                tooltip: { theme: 'dark' }
+            };
+            
+            const chart = new ApexCharts(document.querySelector("#performanceChart"), chartOptions);
+            chart.render();
+            
+            // Add animation classes
+            document.querySelectorAll('.fade-in').forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+    </script>
+</body>
+</html>

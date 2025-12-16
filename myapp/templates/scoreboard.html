@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    :root {
+        --gradient-start: #0EC9C8;
+        --gradient-end: #25F0E5;
+    }
+    
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+       
+        background-size: cover;
+        min-height: 100vh;
+        color: white;
+    }
+    
+    .container {
+        max-width: 1200px;
+    }
+    
+    /* Cyberpunk Card */
+    .cyber-card {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 
+            0 0 25px rgba(14, 201, 200, 0.7),
+            0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    .cyber-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 
+            0 0 30px rgba(37, 240, 229, 0.8),
+            0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Header Styling */
+    h2 {
+        color: #0EC9C8;
+        font-weight: 600;
+        text-shadow: 0 0 8px rgba(14, 201, 200, 0.5);
+    }
+    
+    /* Badge Styling */
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+    
+    .bg-primary {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)) !important;
+        border: none;
+        box-shadow: 0 0 8px rgba(14, 201, 200, 0.5);
+    }
+    
+    .bg-success {
+        background: linear-gradient(90deg, #00ff88, #00cc6a) !important;
+        border: none;
+        box-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+    }
+    
+    .bg-warning {
+        background: linear-gradient(90deg, #ffaa00, #ff8800) !important;
+        border: none;
+        box-shadow: 0 0 8px rgba(255, 170, 0, 0.5);
+    }
+    
+    .bg-danger {
+        background: linear-gradient(90deg, #ff4444, #cc0000) !important;
+        border: none;
+        box-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
+    }
+    
+    /* Table Styling */
+    .table {
+        --bs-table-bg: transparent;
+        --bs-table-color: white;
+        margin-bottom: 0;
+    }
+    
+    .table th {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+        font-weight: 600;
+        border: none;
+        padding: 15px;
+        text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .table td {
+        border-bottom: 1px solid rgba(14, 201, 200, 0.2);
+        padding: 15px;
+        vertical-align: middle;
+        background: rgba(10, 10, 10, 0.5);
+    }
+    
+    .table tbody tr {
+        transition: all 0.3s ease;
+    }
+    
+    .table tbody tr:hover {
+        background: rgba(14, 201, 200, 0.1);
+        transform: translateX(5px);
+    }
+    
+    /* Progress Bar Styling */
+    .progress {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        height: 8px;
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border-radius: 10px;
+        box-shadow: 0 0 8px rgba(14, 201, 200, 0.7);
+    }
+    
+    .bg-success.progress-bar {
+        background: linear-gradient(90deg, #00ff88, #00cc6a) !important;
+        box-shadow: 0 0 8px rgba(0, 255, 136, 0.7);
+    }
+    
+    .bg-warning.progress-bar {
+        background: linear-gradient(90deg, #ffaa00, #ff8800) !important;
+        box-shadow: 0 0 8px rgba(255, 170, 0, 0.7);
+    }
+    
+    .bg-danger.progress-bar {
+        background: linear-gradient(90deg, #ff4444, #cc0000) !important;
+        box-shadow: 0 0 8px rgba(255, 68, 68, 0.7);
+    }
+    
+    /* Mobile Card Styling */
+    .card {
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(14, 201, 200, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(14, 201, 200, 0.3);
+        border-color: rgba(37, 240, 229, 0.5);
+    }
+    
+    .card-title {
+        color: #0EC9C8;
+        font-weight: 600;
+    }
+    
+    .card-body {
+        background: rgba(10, 10, 10, 0.8);
+        border-radius: 12px;
+    }
+    
+    /* Text Colors */
+    .text-muted {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+    
+    /* Icons */
+    .fa-clipboard-list, .fa-question-circle, .fa-clock {
+        color: #0EC9C8;
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+        50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+    }
+    
+    .cyber-card {
+        animation: pulseGlow 3s infinite ease-in-out;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .container {
+            padding: 0 15px;
+        }
+        
+        .table th, .table td {
+            padding: 10px;
+        }
+        
+        .progress {
+            height: 6px;
+        }
+    }
+</style>
+
+<div class="container mt-4 mt-md-5">
+    <div class="cyber-card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0"><i class="fas fa-trophy me-2"></i>Scoreboard</h2>
+                <div class="d-none d-md-block">
+                    <span class="badge bg-primary">{{ attempts|length }} attempt{{ attempts|pluralize }}</span>
+                </div>
+            </div>
+            
+            <!-- Desktop Table View -->
+            <div class="d-none d-md-block">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-4"><i class="fas fa-question-circle me-2"></i>Quiz</th>
+                                <th><i class="fas fa-star me-2"></i>Score</th>
+                                <th><i class="fas fa-list-ol me-2"></i>Total Questions</th>
+                                <th><i class="fas fa-calendar-alt me-2"></i>Date/Time</th>
+                                <th class="pe-4"><i class="fas fa-chart-line me-2"></i>Performance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attempt in attempts %}
+                            <tr>
+                                <td class="ps-4 fw-bold">{{ attempt.quiz.title }}</td>
+                                <td>
+                                    <span class="badge {% if attempt.score_percentage >= 80 %}bg-success{% elif attempt.score_percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                        {{ attempt.score }}/{{ attempt.total_questions }}
+                                    </span>
+                                </td>
+                                <td>{{ attempt.total_questions }}</td>
+                                <td>{{ attempt.attempted_at|date:"M j, Y H:i" }}</td>
+                                <td class="pe-4">
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-3" style="height: 8px;">
+                                            <div class="progress-bar {% if attempt.score_percentage >= 80 %}bg-success{% elif attempt.score_percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                                 role="progressbar" 
+                                                 style="width: {{ attempt.score_percentage }}%"
+                                                 aria-valuenow="{{ attempt.score_percentage }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">{{ attempt.score_percentage }}%</small>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div class="py-4">
+                                        <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted mb-0">No attempts found.</p>
+                                        <p class="text-muted small mt-2">Complete some quizzes to see your scores here!</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Mobile Card View -->
+            <div class="d-md-none">
+                {% for attempt in attempts %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">{{ attempt.quiz.title }}</h5>
+                            <span class="badge {% if attempt.score_percentage >= 80 %}bg-success{% elif attempt.score_percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ attempt.score }}/{{ attempt.total_questions }}
+                            </span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small class="text-muted">Performance</small>
+                                <small class="text-muted">{{ attempt.score_percentage }}%</small>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar {% if attempt.score_percentage >= 80 %}bg-success{% elif attempt.score_percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                     role="progressbar" 
+                                     style="width: {{ attempt.score_percentage }}%"
+                                     aria-valuenow="{{ attempt.score_percentage }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span><i class="fas fa-question-circle me-1"></i> {{ attempt.total_questions }} questions</span>
+                            <span><i class="fas fa-clock me-1"></i> {{ attempt.attempted_at|date:"M j, H:i" }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                        <p class="text-muted mb-0">No attempts found.</p>
+                        <p class="text-muted small mt-2">Complete some quizzes to see your scores here!</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Summary Stats -->
+            {% if attempts %}
+            <div class="mt-4 pt-3 border-top border-secondary">
+                <div class="row text-center">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <h4 class="text-primary">{{ attempts|length }}</h4>
+                        <small class="text-muted">Total Attempts</small>
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <h4 class="text-success">
+                            {% if average_score %}{{ average_score }}%{% else %}0%{% endif %}
+                        </h4>
+                        <small class="text-muted">Average Score</small>
+                    </div>
+                    <div class="col-md-4">
+                        <h4 class="text-info">{{ best_score }}%</h4>
+                        <small class="text-muted">Best Score</small>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to table rows
+        const tableRows = document.querySelectorAll('tbody tr');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateX(5px)';
+            });
+            row.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateX(0)';
+            });
+        });
+        
+        // Add animation to badges
+        const badges = document.querySelectorAll('.badge');
+        badges.forEach(badge => {
+            badge.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+            });
+            badge.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+        
+        // Add tooltips to progress bars
+        const progressBars = document.querySelectorAll('.progress-bar');
+        progressBars.forEach(bar => {
+            bar.setAttribute('title', bar.style.width);
+        });
+    });
+</script>
+{% endblock %}

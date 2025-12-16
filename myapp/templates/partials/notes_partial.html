@@ -1,0 +1,41 @@
+<div>
+    <h2>Course Notes</h2>
+    <p class="text-muted">Access notes for your enrolled courses</p>
+
+    {% if enrolled_courses %}
+        <div class="row">
+            {% for note in notes %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">{{ note.course.title }}</h6>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ note.topic }}</h5>
+                        <p class="card-text">{{ note.description }}</p>
+                        {% if note.file %}
+                        <a href="{{ note.file.url }}" class="btn btn-primary" target="_blank">
+                            <i class="fas fa-download me-2"></i>Download Note
+                        </a>
+                        {% endif %}
+                        <small class="text-muted d-block mt-2">Uploaded on: {{ note.uploaded_at|date:"M d, Y" }}</small>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    <h5>No notes available</h5>
+                    <p>You are enrolled in {{ enrolled_courses|length }} course(s), but no notes have been uploaded yet.</p>
+                    <p>Check back later or contact your instructor.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning" role="alert">
+            <h5>No enrolled courses</h5>
+            <p>You need to enroll in courses to access their notes. Visit the <a href="{% url 'courses' %}">Courses</a> page to explore available courses.</p>
+        </div>
+    {% endif %}
+</div>

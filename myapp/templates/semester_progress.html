@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Progress Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4b6cb7;
+            --secondary: #182848;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 100%;
+            padding: 15px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        /* Profile Section */
+        .profile-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Section Selection */
+        .section-selector {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .section-selector h4 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+            font-size: 1rem;
+        }
+
+        .section-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .section-btn {
+            padding: 8px 20px;
+            background: #eef2ff;
+            border: 1px solid #d0d9ff;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .section-btn:hover {
+            background: #dfe7ff;
+        }
+
+        .section-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Add Subject Form */
+        .add-subject-form {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .add-subject-form h3 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        /* Subjects Container */
+        .subjects-container {
+            margin-top: 20px;
+        }
+
+        .subjects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .subjects-header h2 {
+            color: var(--secondary);
+            font-size: 1.4rem;
+        }
+
+        /* Subject Card */
+        .subject-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subject-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .subject-name {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .subject-code {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-title {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .progress-count {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .progress-bar-container {
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #6a8de6);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        /* Task Items */
+        .task-items {
+            margin-top: 15px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--gray);
+        }
+
+        .task-item.completed {
+            border-left-color: var(--success);
+            background: #f0fff4;
+        }
+
+        .task-checkbox {
+            margin-right: 12px;
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .task-type {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 3px;
+        }
+
+        .task-date {
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        /* Summary Stats */
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 25px;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            color: var(--secondary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .subject-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .subjects-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .summary-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-user-graduate"></i> Student Progress Tracker</h1>
+            <p>Track your assignments, labs, and academic progress</p>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="profile-card">
+            <div class="profile-details">
+                <div class="detail-item">
+                    <div class="detail-label">Department</div>
+                    <div class="detail-value" id="studentDept">Computer Science Engineering</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Current Semester</div>
+                    <div class="detail-value" id="studentSemester">Semester 5</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Academic Year</div>
+                    <div class="detail-value" id="studentYear">2024-2025</div>
+                </div>
+            </div>
+            
+            <!-- Section Selection -->
+            <div class="section-selector">
+                <h4>Select Your Section:</h4>
+                <div class="section-buttons" id="sectionButtons">
+                    <button class="section-btn active" data-section="A">Section A</button>
+                    <button class="section-btn" data-section="B">Section B</button>
+                    <button class="section-btn" data-section="C">Section C</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Subject Form -->
+        <div class="add-subject-form">
+            <h3><i class="fas fa-plus-circle"></i> Add New Subject</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="subjectName">Subject Name *</label>
+                    <input type="text" id="subjectName" placeholder="e.g., Machine Learning, DBMS, Operating System">
+                </div>
+                <div class="form-group">
+                    <label for="subjectCode">Subject Code (Optional)</label>
+                    <input type="text" id="subjectCode" placeholder="e.g., CSE501, CSE502">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="totalAssignments">Total Assignments</label>
+                    <input type="number" id="totalAssignments" min="0" value="5" placeholder="Enter number of assignments">
+                </div>
+                <div class="form-group">
+                    <label for="totalLabs">Total Labs</label>
+                    <input type="number" id="totalLabs" min="0" value="8" placeholder="Enter number of labs">
+                </div>
+            </div>
+            <button class="btn btn-primary" id="addSubjectBtn" style="width: 100%;">
+                <i class="fas fa-plus"></i> Add Subject
+            </button>
+        </div>
+
+        <!-- Summary Statistics -->
+        <div class="summary-stats">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-book"></i></div>
+                <div class="stat-number" id="totalSubjects">0</div>
+                <div class="stat-label">Total Subjects</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+                <div class="stat-number" id="totalAssignments">0</div>
+                <div class="stat-label">Total Assignments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-flask"></i></div>
+                <div class="stat-number" id="totalLabs">0</div>
+                <div class="stat-label">Total Labs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-number" id="completionRate">0%</div>
+                <div class="stat-label">Overall Completion</div>
+            </div>
+        </div>
+
+        <!-- Subjects Container -->
+        <div class="subjects-container">
+            <div class="subjects-header">
+                <h2><i class="fas fa-graduation-cap"></i> Your Subjects</h2>
+                <div>
+                    <button class="btn btn-outline" id="clearAllBtn">
+                        <i class="fas fa-trash"></i> Clear All
+                    </button>
+                </div>
+            </div>
+            
+            <div id="subjectsList">
+                <!-- Subjects will be loaded here dynamically -->
+                <div class="no-data" style="text-align: center; padding: 40px 20px; color: #888;">
+                    <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 15px; color: #ccc;"></i>
+                    <h3>No Subjects Added Yet</h3>
+                    <p>Add your subjects using the form above to start tracking your progress.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-success" id="saveProgressBtn">
+                <i class="fas fa-save"></i> Save All Progress
+            </button>
+            <button class="btn btn-outline" id="viewReportBtn">
+                <i class="fas fa-chart-bar"></i> View Progress Report
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Student Progress Tracker &copy; 2025 | Track your academic journey</p>
+            <p>Data is saved locally in your browser</p>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div class="modal" id="addTaskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-plus-circle"></i> Add Custom Task</h3>
+                <button class="modal-close" id="closeModalBtn">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="taskSubject">Select Subject</label>
+                <select id="taskSubject">
+                    <option value="">Choose a subject</option>
+                    <!-- Subjects will be populated dynamically -->
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="taskType">Task Type</label>
+                    <select id="taskType">
+                        <option value="assignment">Assignment</option>
+                        <option value="lab">Lab</option>
+                        <option value="project">Project</option>
+                        <option value="quiz">Quiz</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="taskNumber">Task Number/Name</label>
+                    <input type="text" id="taskNumber" placeholder="e.g., Assignment 1, Lab 3">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="taskDescription">Description (Optional)</label>
+                <input type="text" id="taskDescription" placeholder="Brief description of the task">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="taskAssignedDate">Assigned Date</label>
+                    <input type="date" id="taskAssignedDate">
+                </div>
+                
+                <div class="form-group">
+                    <label for="taskCompletionDate">Completion Date</label>
+                    <input type="date" id="taskCompletionDate">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="taskCompleted"> Mark as completed
+                </label>
+            </div>
+            
+            <button class="btn btn-primary" id="submitTaskBtn" style="width: 100%; margin-top: 20px;">
+                <i class="fas fa-check"></i> Add Task
+            </button>
+        </div>
+    </div>
+
+    <!-- Progress Report Modal -->
+    <div class="modal" id="reportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-chart-bar"></i> Progress Report</h3>
+                <button class="modal-close" id="closeReportBtn">&times;</button>
+            </div>
+            
+            <div id="reportContent">
+                <!-- Report will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Student Profile Data (Simplified - no personal info)
+        const studentProfile = {
+            department: "Computer Science Engineering",
+            semester: "5",
+            year: "2024-2025",
+            batch: "2024",
+            section: "A" // Default section, can be changed by student
+        };
+
+        // Subjects data - will be populated by user
+        let userSubjects = [];
+
+        // Local storage key
+        const STORAGE_KEY = "student_progress_tracker";
+
+        // Global state
+        let currentSection = studentProfile.section;
+        let studentProgress = {
+            subjects: {},
+            customTasks: []
+        };
+
+        // DOM Elements
+        const sectionButtons = document.getElementById('sectionButtons');
+        const subjectsList = document.getElementById('subjectsList');
+        const addSubjectBtn = document.getElementById('addSubjectBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const addTaskModal = document.getElementById('addTaskModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const closeReportBtn = document.getElementById('closeReportBtn');
+        const submitTaskBtn = document.getElementById('submitTaskBtn');
+        const saveProgressBtn = document.getElementById('saveProgressBtn');
+        const viewReportBtn = document.getElementById('viewReportBtn');
+        const reportModal = document.getElementById('reportModal');
+        const reportContent = document.getElementById('reportContent');
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load profile data
+            loadProfileData();
+            
+            // Load progress from localStorage
+            loadProgressFromStorage();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Load subjects
+            loadSubjects();
+            
+            // Update summary stats
+            updateSummaryStats();
+        });
+
+        // Load student profile data to UI
+        function loadProfileData() {
+            document.getElementById('studentDept').textContent = studentProfile.department;
+            document.getElementById('studentSemester').textContent = `Semester ${studentProfile.semester}`;
+            document.getElementById('studentYear').textContent = studentProfile.year;
+            document.getElementById('studentBatch').textContent = studentProfile.batch;
+            
+            // Set active section button
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                if (btn.dataset.section === studentProfile.section) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Load progress from localStorage
+        function loadProgressFromStorage() {
+            const savedProgress = localStorage.getItem(STORAGE_KEY);
+            if (savedProgress) {
+                const data = JSON.parse(savedProgress);
+                studentProgress = data.studentProgress || { subjects: {}, customTasks: [] };
+                userSubjects = data.userSubjects || [];
+            }
+        }
+
+        // Save progress to localStorage
+        function saveProgressToStorage() {
+            const data = {
+                studentProgress: studentProgress,
+                userSubjects: userSubjects
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            showNotification("Progress saved successfully!", "success");
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Section buttons
+            sectionButtons.addEventListener('click', function(e) {
+                if (e.target.classList.contains('section-btn')) {
+                    // Update active button
+                    document.querySelectorAll('.section-btn').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    // Update current section
+                    currentSection = e.target.dataset.section;
+                    studentProfile.section = currentSection;
+                    
+                    // Reload subjects with new section
+                    loadSubjects();
+                    
+                    showNotification(`Section changed to ${currentSection}`, "info");
+                }
+            });
+
+            // Add subject button
+            addSubjectBtn.addEventListener('click', addNewSubject);
+
+            // Clear all button
+            clearAllBtn.addEventListener('click', clearAllData);
+
+            // Close modal buttons
+            closeModalBtn.addEventListener('click', function() {
+                addTaskModal.classList.remove('active');
+            });
+
+            closeReportBtn.addEventListener('click', function() {
+                reportModal.classList.remove('active');
+            });
+
+            // Submit task button
+            submitTaskBtn.addEventListener('click', addCustomTask);
+
+            // Save progress button
+            saveProgressBtn.addEventListener('click', saveProgressToStorage);
+
+            // View report button
+            viewReportBtn.addEventListener('click', showProgressReport);
+
+            // Close modals when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === addTaskModal) {
+                    addTaskModal.classList.remove('active');
+                }
+                if (e.target === reportModal) {
+                    reportModal.classList.remove('active');
+                }
+            });
+        }
+
+        // Add new subject
+        function addNewSubject() {
+            const subjectName = document.getElementById('subjectName').value;
+            const subjectCode = document.getElementById('subjectCode').value;
+            const totalAssignments = parseInt(document.getElementById('totalAssignments').value) || 0;
+            const totalLabs = parseInt(document.getElementById('totalLabs').value) || 0;
+            
+            if (!subjectName) {
+                showNotification("Please enter subject name", "error");
+                return;
+            }
+            
+            // Generate unique ID
+            const subjectId = `subject_${Date.now()}`;
+            
+            // Add to user subjects
+            const newSubject = {
+                id: subjectId,
+                name: subjectName,
+                code: subjectCode || `SUB${userSubjects.length + 1}`,
+                assignments: totalAssignments,
+                labs: totalLabs
+            };
+            
+            userSubjects.push(newSubject);
+            
+            // Initialize progress for this subject
+            if (!studentProgress.subjects[subjectId]) {
+                studentProgress.subjects[subjectId] = {
+                    assignments: {},
+                    labs: {},
+                    completedAssignments: 0,
+                    completedLabs: 0
+                };
+            }
+            
+            // Clear form
+            document.getElementById('subjectName').value = '';
+            document.getElementById('subjectCode').value = '';
+            document.getElementById('totalAssignments').value = '5';
+            document.getElementById('totalLabs').value = '8';
+            
+            // Reload subjects
+            loadSubjects();
+            
+            // Save progress
+            saveProgressToStorage();
+            
+            showNotification(`Subject "${subjectName}" added successfully`, "success");
+        }
+
+        // Load subjects based on user input
+        function loadSubjects() {
+            // Update total subjects count
+            document.getElementById('totalSubjects').textContent = userSubjects.length;
+            
+            // Clear subjects list
+            subjectsList.innerHTML = '';
+            
+            if (userSubjects.length === 0) {
+                subjectsList.innerHTML = `
+                    <div class="no-data" style="text-align: center; padding: 40px 20px; color: #888;">
+                        <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 15px; color: #ccc;"></i>
+                        <h3>No Subjects Added Yet</h3>
+                        <p>Add your subjects using the form above to start tracking your progress.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Render each subject
+            userSubjects.forEach(subject => {
+                const subjectProgress = studentProgress.subjects[subject.id] || {
+                    assignments: {},
+                    labs: {},
+                    completedAssignments: 0,
+                    completedLabs: 0
+                };
+                
+                // Calculate progress
+                const assignmentProgress = subject.assignments > 0 ? (subjectProgress.completedAssignments / subject.assignments) * 100 : 0;
+                const labProgress = subject.labs > 0 ? (subjectProgress.completedLabs / subject.labs) * 100 : 0;
+                
+                const subjectCard = document.createElement('div');
+                subjectCard.className = 'subject-card';
+                subjectCard.innerHTML = `
+                    <div class="subject-title">
+                        <div>
+                            <div class="subject-name">${subject.name}</div>
+                            <div class="subject-code">${subject.code} | Section ${currentSection}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.9rem; color: #6c757d;">Assignments: ${subjectProgress.completedAssignments}/${subject.assignments}</div>
+                            <div style="font-size: 0.9rem; color: #6c757d;">Labs: ${subjectProgress.completedLabs}/${subject.labs}</div>
+                            <button class="btn btn-small btn-secondary" onclick="editSubject('${subject.id}')" style="margin-top: 5px;">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Assignments Progress -->
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <div class="progress-title">Assignments Progress</div>
+                            <div class="progress-count">${subjectProgress.completedAssignments}/${subject.assignments}</div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${assignmentProgress}%"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span>0%</span>
+                            <span>${Math.round(assignmentProgress)}%</span>
+                            <span>100%</span>
+                        </div>
+                        
+                        <!-- Assignment Items -->
+                        <div class="task-items" id="assignments-${subject.id}">
+                            ${renderTaskItems(subject, subjectProgress.assignments, 'assignment', subject.assignments)}
+                        </div>
+                        
+                        <!-- Add Assignment Button -->
+                        <button class="btn btn-outline btn-small" onclick="addTask('${subject.id}', 'assignment')" style="margin-top: 10px; width: 100%;">
+                            <i class="fas fa-plus"></i> Add Assignment
+                        </button>
+                    </div>
+                    
+                    <!-- Labs Progress -->
+                    <div class="progress-section">
+                        <div class="progress-header">
+                            <div class="progress-title">Labs Progress</div>
+                            <div class="progress-count">${subjectProgress.completedLabs}/${subject.labs}</div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" style="width: ${labProgress}%"></div>
+                        </div>
+                        <div class="progress-stats">
+                            <span>0%</span>
+                            <span>${Math.round(labProgress)}%</span>
+                            <span>100%</span>
+                        </div>
+                        
+                        <!-- Lab Items -->
+                        <div class="task-items" id="labs-${subject.id}">
+                            ${renderTaskItems(subject, subjectProgress.labs, 'lab', subject.labs)}
+                        </div>
+                        
+                        <!-- Add Lab Button -->
+                        <button class="btn btn-outline btn-small" onclick="addTask('${subject.id}', 'lab')" style="margin-top: 10px; width: 100%;">
+                            <i class="fas fa-plus"></i> Add Lab
+                        </button>
+                    </div>
+                `;
+                
+                subjectsList.appendChild(subjectCard);
+                
+                // Add event listeners to checkboxes
+                setTimeout(() => {
+                    // Assignment checkboxes
+                    document.querySelectorAll(`#assignments-${subject.id} .task-checkbox input`).forEach((checkbox, index) => {
+                        checkbox.addEventListener('change', function() {
+                            toggleTaskCompletion(subject.id, 'assignment', index + 1, this.checked);
+                        });
+                    });
+                    
+                    // Lab checkboxes
+                    document.querySelectorAll(`#labs-${subject.id} .task-checkbox input`).forEach((checkbox, index) => {
+                        checkbox.addEventListener('change', function() {
+                            toggleTaskCompletion(subject.id, 'lab', index + 1, this.checked);
+                        });
+                    });
+                }, 100);
+            });
+            
+            updateSummaryStats();
+        }
+
+        // Render task items for a subject
+        function renderTaskItems(subject, taskProgress, type, totalTasks) {
+            let html = '';
+            
+            for (let i = 1; i <= totalTasks; i++) {
+                const taskKey = `${type}${i}`;
+                const taskData = taskProgress[taskKey] || { completed: false, date: null };
+                const isCompleted = taskData.completed;
+                const completionDate = taskData.date ? formatDate(taskData.date) : 'Not completed';
+                
+                html += `
+                    <div class="task-item ${isCompleted ? 'completed' : ''}" data-task="${taskKey}">
+                        <div class="task-checkbox">
+                            <input type="checkbox" ${isCompleted ? 'checked' : ''} id="${subject.id}-${taskKey}">
+                        </div>
+                        <div class="task-info">
+                            <div class="task-name">${type === 'assignment' ? 'Assignment' : 'Lab'} ${i}</div>
+                            <div class="task-type">${subject.name}</div>
+                            <div class="task-date">${isCompleted ? `Completed: ${completionDate}` : 'Pending'}</div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-small btn-secondary" onclick="setCompletionDate('${subject.id}', '${type}', ${i})">
+                                <i class="far fa-calendar"></i>
+                            </button>
+                            <button class="btn btn-small btn-secondary" onclick="editTask('${subject.id}', '${type}', ${i})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return html;
+        }
+
+        // Edit subject
+        function editSubject(subjectId) {
+            const subject = userSubjects.find(s => s.id === subjectId);
+            if (!subject) return;
+            
+            const newName = prompt("Enter new subject name:", subject.name);
+            if (newName && newName.trim()) {
+                subject.name = newName.trim();
+            }
+            
+            const newCode = prompt("Enter new subject code:", subject.code);
+            if (newCode !== null) {
+                subject.code = newCode.trim();
+            }
+            
+            const newAssignments = prompt("Enter new total assignments:", subject.assignments);
+            if (newAssignments !== null && !isNaN(newAssignments)) {
+                subject.assignments = parseInt(newAssignments);
+            }
+            
+            const newLabs = prompt("Enter new total labs:", subject.labs);
+            if (newLabs !== null && !isNaN(newLabs)) {
+                subject.labs = parseInt(newLabs);
+            }
+            
+            loadSubjects();
+            saveProgressToStorage();
+            showNotification("Subject updated successfully", "success");
+        }
+
+        // Edit task
+        function editTask(subjectId, type, taskNumber) {
+            const taskKey = `${type}${taskNumber}`;
+            const subjectProgress = studentProgress.subjects[subjectId];
+            
+            if (!subjectProgress) return;
+            
+            const taskData = subjectProgress[`${type}s`][taskKey] || { completed: false, date: null };
+            
+            const newCompletionDate = prompt(`Enter new completion date for ${type} ${taskNumber} (YYYY-MM-DD):`, taskData.date || '');
+            if (newCompletionDate !== null) {
+                if (newCompletionDate.trim()) {
+                    taskData.date = newCompletionDate.trim();
+                    taskData.completed = true;
+                    
+                    // Update completed count
+                    if (type === 'assignment') {
+                        studentProgress.subjects[subjectId].completedAssignments = Math.max(
+                            studentProgress.subjects[subjectId].completedAssignments,
+                            taskNumber
+                        );
+                    } else {
+                        studentProgress.subjects[subjectId].completedLabs = Math.max(
+                            studentProgress.subjects[subjectId].completedLabs,
+                            taskNumber
+                        );
+                    }
+                } else {
+                    taskData.date = null;
+                    taskData.completed = false;
+                }
+                
+                subjectProgress[`${type}s`][taskKey] = taskData;
+                loadSubjects();
+                saveProgressToStorage();
+                showNotification("Task updated successfully", "success");
+            }
+        }
+
+        // Toggle task completion
+        function toggleTaskCompletion(subjectId, type, taskNumber, isCompleted) {
+            // Initialize subject progress if not exists
+            if (!studentProgress.subjects[subjectId]) {
+                studentProgress.subjects[subjectId] = {
+                    assignments: {},
+                    labs: {},
+                    completedAssignments: 0,
+                    completedLabs: 0
+                };
+            }
+            
+            const taskKey = `${type}${taskNumber}`;
+            
+            // Update task data
+            if (!studentProgress.subjects[subjectId][`${type}s`][taskKey]) {
+                studentProgress.subjects[subjectId][`${type}s`][taskKey] = {
+                    completed: false,
+                    date: null
+                };
+            }
+            
+            studentProgress.subjects[subjectId][`${type}s`][taskKey].completed = isCompleted;
+            
+            if (isCompleted) {
+                // Set completion date to today if not already set
+                if (!studentProgress.subjects[subjectId][`${type}s`][taskKey].date) {
+                    studentProgress.subjects[subjectId][`${type}s`][taskKey].date = new Date().toISOString().split('T')[0];
+                }
+                
+                // Update completed count
+                if (type === 'assignment') {
+                    studentProgress.subjects[subjectId].completedAssignments++;
+                } else {
+                    studentProgress.subjects[subjectId].completedLabs++;
+                }
+            } else {
+                // Update completed count
+                if (type === 'assignment') {
+                    studentProgress.subjects[subjectId].completedAssignments = Math.max(0, studentProgress.subjects[subjectId].completedAssignments - 1);
+                } else {
+                    studentProgress.subjects[subjectId].completedLabs = Math.max(0, studentProgress.subjects[subjectId].completedLabs - 1);
+                }
+            }
+            
+            // Reload subjects to update UI
+            loadSubjects();
+            saveProgressToStorage();
+        }
+
+        // Set completion date for a task
+        function setCompletionDate(subjectId, type, taskNumber) {
+            const taskKey = `${type}${taskNumber}`;
+            const date = prompt(`Enter completion date for ${type} ${taskNumber} (YYYY-MM-DD):`, new Date().toISOString().split('T')[0]);
+            
+            if (date) {
+                if (!studentProgress.subjects[subjectId]) {
+                    studentProgress.subjects[subjectId] = {
+                        assignments: {},
+                        labs: {},
+                        completedAssignments: 0,
+                        completedLabs: 0
+                    };
+                }
+                
+                if (!studentProgress.subjects[subjectId][`${type}s`][taskKey]) {
+                    studentProgress.subjects[subjectId][`${type}s`][taskKey] = {
+                        completed: false,
+                        date: null
+                    };
+                }
+                
+                studentProgress.subjects[subjectId][`${type}s`][taskKey].date = date;
+                studentProgress.subjects[subjectId][`${type}s`][taskKey].completed = true;
+                
+                // Update completed count if not already counted
+                if (type === 'assignment' && studentProgress.subjects[subjectId].completedAssignments < taskNumber) {
+                    studentProgress.subjects[subjectId].completedAssignments = taskNumber;
+                } else if (type === 'lab' && studentProgress.subjects[subjectId].completedLabs < taskNumber) {
+                    studentProgress.subjects[subjectId].completedLabs = taskNumber;
+                }
+                
+                loadSubjects();
+                saveProgressToStorage();
+                showNotification(`Completion date set for ${type} ${taskNumber}`, "success");
+            }
+        }
+
+        // Add task (assignment or lab)
+        function addTask(subjectId, type) {
+            // Find the subject
+            const subject = userSubjects.find(s => s.id === subjectId);
+            
+            if (!subject) return;
+            
+            // Determine next task number
+            let nextTaskNumber = 1;
+            if (studentProgress.subjects[subjectId] && studentProgress.subjects[subjectId][`${type}s`]) {
+                const tasks = Object.keys(studentProgress.subjects[subjectId][`${type}s`])
+                    .filter(key => key.startsWith(type))
+                    .map(key => parseInt(key.replace(type, '')))
+                    .filter(num => !isNaN(num));
+                
+                if (tasks.length > 0) {
+                    nextTaskNumber = Math.max(...tasks) + 1;
+                }
+            }
+            
+            // Create new task
+            const taskKey = `${type}${nextTaskNumber}`;
+            
+            if (!studentProgress.subjects[subjectId]) {
+                studentProgress.subjects[subjectId] = {
+                    assignments: {},
+                    labs: {},
+                    completedAssignments: 0,
+                    completedLabs: 0
+                };
+            }
+            
+            studentProgress.subjects[subjectId][`${type}s`][taskKey] = {
+                completed: false,
+                date: null
+            };
+            
+            // Update total count if needed
+            if (type === 'assignment' && nextTaskNumber > subject.assignments) {
+                subject.assignments = nextTaskNumber;
+            } else if (type === 'lab' && nextTaskNumber > subject.labs) {
+                subject.labs = nextTaskNumber;
+            }
+            
+            loadSubjects();
+            saveProgressToStorage();
+            showNotification(`${type === 'assignment' ? 'Assignment' : 'Lab'} ${nextTaskNumber} added`, "success");
+        }
+
+        // Add custom task
+        function addCustomTask() {
+            const subjectId = document.getElementById('taskSubject').value;
+            const taskType = document.getElementById('taskType').value;
+            const taskNumber = document.getElementById('taskNumber').value;
+            const description = document.getElementById('taskDescription').value;
+            const assignedDate = document.getElementById('taskAssignedDate').value;
+            const completionDate = document.getElementById('taskCompletionDate').value;
+            const isCompleted = document.getElementById('taskCompleted').checked;
+            
+            if (!subjectId || !taskNumber) {
+                showNotification("Please fill all required fields", "error");
+                return;
+            }
+            
+            // Add to custom tasks
+            const customTask = {
+                id: Date.now(),
+                subjectId,
+                type: taskType,
+                name: taskNumber,
+                description,
+                assignedDate,
+                completionDate: isCompleted ? completionDate : null,
+                completed: isCompleted,
+                isCustom: true
+            };
+            
+            studentProgress.customTasks.push(customTask);
+            
+            // If it's an assignment or lab for a subject, also add to subject progress
+            if (taskType === 'assignment' || taskType === 'lab') {
+                if (!studentProgress.subjects[subjectId]) {
+                    studentProgress.subjects[subjectId] = {
+                        assignments: {},
+                        labs: {},
+                        completedAssignments: 0,
+                        completedLabs: 0
+                    };
+                }
+                
+                // Generate a unique key for custom task
+                const taskKey = `custom_${Date.now()}`;
+                studentProgress.subjects[subjectId][`${taskType}s`][taskKey] = {
+                    completed: isCompleted,
+                    date: isCompleted ? completionDate : null,
+                    isCustom: true,
+                    name: taskNumber,
+                    description: description
+                };
+                
+                // Update completed count
+                if (isCompleted) {
+                    if (taskType === 'assignment') {
+                        studentProgress.subjects[subjectId].completedAssignments++;
+                    } else {
+                        studentProgress.subjects[subjectId].completedLabs++;
+                    }
+                }
+            }
+            
+            // Close modal
+            addTaskModal.classList.remove('active');
+            
+            // Reload subjects
+            loadSubjects();
+            
+            // Save progress
+            saveProgressToStorage();
+            
+            showNotification("Custom task added successfully", "success");
+        }
+
+        // Update summary statistics
+        function updateSummaryStats() {
+            let totalAssignments = 0;
+            let totalLabs = 0;
+            let completedAssignments = 0;
+            let completedLabs = 0;
+            
+            userSubjects.forEach(subject => {
+                const subjectProgress = studentProgress.subjects[subject.id] || {
+                    completedAssignments: 0,
+                    completedLabs: 0
+                };
+                
+                totalAssignments += subject.assignments;
+                totalLabs += subject.labs;
+                completedAssignments += subjectProgress.completedAssignments;
+                completedLabs += subjectProgress.completedLabs;
+            });
+            
+            // Add custom tasks
+            studentProgress.customTasks.forEach(task => {
+                if (task.type === 'assignment') {
+                    totalAssignments++;
+                    if (task.completed) completedAssignments++;
+                } else if (task.type === 'lab') {
+                    totalLabs++;
+                    if (task.completed) completedLabs++;
+                }
+            });
+            
+            // Update UI
+            document.getElementById('totalAssignments').textContent = totalAssignments;
+            document.getElementById('totalLabs').textContent = totalLabs;
+            
+            // Calculate overall completion rate
+            const totalTasks = totalAssignments + totalLabs;
+            const completedTasks = completedAssignments + completedLabs;
+            const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            
+            document.getElementById('completionRate').textContent = `${completionRate}%`;
+        }
+
+        // Show progress report
+        function showProgressReport() {
+            let reportHTML = `
+                <h4 style="margin-bottom: 15px; color: var(--secondary);">Progress Report</h4>
+                <div style="margin-bottom: 20px;">
+                    <p><strong>Department:</strong> ${studentProfile.department}</p>
+                    <p><strong>Semester:</strong> ${studentProfile.semester}</p>
+                    <p><strong>Section:</strong> ${currentSection}</p>
+                    <p><strong>Academic Year:</strong> ${studentProfile.year}</p>
+                </div>
+                <hr style="margin: 20px 0;">
+            `;
+            
+            if (userSubjects.length > 0) {
+                userSubjects.forEach(subject => {
+                    const subjectProgress = studentProgress.subjects[subject.id] || {
+                        completedAssignments: 0,
+                        completedLabs: 0
+                    };
+                    
+                    const assignmentProgress = subject.assignments > 0 ? (subjectProgress.completedAssignments / subject.assignments) * 100 : 0;
+                    const labProgress = subject.labs > 0 ? (subjectProgress.completedLabs / subject.labs) * 100 : 0;
+                    
+                    reportHTML += `
+                        <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <h5 style="color: var(--primary); margin-bottom: 10px;">${subject.name} (${subject.code})</h5>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <p><strong>Assignments:</strong> ${subjectProgress.completedAssignments}/${subject.assignments} (${Math.round(assignmentProgress)}%)</p>
+                                    <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin: 5px 0;">
+                                        <div style="background: var(--primary); height: 100%; width: ${assignmentProgress}%; border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p><strong>Labs:</strong> ${subjectProgress.completedLabs}/${subject.labs} (${Math.round(labProgress)}%)</p>
+                                    <div style="background: #e9ecef; height: 8px; border-radius: 4px; margin: 5px 0;">
+                                        <div style="background: var(--primary); height: 100%; width: ${labProgress}%; border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Add custom tasks section
+            if (studentProgress.customTasks.length > 0) {
+                reportHTML += `
+                    <hr style="margin: 20px 0;">
+                    <h5 style="color: var(--primary); margin-bottom: 15px;">Custom Tasks</h5>
+                `;
+                
+                studentProgress.customTasks.forEach(task => {
+                    const subject = userSubjects.find(s => s.id === task.subjectId);
+                    const subjectName = subject ? subject.name : 'Unknown Subject';
+                    
+                    reportHTML += `
+                        <div style="margin-bottom: 10px; padding: 10px; background: ${task.completed ? '#f0fff4' : '#fff3cd'}; border-radius: 6px; border-left: 4px solid ${task.completed ? 'var(--success)' : 'var(--warning)'};">
+                            <p style="margin: 0;"><strong>${task.name}</strong> (${subjectName})</p>
+                            <p style="margin: 5px 0 0 0; font-size: 0.9rem;">Type: ${task.type} | Status: ${task.completed ? 'Completed' : 'Pending'}</p>
+                            ${task.completed ? `<p style="margin: 5px 0 0 0; font-size: 0.9rem;">Completed on: ${formatDate(task.completionDate)}</p>` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            // Add summary
+            const totalAssignments = parseInt(document.getElementById('totalAssignments').textContent);
+            const totalLabs = parseInt(document.getElementById('totalLabs').textContent);
+            const completionRate = document.getElementById('completionRate').textContent;
+            
+            reportHTML += `
+                <hr style="margin: 20px 0;">
+                <div style="text-align: center; padding: 15px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border-radius: 8px;">
+                    <h4 style="margin-bottom: 10px;">Overall Progress Summary</h4>
+                    <p style="margin: 5px 0;">Total Subjects: ${userSubjects.length}</p>
+                    <p style="margin: 5px 0;">Total Assignments: ${totalAssignments}</p>
+                    <p style="margin: 5px 0;">Total Labs: ${totalLabs}</p>
+                    <p style="margin: 5px 0; font-size: 1.2rem; font-weight: bold;">Overall Completion: ${completionRate}</p>
+                </div>
+            `;
+            
+            reportContent.innerHTML = reportHTML;
+            reportModal.classList.add('active');
+        }
+
+        // Clear all data
+        function clearAllData() {
+            if (confirm("Are you sure you want to clear all data? This action cannot be undone.")) {
+                userSubjects = [];
+                studentProgress = {
+                    subjects: {},
+                    customTasks: []
+                };
+                
+                localStorage.removeItem(STORAGE_KEY);
+                loadSubjects();
+                showNotification("All data cleared successfully", "success");
+            }
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        // Show notification
+        function showNotification(message, type = "info") {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+            `;
+            
+            // Set color based on type
+            if (type === "success") {
+                notification.style.backgroundColor = "var(--success)";
+            } else if (type === "error") {
+                notification.style.backgroundColor = "var(--danger)";
+            } else {
+                notification.style.backgroundColor = "var(--primary)";
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = "slideOut 0.3s ease";
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+            
+            // Add keyframes for animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    </script>
+</body>
+</html>

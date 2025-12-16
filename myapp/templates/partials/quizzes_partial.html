@@ -1,0 +1,21 @@
+<div>
+    <h2>All Quizzes</h2>
+    <div class="row">
+        {% for quiz in quizzes %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ quiz.title }}</h5>
+                    <p class="card-text">{{ quiz.description }}</p>
+                    <p class="card-text"><small class="text-muted">Course: {{ quiz.course.title }}</small></p>
+                    <a href="{% url 'attempt_quiz' quiz.id %}" class="btn btn-primary">Attempt Quiz</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">No quizzes available.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>

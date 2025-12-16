@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - EduAI Platform</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --dark-green: #077b32;
+            --light-green: #05a645;
+            --gradient-start: #0EC9C8;
+            --gradient-end: #25F0E5;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+           
+            background-size: cover;
+            min-height: 100vh;
+            padding-top: 20px;
+            color: white;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.5);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #0EC9C8 !important;
+            text-shadow: 0 0 5px rgba(14, 201, 200, 0.5);
+        }
+        
+        .navbar-brand i {
+            color: #0EC9C8;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: #0EC9C8 !important;
+            text-shadow: 0 0 5px rgba(14, 201, 200, 0.5);
+        }
+        
+        .nav-link.active {
+            color: #0EC9C8 !important;
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            box-shadow: 0 0 5px rgba(14, 201, 200, 0.7);
+        }
+        
+        /* Cyberpunk Card for Main Container */
+        .cyber-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .cyber-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 30px rgba(37, 240, 229, 0.8),
+                0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Header */
+        .cyber-header {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+        }
+        
+        .cyber-header i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .cyber-header h1 {
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+            font-size: 2.5rem;
+        }
+        
+        .cyber-header p {
+            opacity: 0.9;
+            margin-bottom: 0;
+            font-size: 1.1rem;
+        }
+        
+        .cyber-body {
+            padding: 30px;
+            background: rgba(10, 10, 10, 0.8);
+        }
+        
+        /* Tabs Styling */
+        .cyber-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .cyber-tab-btn {
+            background: rgba(14, 201, 200, 0.2);
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .cyber-tab-btn:hover {
+            background: rgba(37, 240, 229, 0.3);
+            border-color: rgba(37, 240, 229, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.5);
+        }
+        
+        .cyber-tab-btn.active {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            font-weight: 600;
+            border: none;
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+        }
+        
+        /* Filter Container */
+        .filter-container {
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .filter-input, .filter-select {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-input:focus, .filter-select:focus {
+            border-color: var(--gradient-end);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+            outline: none;
+        }
+        
+        .filter-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* Cards Container */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        /* Resource Cards */
+        .resource-card {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            border: 1px solid rgba(14, 201, 200, 0.2);
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(14, 201, 200, 0.3);
+            border-color: rgba(37, 240, 229, 0.5);
+        }
+        
+        .card-header {
+            padding: 20px;
+            background: rgba(14, 201, 200, 0.1);
+            border-bottom: 1px solid rgba(14, 201, 200, 0.3);
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            color: #0EC9C8;
+        }
+        
+        .card-subtitle {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        
+        .card-description {
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .card-footer {
+            padding: 15px 20px;
+            background: rgba(14, 201, 200, 0.1);
+            border-top: 1px solid rgba(14, 201, 200, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Type Badges */
+        .type-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: rgba(37, 240, 229, 0.2);
+            color: white;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+        }
+        
+        /* Website Link Button */
+        .website-link {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 8px rgba(14, 201, 200, 0.5);
+        }
+        
+        .website-link:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            color: white;
+            text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 0 12px rgba(37, 240, 229, 0.7);
+        }
+        
+        .website-link i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+        }
+        
+        .btn-outline-light {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 8px;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(14, 201, 200, 0.8);
+            color: #0EC9C8;
+        }
+        
+        .btn-light {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 8px;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-light:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(14, 201, 200, 0.8);
+            color: #0EC9C8;
+        }
+        
+        /* Footer */
+        .cyber-footer {
+            text-align: center;
+            margin-top: 40px;
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            color: #25F0E5;
+        }
+        
+        /* Tab Content Animation */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+        }
+        
+        .cyber-card {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .cyber-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .cyber-header p {
+                font-size: 1rem;
+            }
+            
+            .cyber-tab-btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-input, .filter-select {
+                min-width: 100%;
+            }
+            
+            .cyber-body {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-container {
+                padding: 10px;
+            }
+            
+            .cyber-header {
+                padding: 15px;
+            }
+            
+            .cyber-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .cyber-header i {
+                font-size: 2rem;
+            }
+            
+            .card-footer {
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
+            }
+            
+            .website-link {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-graduation-cap me-2"></i>EduAI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'courses' %}">Courses</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'resources' %}">Resources</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-light me-2">Dashboard</a>
+                    <a href="{% url 'logout' %}" class="btn btn-light">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container mt-5 pt-4">
+        <div class="cyber-card">
+            <div class="cyber-header">
+                <i class="fas fa-book-open"></i>
+                <h1>Educational Resources & AI Tools Hub</h1>
+                <p>Discover the best learning platforms, AI tools, and daily student technology to enhance your education and productivity.</p>
+            </div>
+            
+            <div class="cyber-body">
+                <div class="cyber-tabs">
+                    <button class="cyber-tab-btn active" data-tab="education">Educational Resources</button>
+                    <button class="cyber-tab-btn" data-tab="ai">AI Tools</button>
+                    <button class="cyber-tab-btn" data-tab="student">Student Daily Tech</button>
+                </div>
+
+                <!-- Educational Resources Tab -->
+                <div id="education" class="tab-content active">
+                    <div class="filter-container">
+                        <input type="text" id="educationSearch" class="filter-input" placeholder="Search educational resources...">
+                        <select id="educationTypeFilter" class="filter-select">
+                            <option value="">All Types</option>
+                            <option value="Coding">Coding</option>
+                            <option value="Courses">Courses</option>
+                            <option value="Tutorials">Tutorials</option>
+                            <option value="Research">Research</option>
+                            <option value="Tools">Tools</option>
+                        </select>
+                    </div>
+
+                    <div class="cards-container" id="educationCards">
+                        <!-- Cards will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- AI Tools Tab -->
+                <div id="ai" class="tab-content">
+                    <div class="filter-container">
+                        <input type="text" id="aiSearch" class="filter-input" placeholder="Search AI tools...">
+                        <select id="aiTypeFilter" class="filter-select">
+                            <option value="">All Types</option>
+                            <option value="AI Tool">AI Tool</option>
+                            <option value="AI Search">AI Search</option>
+                            <option value="AI Design">AI Design</option>
+                            <option value="AI Coding">AI Coding</option>
+                            <option value="AI Media">AI Media</option>
+                        </select>
+                    </div>
+
+                    <div class="cards-container" id="aiCards">
+                        <!-- Cards will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Student Daily Tech Tab -->
+                <div id="student" class="tab-content">
+                    <div class="filter-container">
+                        <input type="text" id="studentSearch" class="filter-input" placeholder="Search student tools...">
+                        <select id="studentTypeFilter" class="filter-select">
+                            <option value="">All Types</option>
+                            <option value="Communication">Communication</option>
+                            <option value="Productivity">Productivity</option>
+                            <option value="Learning">Learning</option>
+                            <option value="Coding">Coding</option>
+                            <option value="Design">Design</option>
+                            <option value="Research">Research</option>
+                            <option value="AI Tools">AI Tools</option>
+                            <option value="Storage">Storage</option>
+                        </select>
+                    </div>
+
+                    <div class="cards-container" id="studentCards">
+                        <!-- Cards will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="cyber-footer">
+                    <p>Educational Resources & AI Tools Hub &copy; 2023 | EduAI Platform</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Educational Resources Data
+        const educationData = [
+            { id: 1, website: "GeeksforGeeks", url: "https://www.geeksforgeeks.org/", company: "GeeksforGeeks Pvt. Ltd. (India)", type: "Coding", subjects: "Programming, CS, DSA, Web Dev" },
+            { id: 2, website: "Coursera", url: "https://www.coursera.org/", company: "Coursera Inc.", type: "Courses", subjects: "All subjects (Tech, Business, Data, Arts)" },
+            { id: 3, website: "edX", url: "https://www.edx.org/", company: "edX (by MIT & Harvard)", type: "Courses", subjects: "CS, Science, Engineering, Business" },
+            { id: 4, website: "Khan Academy", url: "https://www.khanacademy.org/", company: "Non-profit", type: "Tutorials", subjects: "Math, Science, Finance, Humanities" },
+            { id: 5, website: "Udemy", url: "https://www.udemy.com/", company: "Udemy Inc.", type: "Courses", subjects: "Programming, Design, Business, Productivity" },
+            { id: 6, website: "W3Schools", url: "https://www.w3schools.com/", company: "Refsnes Data", type: "Tutorials", subjects: "HTML, CSS, JS, Python, SQL" },
+            { id: 7, website: "Codecademy", url: "https://www.codecademy.com/", company: "Skillsoft", type: "Coding", subjects: "Web Dev, Python, Java, SQL" },
+            { id: 8, website: "MIT OpenCourseWare", url: "https://ocw.mit.edu/", company: "Massachusetts Institute of Technology", type: "Courses", subjects: "Engineering, CS, Math, Physics" },
+            { id: 9, website: "NPTEL", url: "https://nptel.ac.in/", company: "IITs & IISc (India Govt.)", type: "Courses", subjects: "Engineering, Science, Humanities" },
+            { id: 10, website: "Swayam", url: "https://swayam.gov.in/", company: "MHRD Govt. of India", type: "Courses", subjects: "UG/PG courses, AICTE & UGC subjects" },
+            { id: 11, website: "Google for Education", url: "https://edu.google.com/", company: "Google", type: "Tools", subjects: "Productivity, Collaboration, Tech tools" },
+            { id: 12, website: "LinkedIn Learning", url: "https://www.linkedin.com/learning/", company: "Microsoft / LinkedIn", type: "Courses", subjects: "Business, Tech, Creativity" },
+            { id: 13, website: "GitHub Education", url: "https://education.github.com/", company: "GitHub (Microsoft)", type: "Tools", subjects: "Coding, Collaboration, Open Source" },
+            { id: 14, website: "ResearchGate", url: "https://www.researchgate.net/", company: "ResearchGate GmbH", type: "Research", subjects: "Science, Engineering, Medicine" },
+            { id: 15, website: "Google Scholar", url: "https://scholar.google.com/", company: "Google", type: "Research", subjects: "Research, References, Papers" },
+            { id: 16, website: "Quizlet", url: "https://quizlet.com/", company: "Quizlet Inc.", type: "Tools", subjects: "All subjects, memorization" },
+            { id: 17, website: "Chegg Study", url: "https://www.chegg.com/study", company: "Chegg Inc.", type: "Tools", subjects: "Engineering, Science, Math" },
+            { id: 18, website: "JSTOR", url: "https://www.jstor.org/", company: "ITHAKA", type: "Research", subjects: "Humanities, Arts, Research" },
+            { id: 19, website: "OpenStax", url: "https://openstax.org/", company: "Rice University", type: "Tools", subjects: "Math, Science, Business" },
+            { id: 20, website: "FutureLearn", url: "https://www.futurelearn.com/", company: "The Open University (UK)", type: "Courses", subjects: "Humanities, Science, Health" }
+        ];
+
+        // AI Tools Data
+        const aiData = [
+            { id: 1, website: "ChatGPT (OpenAI)", url: "https://chat.openai.com", description: "AI chatbot that answers questions, explains topics, writes essays or code", bestFor: "Study help, coding, brainstorming", type: "AI Tool" },
+            { id: 2, website: "Google Gemini (Bard)", url: "https://gemini.google.com", description: "Google's AI for writing, explaining, coding, and research", bestFor: "Writing, learning, presentations", type: "AI Tool" },
+            { id: 3, website: "Claude AI", url: "https://claude.ai", description: "Conversational AI by Anthropic; handles long documents", bestFor: "Summarizing notes, reading PDFs", type: "AI Tool" },
+            { id: 4, website: "Perplexity AI", url: "https://www.perplexity.ai", description: "AI search engine with sources", bestFor: "Research, fact-checking, assignments", type: "AI Search" },
+            { id: 5, website: "NotebookLM (Google)", url: "https://notebooklm.google", description: "AI research assistant that reads your PDFs and makes notes", bestFor: "Study organization, summarizing", type: "AI Tool" },
+            { id: 6, website: "Canva Magic Studio", url: "https://www.canva.com/ai/", description: "AI design suite for posters, slides, social media", bestFor: "Project design, college events", type: "AI Design" },
+            { id: 7, website: "Gamma App", url: "https://gamma.app", description: "AI presentation maker", bestFor: "Creating college presentations easily", type: "AI Design" },
+            { id: 8, website: "SlidesAI.io", url: "https://www.slidesai.io", description: "Turns text into Google Slides", bestFor: "Quick class or project slides", type: "AI Design" },
+            { id: 9, website: "Murf AI", url: "https://murf.ai", description: "Text-to-speech AI with natural voices", bestFor: "Making video narration or voiceovers", type: "AI Media" },
+            { id: 10, website: "Runway ML", url: "https://runwayml.com", description: "Video editing + AI generation", bestFor: "Visual projects, creative videos", type: "AI Media" },
+            { id: 11, website: "Google Colab", url: "https://colab.research.google.com", description: "Free Jupyter notebooks in the cloud", bestFor: "Python, ML, and AI model building", type: "AI Coding" },
+            { id: 12, website: "Hugging Face", url: "https://huggingface.co", description: "Hub for pre-trained AI/ML models", bestFor: "Testing NLP, CV, and AI models", type: "AI Tool" },
+            { id: 13, website: "Teachable Machine", url: "https://teachablemachine.withgoogle.com", description: "Train simple ML models in browser", bestFor: "AI experiments, ML basics", type: "AI Tool" },
+            { id: 14, website: "Leonardo AI", url: "https://leonardo.ai", description: "AI image generation and editing", bestFor: "Graphic projects, concept art", type: "AI Design" },
+            { id: 15, website: "Pika Labs", url: "https://pika.art", description: "AI video generation from text", bestFor: "Creative storytelling, video AI", type: "AI Media" },
+            { id: 16, website: "ElevenLabs", url: "https://elevenlabs.io", description: "Realistic voice cloning & narration", bestFor: "Audio projects, podcasts", type: "AI Media" },
+            { id: 17, website: "Blackbox AI", url: "https://www.useblackbox.io", description: "AI coding assistant", bestFor: "Debugging and code auto-completion", type: "AI Coding" },
+            { id: 18, website: "Replit Ghostwriter", url: "https://replit.com", description: "AI code generator inside Replit IDE", bestFor: "Building apps and coding projects", type: "AI Coding" },
+            { id: 19, website: "GitHub Copilot", url: "https://github.com/features/copilot", description: "AI assistant in VS Code", bestFor: "Helps write and explain code faster", type: "AI Coding" },
+            { id: 20, website: "Tome AI", url: "https://tome.app", description: "Storytelling AI that turns ideas into slide decks", bestFor: "Presentations and creative reports", type: "AI Design" }
+        ];
+
+        // Student Daily Tech Data
+        const studentData = [
+            { id: 1, website: "Google Meet", url: "https://meet.google.com", description: "Video conferencing for online classes and group study", bestFor: "Online classes, meetings", type: "Communication" },
+            { id: 2, website: "Zoom", url: "https://zoom.us", description: "Video conferencing platform for virtual classrooms", bestFor: "Online lectures, webinars", type: "Communication" },
+            { id: 3, website: "Microsoft Teams", url: "https://www.microsoft.com/en-in/microsoft-teams", description: "Collaboration platform for classes and projects", bestFor: "Team projects, class discussions", type: "Communication" },
+            { id: 4, website: "Google Docs", url: "https://docs.google.com", description: "Cloud-based document creation and collaboration", bestFor: "Assignments, group projects", type: "Productivity" },
+            { id: 5, website: "Notion", url: "https://www.notion.so", description: "All-in-one workspace for notes, tasks, and databases", bestFor: "Note-taking, project planning", type: "Productivity" },
+            { id: 6, website: "Evernote", url: "https://evernote.com", description: "Note-taking app for organizing study materials", bestFor: "Class notes, research", type: "Productivity" },
+            { id: 7, website: "YouTube", url: "https://www.youtube.com", description: "Video platform with educational content", bestFor: "Learning tutorials, lectures", type: "Learning" },
+            { id: 8, website: "Khan Academy", url: "https://www.khanacademy.org", description: "Free online courses and lessons", bestFor: "Math, science, test prep", type: "Learning" },
+            { id: 9, website: "Google Classroom", url: "https://classroom.google.com", description: "Learning management system for schools", bestFor: "Class assignments, communication", type: "Learning" },
+            { id: 10, website: "WhatsApp", url: "https://www.whatsapp.com", description: "Messaging app for student communication", bestFor: "Group chats, quick communication", type: "Communication" },
+            { id: 11, website: "VS Code", url: "https://code.visualstudio.com", description: "Code editor for programming projects", bestFor: "Coding assignments, projects", type: "Coding" },
+            { id: 12, website: "PyCharm", url: "https://www.jetbrains.com/pycharm", description: "Python IDE for development", bestFor: "Python programming", type: "Coding" },
+            { id: 13, website: "Jupyter Notebook", url: "https://jupyter.org", description: "Web-based interactive computing platform", bestFor: "Data science, research", type: "Coding" },
+            { id: 14, website: "PowerPoint", url: "https://www.microsoft.com/powerpoint", description: "Presentation software for academic work", bestFor: "Presentations, projects", type: "Design" },
+            { id: 15, website: "Canva", url: "https://www.canva.com", description: "Graphic design platform for visual content", bestFor: "Posters, presentations, infographics", type: "Design" },
+            { id: 16, website: "Google Slides", url: "https://slides.google.com", description: "Cloud-based presentation software", bestFor: "Collaborative presentations", type: "Design" },
+            { id: 17, website: "Google Scholar", url: "https://scholar.google.com", description: "Search engine for academic papers", bestFor: "Research, citations", type: "Research" },
+            { id: 18, website: "ResearchGate", url: "https://www.researchgate.net", description: "Academic social network for researchers", bestFor: "Research papers, collaboration", type: "Research" },
+            { id: 19, website: "Google Drive", url: "https://drive.google.com", description: "Cloud storage for files and documents", bestFor: "File storage, sharing", type: "Storage" },
+            { id: 20, website: "Dropbox", url: "https://www.dropbox.com", description: "Cloud storage and file sharing", bestFor: "Backup, file sharing", type: "Storage" }
+        ];
+
+        // Tab switching functionality
+        document.querySelectorAll('.cyber-tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and content
+                document.querySelectorAll('.cyber-tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+
+        // Function to render education cards
+        function renderEducationCards(data) {
+            const container = document.getElementById('educationCards');
+            container.innerHTML = '';
+            
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'resource-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3 class="card-title">${item.website}</h3>
+                        <p class="card-subtitle">${item.company}</p>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description"><strong>Subjects:</strong> ${item.subjects}</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="type-badge">${item.type}</span>
+                        <a href="${item.url}" target="_blank" class="website-link">
+                            <i class="fas fa-external-link-alt"></i>Visit Website
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Function to render AI cards
+        function renderAICards(data) {
+            const container = document.getElementById('aiCards');
+            container.innerHTML = '';
+            
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'resource-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3 class="card-title">${item.website}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description"><strong>What it does:</strong> ${item.description}</p>
+                        <p class="card-description"><strong>Best for:</strong> ${item.bestFor}</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="type-badge">${item.type}</span>
+                        <a href="${item.url}" target="_blank" class="website-link">
+                            <i class="fas fa-external-link-alt"></i>Try Tool
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Function to render student tech cards
+        function renderStudentCards(data) {
+            const container = document.getElementById('studentCards');
+            container.innerHTML = '';
+            
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'resource-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3 class="card-title">${item.website}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-description"><strong>Description:</strong> ${item.description}</p>
+                        <p class="card-description"><strong>Best for:</strong> ${item.bestFor}</p>
+                    </div>
+                    <div class="card-footer">
+                        <span class="type-badge">${item.type}</span>
+                        <a href="${item.url}" target="_blank" class="website-link">
+                            <i class="fas fa-external-link-alt"></i>Visit
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Filter education cards
+        function filterEducationCards() {
+            const searchTerm = document.getElementById('educationSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('educationTypeFilter').value;
+            
+            const filteredData = educationData.filter(item => {
+                const matchesSearch = 
+                    item.website.toLowerCase().includes(searchTerm) ||
+                    item.company.toLowerCase().includes(searchTerm) ||
+                    item.subjects.toLowerCase().includes(searchTerm);
+                
+                const matchesType = typeFilter === '' || item.type === typeFilter;
+                
+                return matchesSearch && matchesType;
+            });
+            
+            renderEducationCards(filteredData);
+        }
+
+        // Filter AI cards
+        function filterAICards() {
+            const searchTerm = document.getElementById('aiSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('aiTypeFilter').value;
+            
+            const filteredData = aiData.filter(item => {
+                const matchesSearch = 
+                    item.website.toLowerCase().includes(searchTerm) ||
+                    item.description.toLowerCase().includes(searchTerm) ||
+                    item.bestFor.toLowerCase().includes(searchTerm);
+                
+                const matchesType = typeFilter === '' || item.type === typeFilter;
+                
+                return matchesSearch && matchesType;
+            });
+            
+            renderAICards(filteredData);
+        }
+
+        // Filter student cards
+        function filterStudentCards() {
+            const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('studentTypeFilter').value;
+            
+            const filteredData = studentData.filter(item => {
+                const matchesSearch = 
+                    item.website.toLowerCase().includes(searchTerm) ||
+                    item.description.toLowerCase().includes(searchTerm) ||
+                    item.bestFor.toLowerCase().includes(searchTerm);
+                
+                const matchesType = typeFilter === '' || item.type === typeFilter;
+                
+                return matchesSearch && matchesType;
+            });
+            
+            renderStudentCards(filteredData);
+        }
+
+        // Initialize cards
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEducationCards(educationData);
+            renderAICards(aiData);
+            renderStudentCards(studentData);
+            
+            // Add event listeners for filters
+            document.getElementById('educationSearch').addEventListener('input', filterEducationCards);
+            document.getElementById('educationTypeFilter').addEventListener('change', filterEducationCards);
+            document.getElementById('aiSearch').addEventListener('input', filterAICards);
+            document.getElementById('aiTypeFilter').addEventListener('change', filterAICards);
+            document.getElementById('studentSearch').addEventListener('input', filterStudentCards);
+            document.getElementById('studentTypeFilter').addEventListener('change', filterStudentCards);
+        });
+    </script>
+</body>
+</html>

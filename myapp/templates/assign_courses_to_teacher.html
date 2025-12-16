@@ -1,0 +1,595 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Courses to Teacher - EduAI Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --dark-green: #077b32;
+            --light-green: #05a645;
+            --gradient-start: #0EC9C8;
+            --gradient-end: #25F0E5;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 25px rgba(14, 201, 200, 0.3);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.4rem;
+            color: #0EC9C8 !important;
+            text-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        }
+        
+        .nav-link {
+            color: #aaa !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 0 2px;
+            padding: 8px 15px !important;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #0EC9C8 !important;
+            background: rgba(14, 201, 200, 0.1);
+            text-shadow: 0 0 5px rgba(14, 201, 200, 0.5);
+        }
+        
+        /* Cyberpunk Card */
+        .auth-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .auth-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 30px rgba(37, 240, 229, 0.8),
+                0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Header */
+        .auth-header {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+        }
+        
+        .auth-header i {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: block;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .auth-header h2 {
+            font-weight: 500;
+            margin-bottom: 2px;
+            font-size: 1.4rem;
+            color: white;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .auth-body {
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.8);
+        }
+        
+        /* Form */
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+        
+        .form-control:focus {
+            border-color: var(--gradient-end);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+        }
+        
+        /* Button */
+        .btn-primary {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+        }
+        
+        .btn-secondary {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            color: #0EC9C8;
+            border-radius: 8px;
+            padding: 8px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(14, 201, 200, 0.1);
+            border-color: var(--gradient-end);
+            color: #25F0E5;
+            transform: translateY(-2px);
+        }
+        
+        /* Checkbox */
+        .form-check-input {
+            width: 1.2em;
+            height: 1.2em;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(14, 201, 200, 0.5);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .form-check-input:checked {
+            background-color: #0EC9C8;
+            border-color: #0EC9C8;
+            box-shadow: 0 0 8px rgba(14, 201, 200, 0.7);
+        }
+        
+        /* Course Card */
+        .course-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .course-card:hover {
+            border-color: var(--gradient-end);
+            background: rgba(0, 0, 0, 0.7);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(14, 201, 200, 0.2);
+        }
+        
+        .course-card.selected {
+            border-color: var(--gradient-end);
+            background: rgba(37, 240, 229, 0.1);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.3);
+        }
+        
+        .course-card h6 {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .course-card p {
+            color: #aaa;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        
+        /* Badge */
+        .badge {
+            background: rgba(37, 240, 229, 0.2);
+            color: #25F0E5;
+            border: 1px solid rgba(37, 240, 229, 0.3);
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-success {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+        
+        /* Alert */
+        .alert {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            border-radius: 8px;
+            color: #0EC9C8;
+            border-left: 3px solid #0EC9C8;
+        }
+        
+        /* Teacher Header */
+        .teacher-header {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(14, 201, 200, 0.3);
+        }
+        
+        .stats-card {
+            background: rgba(37, 240, 229, 0.1);
+            border: 1px solid rgba(37, 240, 229, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            color: white;
+        }
+        
+        .stats-card h4 {
+            color: #25F0E5;
+            margin: 0;
+        }
+        
+        /* Search Box */
+        .search-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            border-radius: 8px;
+            color: white;
+            padding: 8px 12px;
+        }
+        
+        .search-box:focus {
+            border-color: var(--gradient-end);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+        }
+        
+        /* Platform Info */
+        .platform-info {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .platform-info p {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #25F0E5;
+            font-size: 14px;
+        }
+        
+        .platform-info small {
+            opacity: 0.8;
+            font-size: 11px;
+        }
+        
+        /* Role Badge */
+        .role-badge {
+            display: inline-block;
+            background: rgba(37, 240, 229, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            color: white;
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.3), rgba(37, 240, 229, 0.3));
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+        }
+        
+        .auth-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Glow Animation */
+        .auth-card {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            .auth-body {
+                padding: 15px;
+            }
+            
+            .course-item {
+                padding: 0 5px;
+            }
+            
+            .teacher-header .display-6 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-graduation-cap me-2"></i>EduAI Admin
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_dashboard' %}">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'teacher_list' %}">
+                            <i class="fas fa-chalkboard-teacher me-1"></i>Teachers
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <span class="navbar-text me-3" style="color: #0EC9C8;">
+                        <i class="fas fa-user-shield me-1"></i>Welcome, Admin
+                    </span>
+                    <a href="{% url 'logout' %}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        {% if messages %}
+            <div class="row">
+                <div class="col-12">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" style="filter: invert(1);"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Teacher Header -->
+        <div class="teacher-header">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="display-6 mb-2" style="color: #25F0E5;">
+                        <i class="fas fa-user-tie me-2"></i>{{ teacher.user.get_full_name|default:teacher.user.username }}
+                    </h1>
+                    <p class="mb-0" style="color: #aaa;">Assign courses and manage teaching responsibilities</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="stats-card d-inline-block">
+                        <h4 class="mb-0">{{ teacher.courses.count }}</h4>
+                        <small>Current Courses</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="auth-card">
+                    <div class="auth-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-book me-2"></i>Available Courses
+                            <span class="badge ms-2">{{ courses|length }} courses</span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <input type="text" id="courseSearch" class="form-control search-box" placeholder="Search courses..." style="max-width: 250px;">
+                            <button class="btn btn-secondary" onclick="clearSearch()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="auth-body">
+                        <div class="alert alert-info mb-4" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle fa-lg me-3" style="color: #0EC9C8;"></i>
+                                <div>
+                                    <h6 class="alert-heading mb-1" style="color: #0EC9C8;">Course Assignment</h6>
+                                    Select the courses you want to assign to this teacher. They will be able to manage content, create notes, and track progress for these courses.
+                                </div>
+                            </div>
+                        </div>
+
+                        <form method="post" id="assignmentForm">
+                            {% csrf_token %}
+                            <div class="row" id="courseContainer">
+                                {% for course in courses %}
+                                <div class="col-md-6 col-lg-4 mb-3 course-item">
+                                    <div class="course-card {% if course in teacher.courses.all %}selected{% endif %}">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="courses" value="{{ course.id }}" id="course_{{ course.id }}" {% if course in teacher.courses.all %}checked{% endif %}>
+                                            <label class="form-check-label w-100" for="course_{{ course.id }}">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-2">{{ course.title }}</h6>
+                                                        <p class="small mb-2">{{ course.description|truncatechars:100 }}</p>
+                                                        <div class="d-flex flex-wrap gap-1 mb-2">
+                                                            {% if course.category %}
+                                                                <span class="badge">
+                                                                    <i class="fas fa-tag me-1"></i>{{ course.category.name }}
+                                                                </span>
+                                                            {% endif %}
+                                                            {% if course.duration %}
+                                                                <span class="badge">
+                                                                    <i class="fas fa-clock me-1"></i>{{ course.duration }}
+                                                                </span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <small>
+                                                                <i class="fas fa-calendar me-1"></i>
+                                                                {{ course.created_at|date:"M d, Y" }}
+                                                            </small>
+                                                            {% if course in teacher.courses.all %}
+                                                                <span class="badge badge-success">
+                                                                    <i class="fas fa-check me-1"></i>Assigned
+                                                                </span>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <div class="col-12">
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-book fa-4x mb-4" style="color: #aaa;"></i>
+                                        <h4 class="mb-3" style="color: #aaa;">No Courses Available</h4>
+                                        <p class="mb-4" style="color: #aaa;">Create some courses first before assigning them to teachers.</p>
+                                        <a href="{% url 'add_course' %}" class="btn btn-primary">
+                                            <i class="fas fa-plus me-2"></i>Create New Course
+                                        </a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            {% if courses %}
+                            <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center mt-4 p-3 rounded-3" style="background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(14, 201, 200, 0.3);">
+                                <div class="mb-3 mb-md-0">
+                                    <h6 class="mb-1" style="color: #0EC9C8;">Selected Courses: <span id="selectedCount" style="color: #25F0E5;">{{ teacher.courses.count }}</span></h6>
+                                    <small id="selectionText" style="color: #aaa;">Choose courses to assign to this teacher</small>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'teacher_list' %}" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Teachers
+                                    </a>
+                                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                                        <i class="fas fa-save me-2"></i>
+                                        <span>Assign Courses</span>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="platform-info mt-4 pb-4">
+        <p class="mb-2">EduAI - AI-Powered Learning Platform</p>
+        <small>© 2025 EduAI. All rights reserved.</small>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Update selected courses count
+        function updateSelectedCount() {
+            const selectedCount = document.querySelectorAll('input[name="courses"]:checked').length;
+            document.getElementById('selectedCount').textContent = selectedCount;
+            
+            const selectionText = document.getElementById('selectionText');
+            if (selectedCount === 0) {
+                selectionText.textContent = 'No courses selected';
+            } else if (selectedCount === 1) {
+                selectionText.textContent = '1 course selected';
+            } else {
+                selectionText.textContent = `${selectedCount} courses selected`;
+            }
+        }
+
+        // Course search functionality
+        document.getElementById('courseSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const courseItems = document.querySelectorAll('.course-item');
+            
+            courseItems.forEach(item => {
+                const courseText = item.textContent.toLowerCase();
+                if (courseText.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        function clearSearch() {
+            document.getElementById('courseSearch').value = '';
+            const courseItems = document.querySelectorAll('.course-item');
+            courseItems.forEach(item => {
+                item.style.display = 'block';
+            });
+        }
+
+        // Add visual feedback when checkboxes are clicked
+        document.querySelectorAll('.form-check-input').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const courseCard = this.closest('.course-card');
+                if (this.checked) {
+                    courseCard.classList.add('selected');
+                } else {
+                    courseCard.classList.remove('selected');
+                }
+                updateSelectedCount();
+            });
+        });
+
+        // Form submission handling
+        document.getElementById('assignmentForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('span');
+            
+            btnText.textContent = 'Assigning...';
+            submitBtn.disabled = true;
+        });
+
+        // Initialize selected count on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateSelectedCount();
+        });
+    </script>
+</body>
+</html>

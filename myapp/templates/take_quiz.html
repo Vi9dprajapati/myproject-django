@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">{{ quiz.title }}</h2>
+    <p class="mb-3">{{ quiz.description }}</p>
+    <div class="alert alert-info">
+        <strong>Time Limit:</strong> {{ quiz.time_limit }} minutes | <strong>Total Questions:</strong> {{ questions|length }} | <strong>Marks per Question:</strong> {{ quiz.marks_per_question }}
+    </div>
+
+    <form id="quizForm" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="time_taken" name="time_taken" value="0">
+        {% for question in questions %}
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>Question {{ forloop.counter }}</strong>
+            </div>
+            <div class="card-body">
+                <h5>{{ question.text }}</h5>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="A" id="q{{ question.id }}a" required>
+                    <label class="form-check-label" for="q{{ question.id }}a">{{ question.option_a }}</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="B" id="q{{ question.id }}b">
+                    <label class="form-check-label" for="q{{ question.id }}b">{{ question.option_b }}</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="C" id="q{{ question.id }}c">
+                    <label class="form-check-label" for="q{{ question.id }}c">{{ question.option_c }}</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="D" id="q{{ question.id }}d">
+                    <label class="form-check-label" for="q{{ question.id }}d">{{ question.option_d }}</label>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-lg">Submit Quiz</button>
+    </form>
+
+    <!-- Timer Script -->
+    <script>
+        let timeLimit = {{ quiz.time_limit }} * 60; // in seconds
+        let timerElement = document.createElement('div');
+        timerElement.className = 'alert alert-warning mt-3';
+        timerElement.innerHTML = '<strong>Time Remaining: <span id="timer">00:00</span></strong>';
+        document.querySelector('.container').insertBefore(timerElement, document.getElementById('quizForm'));
+
+        let timer = setInterval(function() {
+            let minutes = Math.floor(timeLimit / 60);
+            let seconds = timeLimit % 60;
+            document.getElementById('timer').textContent = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+            timeLimit--;
+            document.getElementById('time_taken').value = {{ quiz.time_limit }} * 60 - timeLimit;
+            if (timeLimit < 0) {
+                clearInterval(timer);
+                alert('Time is up! Submitting quiz.');
+                document.getElementById('quizForm').submit();
+            }
+        }, 1000);
+    </script>
+</div>
+{% endblock %}

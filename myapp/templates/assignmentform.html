@@ -1,0 +1,383 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Assignment - EduAI{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --neon-green: #00ff88;
+        --dark-green: #077b32;
+        --light-green: #05a645;
+        --gradient-start: #0EC9C8;
+        --gradient-end: #25F0E5;
+    }
+    
+    body {
+        background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+       
+        background-size: cover;
+        min-height: 100vh;
+        color: white;
+    }
+
+    /* Cyberpunk Card */
+    .assignment-card {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 
+            0 0 25px rgba(14, 201, 200, 0.7),
+            0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .assignment-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 
+            0 0 30px rgba(37, 240, 229, 0.8),
+            0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Header */
+    .assignment-header {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+    }
+    
+    .assignment-header i {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        display: block;
+        color: white;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .assignment-header h2 {
+        font-weight: 500;
+        margin-bottom: 3px;
+        color: white;
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .assignment-header p {
+        opacity: 0.9;
+        margin-bottom: 0;
+        font-size: 0.9rem;
+    }
+    
+    .assignment-body {
+        padding: 20px;
+        background: rgba(10, 10, 10, 0.8);
+    }
+    
+    /* Form */
+    .form-control, .form-select, textarea.form-control {
+        border-radius: 8px;
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        padding: 8px 10px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+    }
+    
+    .form-control:focus, .form-select:focus, textarea.form-control:focus {
+        border-color: var(--gradient-end);
+        box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #0EC9C8;
+        margin-bottom: 3px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-label i {
+        margin-right: 8px;
+        width: 16px;
+        text-align: center;
+        color: #0EC9C8;
+    }
+    
+    /* Button */
+    .btn-primary {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        border-radius: 8px;
+        padding: 8px 15px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+        transform: translateY(-1px);
+        box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+    }
+    
+    /* Role Badge */
+    .role-badge {
+        display: inline-block;
+        background: rgba(37, 240, 229, 0.2);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        margin-top: 5px;
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        color: white;
+        background: linear-gradient(90deg, rgba(14, 201, 200, 0.3), rgba(37, 240, 229, 0.3));
+    }
+    
+    /* File Input Styling */
+    input[type="file"] {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        border-radius: 8px;
+        padding: 8px;
+        color: white;
+        width: 100%;
+    }
+    
+    input[type="file"]::file-selector-button {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        color: white;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    input[type="file"]::file-selector-button:hover {
+        background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+    }
+    
+    /* Textarea */
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .assignment-card {
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    /* Glow Animation */
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+        50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+    }
+    
+    .assignment-card {
+        animation: pulseGlow 3s infinite ease-in-out;
+    }
+    
+    /* Platform Info */
+    .platform-info {
+        color: white;
+        text-align: center;
+        margin-top: 20px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .platform-info p {
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #25F0E5;
+        font-size: 14px;
+    }
+    
+    .platform-info small {
+        opacity: 0.8;
+        font-size: 11px;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .assignment-body {
+            padding: 15px;
+        }
+        
+        .assignment-header h2 {
+            font-size: 1.3rem;
+        }
+        
+        .form-control, .form-select, textarea.form-control {
+            font-size: 16px;
+        }
+    }
+</style>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="assignment-card">
+                <!-- Header -->
+                <div class="assignment-header">
+                    <i class="fas fa-file-upload"></i>
+                    <h2>Add New Assignment</h2>
+                    <p>Upload assignment file and details</p>
+                    <div class="role-badge">
+                        Teacher Panel
+                    </div>
+                </div>
+                
+                <!-- Body -->
+                <div class="assignment-body">
+                    <!-- Messages -->
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} mb-4" 
+                                 style="background: rgba(0, 0, 0, 0.7); border-left: 3px solid; 
+                                        {% if message.tags == 'success' %}border-color: #25F0E5; color: #25F0E5;{% else %}border-color: #ff4444; color: #ff4444;{% endif %}">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+                                    <span>{{ message }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <!-- Assignment Form -->
+                    <form method="post" enctype="multipart/form-data" id="assignmentForm">
+                        {% csrf_token %}
+                        
+                        <!-- File Upload -->
+                        <div class="mb-3">
+                            <label for="{{ form.file.id_for_label }}" class="form-label">
+                                <i class="fas fa-file"></i>Assignment File
+                            </label>
+                            {{ form.file }}
+                            {% if form.file.errors %}
+                                <div class="text-danger mt-1" style="font-size: 0.85rem;">
+                                    {{ form.file.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                <i class="fas fa-align-left"></i>Description
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger mt-1" style="font-size: 0.85rem;">
+                                    {{ form.description.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Topic -->
+                        <div class="mb-4">
+                            <label for="{{ form.topic.id_for_label }}" class="form-label">
+                                <i class="fas fa-tag"></i>Topic
+                            </label>
+                            {{ form.topic }}
+                            {% if form.topic.errors %}
+                                <div class="text-danger mt-1" style="font-size: 0.85rem;">
+                                    {{ form.topic.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100" id="submitBtn">
+                            <i class="fas fa-plus-circle me-2"></i>Add Assignment
+                        </button>
+                    </form>
+                    
+                    <!-- Back Link -->
+                    <div class="mt-3 text-center">
+                        <a href="{% url 'dashboard' %}" class="auth-link" 
+                           style="color: #0EC9C8; text-decoration: none; font-weight: 500;">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Platform Info -->
+            <div class="platform-info mt-3">
+                <p class="mb-2">EduAI - AI-Powered Learning Platform</p>
+                <small>© 2025 EduAI. All rights reserved.</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('assignmentForm');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Style form inputs if they don't have proper classes
+        document.querySelectorAll('#assignmentForm input, #assignmentForm textarea, #assignmentForm select').forEach(element => {
+            if (!element.className.includes('form-control') && !element.className.includes('form-select')) {
+                element.classList.add('form-control');
+            }
+        });
+        
+        // File input styling
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) {
+            fileInput.style.background = 'rgba(0, 0, 0, 0.5)';
+            fileInput.style.border = '1px solid rgba(14, 201, 200, 0.5)';
+            fileInput.style.borderRadius = '8px';
+            fileInput.style.color = 'white';
+        }
+        
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            // Check required fields
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#ff4444';
+                    field.style.boxShadow = '0 0 8px #ff4444';
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Uploading...';
+            submitBtn.style.background = 'linear-gradient(90deg, #25F0E5, #0EC9C8)';
+        });
+        
+        // Clear validation on input
+        document.querySelectorAll('#assignmentForm input, #assignmentForm textarea, #assignmentForm select').forEach(field => {
+            field.addEventListener('input', function() {
+                this.style.borderColor = '';
+                this.style.boxShadow = '';
+            });
+        });
+    });
+</script>
+{% endblock %}

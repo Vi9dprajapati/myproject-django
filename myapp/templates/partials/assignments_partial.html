@@ -1,0 +1,17 @@
+<div>
+    <h2>Assignments</h2>
+    <div class="list-group">
+        {% for assignment in assignments %}
+        <div class="list-group-item">
+            <h5>{{ assignment.title }}</h5>
+            <p>{{ assignment.description }}</p>
+            <p><strong>Course:</strong> {{ assignment.course.title }}</p>
+            <p><strong>Due Date:</strong> {{ assignment.due_date|date:"M d, Y" }}</p>
+        </div>
+        {% empty %}
+        <div class="alert alert-info" role="alert">
+            No assignments available.
+        </div>
+        {% endfor %}
+    </div>
+</div>

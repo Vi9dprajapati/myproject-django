@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Set PIN{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-3">
+                <!-- Card Header -->
+                <div class="card-header bg-gradient-primary text-white text-center py-4 rounded-top-3">
+                    <div class="icon-container mb-3">
+                        <i class="fas fa-shield-alt fa-3x"></i>
+                    </div>
+                    <h2 class="card-title fw-bold mb-2">Secure Your Account</h2>
+                    <p class="mb-0 opacity-75">Set up your PIN and recovery password</p>
+                </div>
+                
+                <!-- Card Body -->
+                <div class="card-body p-4 p-md-5">
+                    <form method="post" id="pinSetupForm">
+                        {% csrf_token %}
+                        
+                        <!-- PIN Field -->
+                        <div class="form-group mb-4">
+                            <label for="{{ form.pin.id_for_label }}" class="form-label fw-semibold">
+                                <i class="fas fa-lock me-2 text-primary"></i>PIN Code
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-key text-primary"></i>
+                                </span>
+                                {{ form.pin }}
+                            </div>
+                            {% if form.pin.errors %}
+                                <div class="alert alert-danger mt-2 py-2 d-flex align-items-center" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <div>
+                                        {% for error in form.pin.errors %}
+                                            <small class="d-block">{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="form-text mt-1">
+                                <i class="fas fa-info-circle me-1 text-info"></i>
+                                Create a 4-digit PIN for quick access
+                            </div>
+                        </div>
+
+                        <!-- Confirm PIN Field -->
+                        <div class="form-group mb-4">
+                            <label for="{{ form.confirm_pin.id_for_label }}" class="form-label fw-semibold">
+                                <i class="fas fa-redo me-2 text-primary"></i>Confirm PIN
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-key text-primary"></i>
+                                </span>
+                                {{ form.confirm_pin }}
+                            </div>
+                            {% if form.confirm_pin.errors %}
+                                <div class="alert alert-danger mt-2 py-2 d-flex align-items-center" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <div>
+                                        {% for error in form.confirm_pin.errors %}
+                                            <small class="d-block">{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div id="pinMatchMessage" class="form-text mt-1"></div>
+                        </div>
+
+                        <!-- Recovery Password Field -->
+                        <div class="form-group mb-4">
+                            <label for="{{ form.recovery_password.id_for_label }}" class="form-label fw-semibold">
+                                <i class="fas fa-life-ring me-2 text-primary"></i>Recovery Password
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-unlock text-primary"></i>
+                                </span>
+                                {{ form.recovery_password }}
+                                <button class="btn btn-outline-secondary" type="button" id="toggleRecoveryPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            {% if form.recovery_password.errors %}
+                                <div class="alert alert-danger mt-2 py-2 d-flex align-items-center" role="alert">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <div>
+                                        {% for error in form.recovery_password.errors %}
+                                            <small class="d-block">{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="form-text mt-1">
+                                <i class="fas fa-lightbulb me-1 text-warning"></i>
+                                Choose a strong password you'll remember for account recovery
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold" id="setupBtn">
+                                <i class="fas fa-save me-2"></i>Set Up Security
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="card-footer bg-light text-center py-3 rounded-bottom-3">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1 text-success"></i>
+                        Your security information is encrypted and protected
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Security Tips Modal -->
+<div class="modal fade" id="securityTipsModal" tabindex="-1" aria-labelledby="securityTipsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="securityTipsModalLabel">
+                    <i class="fas fa-lightbulb me-2"></i>Security Tips
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex align-items-start mb-3">
+                    <i class="fas fa-lock text-success me-3 mt-1"></i>
+                    <div>
+                        <h6 class="fw-bold mb-1">PIN Security</h6>
+                        <p class="mb-0 text-muted">Avoid using obvious sequences like 1234 or repeated digits.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-3">
+                    <i class="fas fa-key text-warning me-3 mt-1"></i>
+                    <div>
+                        <h6 class="fw-bold mb-1">Recovery Password</h6>
+                        <p class="mb-0 text-muted">Use a strong, memorable password with mix of letters, numbers, and symbols.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start">
+                    <i class="fas fa-shield-alt text-info me-3 mt-1"></i>
+                    <div>
+                        <h6 class="fw-bold mb-1">Storage</h6>
+                        <p class="mb-0 text-muted">Never share your PIN or recovery password with anyone.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Got it!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .card {
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%) !important;
+    }
+    
+    .icon-container {
+        background: rgba(255, 255, 255, 0.2);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+    
+    .form-control {
+        border: 1px solid #dee2e6;
+        padding: 12px 15px;
+        border-radius: 0.375rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.15);
+    }
+    
+    .input-group-text {
+        border-right: none;
+        transition: all 0.3s;
+    }
+    
+    .input-group .form-control {
+        border-left: none;
+    }
+    
+    .input-group .form-control:focus {
+        border-left: none;
+        box-shadow: none;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(to right, #4e73df, #224abe);
+        border: none;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(to right, #224abe, #1e3a8a);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(78, 115, 223, 0.4);
+    }
+    
+    .alert-danger {
+        border-left: 4px solid #dc3545;
+        background-color: #f8d7da;
+    }
+    
+    .form-text {
+        font-size: 0.875rem;
+    }
+    
+    #setupBtn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none !important;
+    }
+    
+    .match-success {
+        color: #198754;
+    }
+    
+    .match-error {
+        color: #dc3545;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get form elements
+        const pinInput = document.getElementById('{{ form.pin.id_for_label }}');
+        const confirmPinInput = document.getElementById('{{ form.confirm_pin.id_for_label }}');
+        const recoveryPasswordInput = document.getElementById('{{ form.recovery_password.id_for_label }}');
+        const setupBtn = document.getElementById('setupBtn');
+        const pinForm = document.getElementById('pinSetupForm');
+        const pinMatchMessage = document.getElementById('pinMatchMessage');
+        const toggleRecoveryPasswordBtn = document.getElementById('toggleRecoveryPassword');
+        
+        // Add Bootstrap classes and placeholders to form inputs
+        const formInputs = [pinInput, confirmPinInput, recoveryPasswordInput];
+        formInputs.forEach(input => {
+            if (input && !input.classList.contains('form-control')) {
+                input.classList.add('form-control');
+            }
+            if (input && !input.getAttribute('placeholder')) {
+                if (input === pinInput || input === confirmPinInput) {
+                    input.setAttribute('placeholder', 'Enter 4-digit PIN');
+                } else if (input === recoveryPasswordInput) {
+                    input.setAttribute('placeholder', 'Enter recovery password');
+                }
+            }
+        });
+        
+        // PIN matching validation
+        if (pinInput && confirmPinInput) {
+            function validatePinMatch() {
+                if (pinInput.value && confirmPinInput.value) {
+                    if (pinInput.value === confirmPinInput.value) {
+                        pinMatchMessage.innerHTML = '<i class="fas fa-check-circle me-1 match-success"></i>PIN codes match';
+                        pinMatchMessage.className = 'form-text mt-1 match-success';
+                        confirmPinInput.classList.remove('is-invalid');
+                        confirmPinInput.classList.add('is-valid');
+                    } else {
+                        pinMatchMessage.innerHTML = '<i class="fas fa-times-circle me-1 match-error"></i>PIN codes do not match';
+                        pinMatchMessage.className = 'form-text mt-1 match-error';
+                        confirmPinInput.classList.remove('is-valid');
+                        confirmPinInput.classList.add('is-invalid');
+                    }
+                } else {
+                    pinMatchMessage.innerHTML = '';
+                    confirmPinInput.classList.remove('is-valid', 'is-invalid');
+                }
+            }
+            
+            pinInput.addEventListener('input', validatePinMatch);
+            confirmPinInput.addEventListener('input', validatePinMatch);
+        }
+        
+        // Toggle recovery password visibility
+        if (toggleRecoveryPasswordBtn && recoveryPasswordInput) {
+            toggleRecoveryPasswordBtn.addEventListener('click', function() {
+                const type = recoveryPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                recoveryPasswordInput.setAttribute('type', type);
+                this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+        }
+        
+        // Form submission handler
+        if (pinForm) {
+            pinForm.addEventListener('submit', function() {
+                setupBtn.disabled = true;
+                setupBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Setting Up...';
+            });
+        }
+        
+        // Input validation styling
+        formInputs.forEach(input => {
+            if (input) {
+                input.addEventListener('input', function() {
+                    if (this.value.length > 0) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                    }
+                });
+            }
+        });
+        
+        // Show security tips modal on page load (optional)
+        // Uncomment the line below if you want the modal to show automatically
+        // setTimeout(() => new bootstrap.Modal(document.getElementById('securityTipsModal')).show(), 1000);
+    });
+</script>
+{% endblock %}

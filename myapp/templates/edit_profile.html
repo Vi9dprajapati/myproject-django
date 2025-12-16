@@ -1,0 +1,743 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - EduAI{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --neon-green: #00ff88;
+        --dark-green: #077b32;
+        --light-green: #05a645;
+        --gradient-start: #0EC9C8;
+        --gradient-end: #25F0E5;
+    }
+    
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed
+        background-size: cover;
+        min-height: 100vh;
+        color: white;
+    }
+
+    .main-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 10px;
+    }
+
+    /* Cyberpunk Card */
+    .cyber-card {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 
+            0 0 25px rgba(14, 201, 200, 0.7),
+            0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    .cyber-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 0 25px rgba(37, 240, 229, 0.8),
+            0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Header */
+    .cyber-header {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+    }
+    
+    .cyber-header i {
+        font-size: 1.2rem;
+        margin-right: 8px;
+        color: white;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .cyber-header h3 {
+        font-weight: 500;
+        margin-bottom: 0;
+        color: white;
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        font-size: 1.2rem;
+    }
+    
+    .cyber-body {
+        padding: 15px;
+        background: rgba(10, 10, 10, 0.8);
+    }
+    
+    /* Form Controls - Smaller */
+    .form-control, .form-select {
+        border-radius: 6px;
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        padding: 6px 10px;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        height: 32px;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: var(--gradient-end);
+        box-shadow: 0 0 8px rgba(37, 240, 229, 0.7);
+        background: rgba(0, 0, 0, 0.7);
+        outline: none;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #0EC9C8;
+        margin-bottom: 4px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-label i {
+        margin-right: 6px;
+        width: 14px;
+        text-align: center;
+        color: #0EC9C8;
+        font-size: 11px;
+    }
+    
+    /* Buttons - Smaller */
+    .btn-primary {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 8px rgba(14, 201, 200, 0.5);
+        height: 32px;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+        transform: translateY(-1px);
+        box-shadow: 0 0 12px rgba(37, 240, 229, 0.7);
+    }
+    
+    .btn-outline-secondary {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        border-radius: 6px;
+        padding: 6px 12px;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        height: 32px;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(14, 201, 200, 0.8);
+        color: #0EC9C8;
+    }
+    
+    /* Profile Image - Smaller */
+    .profile-image-container {
+        transition: transform 0.3s ease;
+        display: inline-block;
+        position: relative;
+        margin-bottom: 8px;
+    }
+    
+    .profile-image-container:hover {
+        transform: scale(1.03);
+    }
+    
+    .profile-image, .profile-image-placeholder {
+        transition: all 0.3s ease;
+        border: 2px solid rgba(14, 201, 200, 0.3);
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+    
+    .profile-image:hover, .profile-image-placeholder:hover {
+        border-color: rgba(37, 240, 229, 0.8);
+        box-shadow: 0 0 10px rgba(37, 240, 229, 0.5);
+    }
+    
+    .profile-image-placeholder {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px dashed rgba(14, 201, 200, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    
+    .profile-image-placeholder i {
+        font-size: 1.5rem;
+        color: rgba(14, 201, 200, 0.5);
+    }
+    
+    .camera-btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 24px;
+        height: 24px;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 0 6px rgba(14, 201, 200, 0.5);
+        transition: all 0.3s ease;
+    }
+    
+    .camera-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 8px rgba(37, 240, 229, 0.7);
+    }
+    
+    .camera-btn i {
+        color: white;
+        font-size: 0.8rem;
+    }
+    
+    /* Section Headers */
+    .section-header {
+        border-bottom: 1px solid rgba(14, 201, 200, 0.5);
+        padding-bottom: 6px;
+        margin-bottom: 15px;
+        color: #0EC9C8;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-header i {
+        margin-right: 8px;
+        color: #0EC9C8;
+        font-size: 0.9rem;
+    }
+    
+    /* Alerts */
+    .alert {
+        border-radius: 6px;
+        border: none;
+        padding: 8px 12px;
+        background: rgba(0, 0, 0, 0.7);
+        border-left: 2px solid;
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+    
+    .alert-success {
+        border-color: var(--gradient-end);
+        color: #25F0E5;
+        background: rgba(37, 240, 229, 0.1);
+    }
+    
+    .alert-danger {
+        border-color: #ff4444;
+        color: #ff4444;
+        background: rgba(255, 68, 68, 0.1);
+    }
+    
+    .alert i {
+        margin-right: 8px;
+        font-size: 0.9rem;
+    }
+    
+    /* Invalid State */
+    .is-invalid {
+        border-color: #ff4444 !important;
+        box-shadow: 0 0 6px #ff4444 !important;
+    }
+    
+    /* Form Text */
+    .form-text {
+        color: #aaa;
+        font-size: 11px;
+        margin-top: 2px;
+        margin-left: 4px;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 20px rgba(14, 201, 200, 0.7); }
+        50% { box-shadow: 0 0 25px rgba(37, 240, 229, 0.8); }
+    }
+    
+    .cyber-card {
+        animation: pulseGlow 3s infinite ease-in-out;
+    }
+    
+    /* Form Row Spacing */
+    .row {
+        margin-bottom: 6px;
+    }
+    
+    .mb-3 {
+        margin-bottom: 10px !important;
+    }
+    
+    /* Compact spacing */
+    .col-md-6 {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+    
+    /* Platform Info */
+    .platform-info {
+        color: white;
+        text-align: center;
+        margin-top: 10px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .platform-info p {
+        margin-bottom: 3px;
+        font-weight: 500;
+        color: #25F0E5;
+        font-size: 12px;
+    }
+    
+    .platform-info small {
+        opacity: 0.8;
+        font-size: 10px;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .main-container {
+            padding: 8px;
+        }
+        
+        .cyber-header {
+            padding: 10px;
+        }
+        
+        .cyber-body {
+            padding: 12px;
+        }
+        
+        .profile-image, .profile-image-placeholder {
+            width: 70px;
+            height: 70px;
+        }
+        
+        .camera-btn {
+            width: 22px;
+            height: 22px;
+        }
+        
+        .btn-primary, .btn-outline-secondary {
+            padding: 5px 10px;
+            font-size: 12px;
+            height: 30px;
+        }
+        
+        .form-control, .form-select {
+            font-size: 13px;
+            height: 30px;
+            padding: 5px 8px;
+        }
+        
+        .form-label {
+            font-size: 11px;
+        }
+        
+        .section-header {
+            font-size: 0.85rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .main-container {
+            padding: 6px;
+        }
+        
+        .cyber-header h3 {
+            font-size: 1rem;
+        }
+        
+        .cyber-body {
+            padding: 10px;
+        }
+        
+        .profile-image, .profile-image-placeholder {
+            width: 60px;
+            height: 60px;
+        }
+        
+        .profile-image-placeholder i {
+            font-size: 1.2rem;
+        }
+        
+        .row {
+            margin-bottom: 4px;
+        }
+        
+        .mb-3 {
+            margin-bottom: 8px !important;
+        }
+        
+        .col-md-6 {
+            padding-left: 4px;
+            padding-right: 4px;
+        }
+        
+        .btn-primary, .btn-outline-secondary {
+            padding: 4px 8px;
+            font-size: 11px;
+            height: 28px;
+        }
+        
+        .camera-btn {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .camera-btn i {
+            font-size: 0.7rem;
+        }
+    }
+    
+    /* Touch device optimizations */
+    @media (hover: none) and (pointer: coarse) {
+        .cyber-card:hover {
+            transform: none;
+        }
+        
+        .btn:hover {
+            transform: none;
+        }
+        
+        /* Larger touch targets */
+        .form-control,
+        .form-select,
+        .btn {
+            min-height: 36px;
+        }
+        
+        .btn-sm {
+            min-height: 32px;
+        }
+    }
+</style>
+
+<div class="main-container mt-3">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Cyberpunk Card Container -->
+            <div class="cyber-card">
+                <!-- Header -->
+                <div class="cyber-header">
+                    <h3><i class="fas fa-user-edit"></i>Edit Profile</h3>
+                </div>
+                
+                <!-- Body -->
+                <div class="cyber-body">
+                    <form method="post" action="{% url 'edit_profile' %}" enctype="multipart/form-data" id="profileForm">
+                        {% csrf_token %}
+                        
+                        <!-- Profile Image Section -->
+                        <div class="text-center mb-3">
+                            <div class="profile-image-container">
+                                {% if profile.image %}
+                                    <img src="{{ profile.image.url }}" alt="Current Profile Image" 
+                                         class="rounded-circle profile-image" 
+                                         id="profileImagePreview">
+                                {% else %}
+                                    <div class="rounded-circle profile-image-placeholder" 
+                                         id="profileImagePreview">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                                <label for="image" class="camera-btn">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                            </div>
+                            <input type="file" class="d-none" id="image" name="image" accept="image/*" onchange="previewImage(this)">
+                            <div class="mt-1">
+                                <small class="form-text">Click camera to upload profile image</small>
+                            </div>
+                        </div>
+
+                        <!-- Basic Information -->
+                        <h5 class="section-header">
+                            <i class="fas fa-id-card"></i>Basic Information
+                        </h5>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="username" class="form-label">
+                                    <i class="fas fa-user"></i>Username
+                                </label>
+                                <input type="text" class="form-control" id="username" name="username" 
+                                       value="{{ request.user.username }}" required>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i>Email
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       value="{{ request.user.email }}" required>
+                            </div>
+                        </div>
+
+                        <!-- User Type Specific Fields -->
+                        {% if user_type == 'student' %}
+                            <h5 class="section-header">
+                                <i class="fas fa-graduation-cap"></i>Student Info
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="name" class="form-label">
+                                        <i class="fas fa-user"></i>Full Name
+                                    </label>
+                                    <input type="text" class="form-control" id="name" name="name"
+                                           value="{{ request.user.first_name|default:'' }}" placeholder="Full name">
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="phone" class="form-label">
+                                        <i class="fas fa-phone"></i>Phone
+                                    </label>
+                                    <input type="text" class="form-control" id="phone" name="phone"
+                                           value="{{ profile.phone|default:'' }}" placeholder="Phone number">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="department" class="form-label">
+                                        <i class="fas fa-building"></i>Department
+                                    </label>
+                                    <input type="text" class="form-control" id="department" name="department"
+                                           value="{{ profile.department|default:'' }}" placeholder="Department">
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="semester" class="form-label">
+                                        <i class="fas fa-calendar-alt"></i>Semester
+                                    </label>
+                                    <select class="form-select" id="semester" name="semester">
+                                        <option value="">Select Semester</option>
+                                        {% for i in "12345678" %}
+                                            <option value="{{ i }}" {% if profile.semester == i %}selected{% endif %}>
+                                                Sem {{ i }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="pass_out_year" class="form-label">
+                                        <i class="fas fa-graduation-cap"></i>Pass Out Year
+                                    </label>
+                                    <input type="number" class="form-control" id="pass_out_year" name="pass_out_year" 
+                                           value="{{ profile.pass_out_year|default:'' }}" 
+                                           placeholder="e.g., 2025" min="2000" max="2030">
+                                </div>
+                            </div>
+
+                        {% elif user_type == 'teacher' %}
+                            <h5 class="section-header">
+                                <i class="fas fa-chalkboard-teacher"></i>Teacher Info
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="name" class="form-label">
+                                        <i class="fas fa-user-tie"></i>Full Name
+                                    </label>
+                                    <input type="text" class="form-control" id="name" name="name" 
+                                           value="{{ profile.name|default:'' }}" placeholder="Full name">
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="phone" class="form-label">
+                                        <i class="fas fa-phone"></i>Phone
+                                    </label>
+                                    <input type="text" class="form-control" id="phone" name="phone" 
+                                           value="{{ profile.phone|default:'' }}" placeholder="Phone number">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label for="department" class="form-label">
+                                        <i class="fas fa-building"></i>Department
+                                    </label>
+                                    <input type="text" class="form-control" id="department" name="department" 
+                                           value="{{ profile.department|default:'' }}" placeholder="Department">
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label for="unique_id" class="form-label">
+                                        <i class="fas fa-id-card"></i>Unique ID
+                                    </label>
+                                    <input type="text" class="form-control" id="unique_id" name="unique_id" 
+                                           value="{{ profile.unique_id|default:'' }}" placeholder="Unique ID">
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Form Actions -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <div class="d-flex gap-2">
+                                    <a href="{% if user_type == 'student' %}{% url 'student_dashboard' %}{% elif user_type == 'teacher' %}{% url 'teacher_dashboard' %}{% else %}{% url 'admin_dashboard' %}{% endif %}" 
+                                       class="btn btn-outline-secondary flex-grow-1">
+                                        <i class="fas fa-arrow-left me-1"></i>Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary flex-grow-1">
+                                        <i class="fas fa-save me-1"></i>Update
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                <div class="mt-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %}"></i>
+                            <span class="ms-2">{{ message }}</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Platform Info -->
+            <div class="platform-info mt-3">
+                <p class="mb-2">EduAI - AI-Powered Learning Platform</p>
+                <small>© 2025 EduAI. All rights reserved.</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage(input) {
+        const preview = document.getElementById('profileImagePreview');
+        const placeholder = document.querySelector('.profile-image-placeholder');
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // Replace placeholder with image
+                if (placeholder) {
+                    placeholder.style.display = 'none';
+                }
+                
+                // Create or update image element
+                if (preview.tagName === 'IMG') {
+                    preview.src = e.target.result;
+                } else {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = "Profile Image Preview";
+                    img.className = "rounded-circle profile-image";
+                    img.style.width = "80px";
+                    img.style.height = "80px";
+                    img.style.objectFit = "cover";
+                    img.id = "profileImagePreview";
+                    
+                    preview.parentNode.replaceChild(img, preview);
+                }
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    // Form validation
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+        let isValid = true;
+        const inputs = this.querySelectorAll('input[required]');
+        
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                isValid = false;
+                input.classList.add('is-invalid');
+            } else {
+                input.classList.remove('is-invalid');
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            // Show error message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger alert-dismissible fade show mt-2';
+            alertDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                <span class="ms-2">Please fill in all required fields.</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            this.parentNode.insertBefore(alertDiv, this.nextSibling);
+        }
+    });
+    
+    // Real-time validation
+    document.querySelectorAll('input[required]').forEach(input => {
+        input.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+    
+    // Phone number formatting
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) {
+                value = value.substring(0, 10);
+            }
+            
+            // Simple formatting
+            if (value.length > 6) {
+                value = `${value.substring(0, 3)} ${value.substring(3, 6)} ${value.substring(6)}`;
+            } else if (value.length > 3) {
+                value = `${value.substring(0, 3)} ${value.substring(3)}`;
+            }
+            
+            e.target.value = value;
+        });
+    }
+    
+    // Auto-focus on first field
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstInput = document.querySelector('input[required]');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,776 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz - EduAI Platform</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --dark-green: #077b32;
+            --light-green: #05a645;
+            --gradient-start: #0EC9C8;
+            --gradient-end: #25F0E5;
+            --dark-bg: rgba(0, 0, 0, 0.7);
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+            
+            background-size: cover;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+            color: white;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--dark-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 30px rgba(37, 240, 229, 0.8),
+                0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            color: #25F0E5;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+            border-bottom: 2px solid rgba(14, 201, 200, 0.5);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #0EC9C8;
+            margin: 20px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0EC9C8;
+            font-size: 14px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--gradient-end);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-input-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px dashed rgba(14, 201, 200, 0.5);
+            border-radius: 8px;
+            color: #0EC9C8;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-input-button:hover {
+            background-color: rgba(14, 201, 200, 0.1);
+            border-color: var(--gradient-end);
+            color: #25F0E5;
+        }
+
+        .button {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        }
+
+        .button:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button:disabled {
+            background: rgba(108, 117, 125, 0.5);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .button-success {
+            background: linear-gradient(90deg, #00b894, #00cec9);
+        }
+
+        .button-success:hover {
+            background: linear-gradient(90deg, #00cec9, #00b894);
+        }
+
+        .question-box {
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.8);
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid var(--gradient-start);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .progress-container {
+            margin: 20px 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        }
+
+        .question-counter {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: #0EC9C8;
+            font-size: 14px;
+        }
+
+        .option-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: flex-start;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .option-file {
+            width: 120px;
+        }
+
+        .quiz-settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .quiz-settings-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .option-row {
+                flex-direction: column;
+            }
+            
+            .option-file {
+                width: 100%;
+            }
+        }
+
+        .success-message {
+            background-color: rgba(37, 240, 229, 0.1);
+            color: #25F0E5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            display: none;
+            border: 1px solid rgba(37, 240, 229, 0.3);
+        }
+
+        .quiz-preview {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: rgba(10, 10, 10, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+
+        .quiz-preview h3 {
+            margin-top: 0;
+            color: #25F0E5;
+        }
+
+        .preview-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(14, 201, 200, 0.2);
+        }
+
+        .preview-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .preview-label {
+            font-weight: 600;
+            color: #0EC9C8;
+            font-size: 14px;
+        }
+
+        .preview-value {
+            margin-top: 5px;
+            color: white;
+        }
+
+        .questions-list {
+            margin-top: 15px;
+        }
+
+        .question-preview {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #0EC9C8;
+        }
+
+        .options-list {
+            margin-left: 15px;
+        }
+
+        .option-preview {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+        }
+
+        .correct-option {
+            color: #00ff88;
+            font-weight: 600;
+        }
+
+        .correct-indicator {
+            color: #00ff88;
+            font-size: 14px;
+        }
+
+        /* Navigation Links */
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: #0EC9C8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+
+        .nav-link:hover {
+            color: #25F0E5;
+            background: rgba(14, 201, 200, 0.1);
+            text-decoration: none;
+            transform: translateY(-1px);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Glow Animation */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+        }
+
+        .container {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+
+        /* Platform Info */
+        .platform-info {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .platform-info p {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #25F0E5;
+            font-size: 14px;
+        }
+
+        .platform-info small {
+            opacity: 0.8;
+            font-size: 11px;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--gradient-end), var(--gradient-start));
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav-links">
+    <a href="{% url 'teacher_dashboard' %}" class="nav-link">
+        <i class="fas fa-home"></i> Dashboard
+    </a>
+    <a href="{% url 'all_quiz' %}" class="nav-link">
+        <i class="fas fa-list"></i> Quiz List
+    </a>
+</div>
+
+<form id="quizForm" method="post" action="{% url 'add_quiz' %}">
+    {% csrf_token %}
+    <div class="container">
+        <h2><i class="fas fa-plus-circle"></i> Create New Quiz</h2>
+
+        <!-- Quiz Settings -->
+        <div class="form-group">
+            <label for="quizTitle"><i class="fas fa-heading"></i> Quiz Title</label>
+            <input type="text" id="quizTitle" name="title" placeholder="Enter quiz name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="quizDescription"><i class="fas fa-align-left"></i> Description</label>
+            <textarea id="quizDescription" name="description" placeholder="Quiz rules/instructions" rows="3" required></textarea>
+        </div>
+
+        <div class="quiz-settings-grid">
+            <div class="form-group">
+                <label for="totalMarks"><i class="fas fa-star"></i> Marks per Question</label>
+                <input type="number" id="totalMarks" name="total_marks" placeholder="Enter marks per question" required>
+            </div>
+
+            <div class="form-group">
+                <label for="quizTimer"><i class="fas fa-clock"></i> Quiz Timer (minutes)</label>
+                <input type="number" id="quizTimer" name="time_limit" placeholder="Enter time e.g 30" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="course"><i class="fas fa-book"></i> Course</label>
+            <select id="course" name="course" required>
+                <option disabled selected>Select a course</option>
+                {% for course in courses %}
+                <option value="{{ course.id }}">{{ course.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="totalQuestions"><i class="fas fa-question-circle"></i> How many questions?</label>
+            <input id="totalQuestions" type="number" min="1" placeholder="Enter total questions (e.g 10)" required>
+        </div>
+
+        <input type="hidden" id="questions" name="questions">
+
+    <div id="addQuestionWrapper" class="hidden">
+        <h3><i class="fas fa-plus"></i> Add Questions</h3>
+        
+        <div class="question-counter">
+            <span id="qCountText">Added: 0/0</span>
+            <span id="progressPercent">0%</span>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div id="questionForm" class="question-box">
+            <div class="form-group">
+                <label for="qText"><i class="fas fa-question"></i> Question Text</label>
+                <textarea id="qText" placeholder="Enter question" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-image"></i> Upload Question Image (optional)</label>
+                <div class="file-input-wrapper">
+                    <div class="file-input-button">
+                        <span><i class="fas fa-folder"></i> Choose File</span>
+                    </div>
+                    <input type="file" id="questionImage" accept="image/*">
+                </div>
+            </div>
+
+            <div class="option-row">
+                <div class="option-text">
+                    <label for="optA"><i class="fas fa-circle"></i> Option A</label>
+                    <input id="optA" type="text" placeholder="Option A text">
+                </div>
+                <div class="option-file">
+                    <label><i class="fas fa-image"></i> Image</label>
+                    <div class="file-input-wrapper">
+                        <div class="file-input-button">
+                            <span><i class="fas fa-folder"></i></span>
+                        </div>
+                        <input type="file" accept="image/*">
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-row">
+                <div class="option-text">
+                    <label for="optB"><i class="fas fa-circle"></i> Option B</label>
+                    <input id="optB" type="text" placeholder="Option B text">
+                </div>
+                <div class="option-file">
+                    <label><i class="fas fa-image"></i> Image</label>
+                    <div class="file-input-wrapper">
+                        <div class="file-input-button">
+                            <span><i class="fas fa-folder"></i></span>
+                        </div>
+                        <input type="file" accept="image/*">
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-row">
+                <div class="option-text">
+                    <label for="optC"><i class="fas fa-circle"></i> Option C</label>
+                    <input id="optC" type="text" placeholder="Option C text">
+                </div>
+                <div class="option-file">
+                    <label><i class="fas fa-image"></i> Image</label>
+                    <div class="file-input-wrapper">
+                        <div class="file-input-button">
+                            <span><i class="fas fa-folder"></i></span>
+                        </div>
+                        <input type="file" accept="image/*">
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-row">
+                <div class="option-text">
+                    <label for="optD"><i class="fas fa-circle"></i> Option D</label>
+                    <input id="optD" type="text" placeholder="Option D text">
+                </div>
+                <div class="option-file">
+                    <label><i class="fas fa-image"></i> Image</label>
+                    <div class="file-input-wrapper">
+                        <div class="file-input-button">
+                            <span><i class="fas fa-folder"></i></span>
+                        </div>
+                        <input type="file" accept="image/*">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="correctOpt"><i class="fas fa-check-circle"></i> Correct Answer</label>
+                <select id="correctOpt">
+                    <option disabled selected>Choose correct option</option>
+                    <option value="A">Option A</option>
+                    <option value="B">Option B</option>
+                    <option value="C">Option C</option>
+                    <option value="D">Option D</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="button" id="saveQ" class="button"><i class="fas fa-check"></i> Save Question</button>
+        <button type="submit" id="submitQuiz" class="button button-success" disabled><i class="fas fa-paper-plane"></i> Submit Quiz</button>
+
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i> Quiz Submitted Successfully
+        </div>
+    </div>
+
+    <div id="quizPreview" class="quiz-preview hidden">
+        <h3><i class="fas fa-eye"></i> Quiz Preview</h3>
+        <div class="preview-item">
+            <div class="preview-label">Quiz Title</div>
+            <div class="preview-value" id="previewTitle"></div>
+        </div>
+        <div class="preview-item">
+            <div class="preview-label">Description</div>
+            <div class="preview-value" id="previewDescription"></div>
+        </div>
+        <div class="preview-item">
+            <div class="preview-label">Marks per Question</div>
+            <div class="preview-value" id="previewMarks"></div>
+        </div>
+        <div class="preview-item">
+            <div class="preview-label">Time Limit</div>
+            <div class="preview-value" id="previewTime"></div>
+        </div>
+        <div class="preview-item">
+            <div class="preview-label">Course</div>
+            <div class="preview-value" id="previewCourse"></div>
+        </div>
+        <div class="questions-list" id="questionsPreview"></div>
+    </div>
+    
+    <!-- Platform Info -->
+    <div class="platform-info">
+        <p class="mb-2">EduAI - AI-Powered Learning Platform</p>
+        <small>© 2025 EduAI. All rights reserved.</small>
+    </div>
+</form>
+
+<script>
+let total = 0, added = 0;
+let questions = [];
+
+// When admin enters question count
+document.getElementById("totalQuestions").addEventListener("change", function(){
+    total = parseInt(this.value);
+    if(total > 0){
+        document.getElementById("addQuestionWrapper").classList.remove("hidden");
+        updateProgress();
+    }
+});
+
+// Save one question
+document.getElementById("saveQ").addEventListener("click", function(){
+    const qText = document.getElementById("qText").value;
+    const optA = document.getElementById("optA").value;
+    const optB = document.getElementById("optB").value;
+    const optC = document.getElementById("optC").value;
+    const optD = document.getElementById("optD").value;
+    const correctOpt = document.getElementById("correctOpt").value;
+
+    if(!qText || !optA || !optB || !optC || !optD || !correctOpt) {
+        alert("Please fill all question fields before saving.");
+        return;
+    }
+
+    if(added < total){
+        added++;
+
+        // Save question data
+        questions.push({
+            text: qText,
+            options: {
+                A: optA,
+                B: optB,
+                C: optC,
+                D: optD
+            },
+            correct: correctOpt
+        });
+
+        // Set the hidden input with JSON data
+        document.getElementById("questions").value = JSON.stringify(questions);
+
+        updateProgress();
+        updateQuizPreview();
+
+        // Clear inputs for next question
+        document.getElementById("qText").value = "";
+        document.getElementById("optA").value = "";
+        document.getElementById("optB").value = "";
+        document.getElementById("optC").value = "";
+        document.getElementById("optD").value = "";
+        document.getElementById("correctOpt").value = "";
+
+        if(added === total){
+            document.getElementById("saveQ").disabled = true;
+            document.getElementById("submitQuiz").disabled = false;
+        }
+    }
+});
+
+
+// Update progress bar and counter
+function updateProgress() {
+    const progressPercent = total > 0 ? Math.round((added / total) * 100) : 0;
+    
+    document.getElementById("qCountText").textContent = `Added: ${added}/${total}`;
+    document.getElementById("progressPercent").textContent = `${progressPercent}%`;
+    document.getElementById("progressBar").style.width = `${progressPercent}%`;
+}
+
+// Update quiz preview
+function updateQuizPreview() {
+    document.getElementById("quizPreview").classList.remove("hidden");
+    
+    // Update basic info
+    document.getElementById("previewTitle").textContent = document.getElementById("quizTitle").value || "Not set";
+    document.getElementById("previewDescription").textContent = document.getElementById("quizDescription").value || "Not set";
+    document.getElementById("previewMarks").textContent = document.getElementById("totalMarks").value || "Not set";
+    document.getElementById("previewTime").textContent = document.getElementById("quizTimer").value ? 
+        document.getElementById("quizTimer").value + " minutes" : "Not set";
+    document.getElementById("previewCourse").textContent = document.getElementById("course").options[document.getElementById("course").selectedIndex].text || "Not set";
+    
+    // Update questions preview
+    const questionsPreview = document.getElementById("questionsPreview");
+    questionsPreview.innerHTML = "";
+    
+    questions.forEach((question, index) => {
+        const questionElement = document.createElement("div");
+        questionElement.className = "question-preview";
+        
+        let optionsHtml = "";
+        for (const [key, value] of Object.entries(question.options)) {
+            const isCorrect = key === question.correct;
+            optionsHtml += `
+                <div class="option-preview">
+                    <span>${key}: ${value}</span>
+                    ${isCorrect ? '<span class="correct-indicator"><i class="fas fa-check"></i></span>' : ''}
+                </div>
+            `;
+        }
+        
+        questionElement.innerHTML = `
+            <div class="question-text">${index + 1}. ${question.text}</div>
+            <div class="options-list">
+                ${optionsHtml}
+            </div>
+        `;
+        
+        questionsPreview.appendChild(questionElement);
+    });
+}
+
+// Form submission handler
+document.getElementById("quizForm").addEventListener("submit", function(e) {
+    if(added < total) {
+        e.preventDefault();
+        alert(`Please add all ${total} questions before submitting.`);
+        return;
+    }
+    
+    // Show success message
+    const successMessage = document.getElementById("successMessage");
+    successMessage.style.display = 'block';
+    
+    // Optional: Add a slight delay before form submission
+    setTimeout(() => {
+        successMessage.style.display = 'none';
+    }, 3000);
+});
+</script>
+
+</body>
+</html>

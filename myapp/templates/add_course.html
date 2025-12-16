@@ -1,0 +1,621 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+    :root {
+        --neon-green: #00ff88;
+        --dark-green: #077b32;
+        --light-green: #05a645;
+        --gradient-start: #0EC9C8;
+        --gradient-end: #25F0E5;
+    }
+    
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+        
+        background-size: cover;
+        min-height: 100vh;
+        padding: 20px;
+        color: white;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    /* Cyberpunk Card */
+    .auth-card {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 
+            0 0 25px rgba(14, 201, 200, 0.7),
+            0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        margin-bottom: 20px;
+    }
+    
+    .auth-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 
+            0 0 30px rgba(37, 240, 229, 0.8),
+            0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Header */
+    .auth-header {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+    }
+    
+    .auth-header i {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        display: block;
+        color: white;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .auth-header h2 {
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: white;
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        font-size: 1.8rem;
+    }
+    
+    .auth-header p {
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+    
+    .auth-body {
+        padding: 25px;
+        background: rgba(10, 10, 10, 0.8);
+    }
+    
+    /* Form */
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        padding: 10px 12px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+    }
+    
+    .form-control:focus {
+        border-color: var(--gradient-end);
+        box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+        background: rgba(0, 0, 0, 0.7);
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #0EC9C8;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+    }
+    
+    .form-label i {
+        margin-right: 8px;
+        width: 18px;
+        text-align: center;
+        color: #0EC9C8;
+    }
+    
+    /* Button */
+    .btn-primary {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+    }
+    
+    /* Role Badge */
+    .role-badge {
+        display: inline-block;
+        background: rgba(37, 240, 229, 0.2);
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-top: 8px;
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        color: white;
+        background: linear-gradient(90deg, rgba(14, 201, 200, 0.3), rgba(37, 240, 229, 0.3));
+    }
+    
+    /* Platform Info */
+    .platform-info {
+        color: white;
+        text-align: center;
+        margin-top: 5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .platform-info p {
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #25F0E5;
+        font-size: 14px;
+    }
+    
+    .platform-info small {
+        opacity: 0.8;
+        font-size: 12px;
+    }
+    
+    /* Form Text */
+    .form-text {
+        color: #aaa;
+        font-size: 13px;
+        margin-top: 6px;
+        margin-left: 5px;
+    }
+    
+    /* Invalid State */
+    .is-invalid {
+        border-color: #ff4444 !important;
+        box-shadow: 0 0 8px #ff4444 !important;
+    }
+    
+    /* Input Group */
+    .input-group {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .input-group-text {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        color: #0EC9C8;
+        border-right: none;
+    }
+    
+    .input-group .form-control {
+        border-left: none;
+    }
+    
+    /* Select Styling */
+    .form-select {
+        border-radius: 8px;
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        padding: 10px 12px;
+        font-size: 15px;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        cursor: pointer;
+    }
+    
+    .form-select:focus {
+        border-color: var(--gradient-end);
+        box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+        background: rgba(0, 0, 0, 0.7);
+    }
+    
+    /* Textarea */
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    /* File Upload */
+    .border-dashed {
+        border: 2px dashed rgba(14, 201, 200, 0.5) !important;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.3);
+    }
+    
+    .border-dashed:hover {
+        border-color: #25F0E5 !important;
+        background: rgba(37, 240, 229, 0.1);
+    }
+    
+    /* File Upload Button */
+    .btn-outline-primary {
+        border: 2px solid rgba(14, 201, 200, 0.5);
+        color: #0EC9C8;
+        background: rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline-primary:hover {
+        border-color: #25F0E5;
+        color: #25F0E5;
+        background: rgba(37, 240, 229, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    /* Mobile */
+    @media (max-width: 768px) {
+        .container {
+            max-width: 100%;
+            padding: 0 15px;
+        }
+        
+        .auth-header {
+            padding: 15px;
+        }
+        
+        .auth-header h2 {
+            font-size: 1.4rem;
+        }
+        
+        .auth-body {
+            padding: 20px 15px;
+        }
+        
+        .form-control, .form-select {
+            font-size: 16px;
+        }
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .auth-card {
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    /* Glow Animation */
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+        50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+    }
+    
+    .auth-card {
+        animation: pulseGlow 3s infinite ease-in-out;
+    }
+    
+    /* Custom Card for New Category */
+    .card.border-primary {
+        border: 1px solid rgba(14, 201, 200, 0.5) !important;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.3);
+    }
+    
+    .card-header.bg-light {
+        background: rgba(14, 201, 200, 0.1) !important;
+        border-bottom: 1px solid rgba(14, 201, 200, 0.3);
+        color: #0EC9C8;
+    }
+    
+    /* Success Button */
+    .btn-success {
+        background: linear-gradient(90deg, #00cc66, #00ff88);
+        border: none;
+        border-radius: 8px;
+        color: white;
+        box-shadow: 0 0 10px rgba(0, 204, 102, 0.5);
+    }
+    
+    .btn-success:hover {
+        background: linear-gradient(90deg, #00ff88, #00cc66);
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.7);
+    }
+    
+    /* Drag and drop area */
+    .card-body.text-center {
+        padding: 30px 20px;
+    }
+    
+    .fa-cloud-upload-alt {
+        color: #0EC9C8;
+        opacity: 0.8;
+    }
+    
+    /* Number input spinner */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        opacity: 1;
+        background: rgba(14, 201, 200, 0.3);
+        border-radius: 4px;
+    }
+    
+    /* Option styling for select */
+    option {
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+    }
+    
+    /* Add New Category option */
+    option.fw-bold.text-primary {
+        color: #0EC9C8 !important;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container">
+    <div class="auth-card">
+        <!-- Header -->
+        <div class="auth-header">
+            <i class="fas fa-book-open"></i>
+            <h2>Create New Course</h2>
+            <p>Fill in the details to add a new course to your catalog</p>
+            <div class="role-badge">
+                <i class="fas fa-graduation-cap me-1"></i>Course Management
+            </div>
+        </div>
+        
+        <div class="auth-body">
+            <form method="post" action="{% url 'add_course' %}" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+                
+                <!-- Course Name -->
+                <div class="mb-4">
+                    <label for="course_name" class="form-label">
+                        <i class="fas fa-heading"></i>Course Name
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-book"></i>
+                        </span>
+                        <input type="text" class="form-control" id="course_name" name="course_name" 
+                               placeholder="Enter course name" required>
+                    </div>
+                    <div class="form-text">Choose a descriptive and engaging title</div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-4">
+                    <label for="description" class="form-label">
+                        <i class="fas fa-align-left"></i>Description
+                    </label>
+                    <textarea class="form-control" id="description" name="description" 
+                              rows="4" placeholder="Describe what students will learn in this course..." required></textarea>
+                    <div class="form-text">Provide a comprehensive overview of the course content</div>
+                </div>
+
+                <!-- Category -->
+                <div class="mb-4">
+                    <label for="category" class="form-label">
+                        <i class="fas fa-tags"></i>Category
+                    </label>
+                    <select class="form-select" id="category" name="category" required onchange="toggleAddNew()">
+                        <option value="" selected disabled>Select a category</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                        {% endfor %}
+                        <option value="add_new" class="fw-bold" style="color: #0EC9C8;">+ Add New Category</option>
+                    </select>
+                </div>
+
+                <!-- Add New Category -->
+                <div class="mb-4" id="addNewCategoryDiv" style="display:none;">
+                    <div class="card border-primary">
+                        <div class="card-header py-2">
+                            <label for="new_category" class="form-label mb-0">
+                                <i class="fas fa-plus-circle me-2"></i>Create New Category
+                            </label>
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="new_category" name="new_category" 
+                                       placeholder="Enter new category name">
+                                <button type="button" class="btn btn-success px-4" onclick="addCategory()">
+                                    <i class="fas fa-check me-2"></i>Add
+                                </button>
+                            </div>
+                            <div class="form-text text-muted mt-2">This will create a new category and refresh the page</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Duration -->
+                <div class="mb-4">
+                    <label for="duration" class="form-label">
+                        <i class="fas fa-clock"></i>Duration (in weeks)
+                    </label>
+                    <div class="input-group" style="max-width: 200px;">
+                        <span class="input-group-text">
+                            <i class="fas fa-calendar-alt"></i>
+                        </span>
+                        <input type="number" class="form-control" id="duration" name="duration" 
+                               placeholder="e.g., 6" min="1" max="52" required>
+                        <span class="input-group-text">weeks</span>
+                    </div>
+                </div>
+
+                <!-- File Upload -->
+                <div class="mb-4">
+                    <label for="course_file" class="form-label">
+                        <i class="fas fa-file-upload"></i>Upload Course File
+                    </label>
+                    <div class="card border-dashed">
+                        <div class="card-body text-center py-4">
+                            <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                            <h5 class="mb-3" style="color: #aaa;">Drag & drop or click to upload</h5>
+                            <input type="file" class="form-control d-none" id="course_file" name="course_file" 
+                                   accept=".pdf,.docx,.pptx,.jpg,.png,.jpeg" required onchange="updateFileName()">
+                            <label for="course_file" class="btn btn-outline-primary px-4 py-2">
+                                <i class="fas fa-folder-open me-2"></i>Browse Files
+                            </label>
+                            <div id="file-name" class="text-muted mt-2 small">No file chosen</div>
+                        </div>
+                    </div>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Accepted formats: PDF, DOCX, PPTX, JPG, PNG (Max: 10MB)
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary py-3 fw-bold">
+                        <i class="fas fa-plus-circle me-2"></i>Create Course
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Platform Info -->
+    <div class="platform-info mt-3">
+        <p class="mb-2">EduAI - AI-Powered Learning Platform</p>
+        <small>© 2025 EduAI. All rights reserved.</small>
+    </div>
+</div>
+
+<script>
+    function toggleAddNew() {
+        const categorySelect = document.getElementById("category");
+        const addNewDiv = document.getElementById("addNewCategoryDiv");
+
+        if (categorySelect.value === "add_new") {
+            addNewDiv.style.display = "block";
+            document.getElementById("new_category").required = true;
+            // Add smooth animation
+            addNewDiv.style.opacity = "0";
+            addNewDiv.style.transform = "translateY(-10px)";
+            setTimeout(() => {
+                addNewDiv.style.opacity = "1";
+                addNewDiv.style.transform = "translateY(0)";
+                addNewDiv.style.transition = "all 0.3s ease";
+            }, 10);
+        } else {
+            addNewDiv.style.display = "none";
+            document.getElementById("new_category").required = false;
+        }
+    }
+
+    function addCategory() {
+        const newCategoryName = document.getElementById("new_category").value;
+        if (newCategoryName.trim() === "") {
+            showToast("Please enter a category name.", "warning");
+            return;
+        }
+
+        // Show loading state
+        const addButton = event.target;
+        const originalText = addButton.innerHTML;
+        addButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding...';
+        addButton.disabled = true;
+
+        // Create a form to submit to add_category URL
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "{% url 'add_category' %}";
+
+        // Add CSRF token
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const csrfInput = document.createElement("input");
+        csrfInput.type = "hidden";
+        csrfInput.name = "csrfmiddlewaretoken";
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+
+        // Add category name
+        const nameInput = document.createElement("input");
+        nameInput.type = "hidden";
+        nameInput.name = "name";
+        nameInput.value = newCategoryName;
+        form.appendChild(nameInput);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function updateFileName() {
+        const fileInput = document.getElementById('course_file');
+        const fileNameDisplay = document.getElementById('file-name');
+        
+        if (fileInput.files.length > 0) {
+            fileNameDisplay.innerHTML = `<i class="fas fa-file me-1" style="color: #0EC9C8;"></i> ${fileInput.files[0].name}`;
+            fileNameDisplay.className = 'mt-2 small fw-semibold';
+            fileNameDisplay.style.color = '#25F0E5';
+        } else {
+            fileNameDisplay.innerHTML = 'No file chosen';
+            fileNameDisplay.className = 'text-muted mt-2 small';
+        }
+    }
+
+    function showToast(message, type = 'info') {
+        // Simple toast notification implementation
+        const toast = document.createElement('div');
+        toast.className = `alert alert-${type === 'warning' ? 'warning' : 'info'} alert-dismissible fade show position-fixed`;
+        toast.style.cssText = 'top: 20px; right: 20px; z-index: 1050; min-width: 300px; background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(14, 201, 200, 0.5); color: white;';
+        toast.innerHTML = `
+            <i class="fas fa-${type === 'warning' ? 'exclamation-triangle text-warning' : 'info-circle text-info'} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" style="filter: invert(1);"></button>
+        `;
+        document.body.appendChild(toast);
+        
+        // Auto remove after 4 seconds
+        setTimeout(() => {
+            toast.remove();
+        }, 4000);
+    }
+
+    // Add drag and drop functionality for file upload
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileCard = document.querySelector('.card.border-dashed');
+        const fileInput = document.getElementById('course_file');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileCard.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileCard.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileCard.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            fileCard.style.borderColor = '#25F0E5';
+            fileCard.style.background = 'rgba(37, 240, 229, 0.1)';
+        }
+        
+        function unhighlight() {
+            fileCard.style.borderColor = 'rgba(14, 201, 200, 0.5)';
+            fileCard.style.background = 'rgba(0, 0, 0, 0.3)';
+        }
+        
+        fileCard.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            updateFileName();
+        }
+        
+        // Auto-focus on course name field
+        document.getElementById('course_name').focus();
+    });
+</script>
+{% endblock %}

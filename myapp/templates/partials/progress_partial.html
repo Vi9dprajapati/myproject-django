@@ -1,0 +1,18 @@
+<div>
+    <h2>Student Progress</h2>
+    <div class="list-group">
+        {% for item in progress_data %}
+        <div class="list-group-item">
+            <h5>{{ item.course.title }}</h5>
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: {{ item.progress }}%;" aria-valuenow="{{ item.progress }}" aria-valuemin="0" aria-valuemax="100">{{ item.progress }}%</div>
+            </div>
+            <p>{{ item.completed }} out of {{ item.total }} assignments completed</p>
+        </div>
+        {% empty %}
+        <div class="alert alert-info" role="alert">
+            No progress data available.
+        </div>
+        {% endfor %}
+    </div>
+</div>

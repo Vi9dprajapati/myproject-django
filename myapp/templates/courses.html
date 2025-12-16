@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - EduAI Platform</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --dark-green: #077b32;
+            --light-green: #05a645;
+            --gradient-start: #0EC9C8;
+            --gradient-end: #25F0E5;
+            --card-bg: rgba(0, 0, 0, 0.7);
+            --card-border: rgba(14, 201, 200, 0.3);
+            --card-glow: rgba(14, 201, 200, 0.7);
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+        }
+        
+        /* Cyberpunk Navbar */
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.4);
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #25F0E5 !important;
+            text-shadow: 0 0 10px rgba(37, 240, 229, 0.5);
+        }
+        
+        .navbar-brand i {
+            color: #0EC9C8;
+        }
+        
+        .nav-link {
+            color: #0EC9C8 !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+            border-radius: 8px;
+            padding: 8px 15px !important;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(14, 201, 200, 0.2);
+            color: #25F0E5 !important;
+            text-shadow: 0 0 8px rgba(37, 240, 229, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.5);
+        }
+        
+        /* Cyberpunk Card */
+        .auth-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .auth-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 30px rgba(37, 240, 229, 0.8),
+                0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Course Card */
+        .course-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 
+                0 0 15px rgba(14, 201, 200, 0.5),
+                0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 
+                0 0 25px rgba(37, 240, 229, 0.8),
+                0 12px 30px rgba(0, 0, 0, 0.2);
+            border-color: rgba(37, 240, 229, 0.6);
+        }
+        
+        /* Button */
+        .btn-primary {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+        }
+        
+        .btn-outline-primary {
+            background: transparent;
+            border: 2px solid var(--gradient-start);
+            color: #0EC9C8;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary:hover {
+            background: rgba(14, 201, 200, 0.2);
+            border-color: var(--gradient-end);
+            color: #25F0E5;
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.5);
+        }
+        
+        /* Form Controls */
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            padding: 8px 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+        
+        .form-control:focus {
+            border-color: var(--gradient-end);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+        }
+        
+        .form-control::placeholder {
+            color: #aaa;
+        }
+        
+        /* Course Header */
+        .page-header h1 {
+            color: #25F0E5;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(37, 240, 229, 0.3);
+        }
+        
+        .page-header p {
+            color: #0EC9C8;
+        }
+        
+        /* Course Icon */
+        .course-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        }
+        
+        .course-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        /* Course Meta */
+        .course-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .course-meta span {
+            color: #0EC9C8;
+            font-size: 0.85rem;
+        }
+        
+        .course-meta i {
+            margin-right: 5px;
+            color: #25F0E5;
+        }
+        
+        /* Course Description */
+        .course-description {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        
+        /* Rating */
+        .rating {
+            color: #ffc107;
+        }
+        
+        /* Badge */
+        .badge {
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.3), rgba(37, 240, 229, 0.3));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            font-weight: 500;
+        }
+        
+        /* Filter Card */
+        .filter-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.4);
+        }
+        
+        .filter-card .card-title {
+            color: #25F0E5;
+        }
+        
+        /* Filter Buttons */
+        .filter-btn {
+            border-radius: 20px;
+            margin: 3px;
+            padding: 6px 15px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+            margin-top: 40px;
+            padding: 30px 0 20px;
+        }
+        
+        footer h5 {
+            color: #25F0E5;
+            margin-bottom: 15px;
+        }
+        
+        footer p, footer a {
+            color: #aaa;
+            transition: color 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: #25F0E5;
+            text-decoration: none;
+        }
+        
+        footer .fab {
+            color: #0EC9C8;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        
+        footer .fab:hover {
+            color: #25F0E5;
+            transform: translateY(-2px);
+            text-shadow: 0 0 8px rgba(37, 240, 229, 0.5);
+        }
+        
+        /* Pagination */
+        .pagination .page-link {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            color: #0EC9C8;
+            margin: 0 3px;
+            border-radius: 6px;
+        }
+        
+        .pagination .page-link:hover {
+            background: rgba(14, 201, 200, 0.2);
+            border-color: var(--gradient-end);
+            color: #25F0E5;
+        }
+        
+        .pagination .active .page-link {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-color: var(--gradient-end);
+            color: white;
+            box-shadow: 0 0 8px rgba(37, 240, 229, 0.5);
+        }
+        
+        /* Mobile Sidebar */
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                position: fixed;
+                top: 0;
+                left: -100%;
+                width: 80%;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(20px);
+                transition: left 0.3s ease;
+                z-index: 1050;
+                padding: 2rem 1rem;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+                border-right: 1px solid rgba(14, 201, 200, 0.3);
+            }
+            
+            .navbar-collapse.show {
+                left: 0;
+            }
+            
+            .navbar-nav {
+                margin-top: 2rem;
+            }
+            
+            .nav-item {
+                margin-bottom: 1rem;
+            }
+            
+            .nav-link {
+                font-size: 1.1rem;
+                padding: 0.75rem 1rem;
+                border-radius: 8px;
+                transition: background-color 0.3s ease;
+            }
+            
+            .nav-link:hover, .nav-link.active {
+                background: rgba(14, 201, 200, 0.2);
+            }
+            
+            .navbar-toggler {
+                z-index: 1060;
+                position: relative;
+                border: 1px solid rgba(14, 201, 200, 0.5);
+                color: #0EC9C8;
+            }
+            
+            .close-sidebar {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                color: #0EC9C8;
+                font-size: 1.5rem;
+                background: none;
+                border: none;
+                z-index: 1060;
+            }
+            
+            .close-sidebar:hover {
+                color: #25F0E5;
+            }
+            
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 1040;
+                display: none;
+            }
+            
+            .overlay.show {
+                display: block;
+            }
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .course-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .course-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .course-meta {
+                justify-content: center;
+            }
+            
+            .card-body {
+                padding: 1.25rem;
+            }
+            
+            .filter-btn {
+                margin: 3px;
+                padding: 5px 12px;
+                font-size: 0.9rem;
+            }
+            
+            .input-group {
+                margin-top: 1rem;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .course-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Glow Animation */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(14, 201, 200, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(37, 240, 229, 0.6); }
+        }
+        
+        .course-card {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+        
+        /* Checkbox styling */
+        .form-check-input:checked {
+            background-color: #0EC9C8;
+            border-color: #0EC9C8;
+        }
+        
+        .form-check-label {
+            color: #aaa;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            color: #0EC9C8;
+        }
+        
+        .empty-state i {
+            color: #0EC9C8;
+            text-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Overlay for mobile sidebar -->
+    <div class="overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-graduation-cap me-2"></i>EduAI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <button class="close-sidebar d-lg-none">
+                    <i class="fas fa-times"></i>
+                </button>
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'courses' %}">
+                            <i class="fas fa-book me-1"></i>Courses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'resources' %}">
+                            <i class="fas fa-folder-open me-1"></i>Resources
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">
+                            <i class="fas fa-info-circle me-1"></i>About
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                    </a>
+                    <a href="{% url 'logout' %}" class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container mt-4 mt-md-5">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <div class="page-header">
+                    <h1 class="fw-bold">Explore Courses</h1>
+                    <p class="lead">Discover our AI-powered courses tailored to your learning needs</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search courses...">
+                    <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Options -->
+        <div class="card mb-4 filter-card">
+            <div class="card-body">
+                <h5 class="card-title mb-3">
+                    <i class="fas fa-filter me-2"></i>Filter Courses
+                </h5>
+                <div class="d-flex flex-wrap mb-3">
+                    <button class="btn btn-primary filter-btn">All</button>
+                    <button class="btn btn-outline-primary filter-btn">Mathematics</button>
+                    <button class="btn btn-outline-primary filter-btn">Science</button>
+                    <button class="btn btn-outline-primary filter-btn">Programming</button>
+                    <button class="btn btn-outline-primary filter-btn">Languages</button>
+                    <button class="btn btn-outline-primary filter-btn">Business</button>
+                </div>
+                <div>
+                    <h6 class="mb-2" style="color: #0EC9C8;">
+                        <i class="fas fa-chart-line me-1"></i>Difficulty
+                    </h6>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="beginnerCheck" checked>
+                        <label class="form-check-label" for="beginnerCheck">Beginner</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="intermediateCheck" checked>
+                        <label class="form-check-label" for="intermediateCheck">Intermediate</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="advancedCheck">
+                        <label class="form-check-label" for="advancedCheck">Advanced</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Grid -->
+        <div class="row" id="courses-container">
+            {% for course in courses %}
+            <div class="col-md-6 col-lg-4 mb-4 course-item" data-category="{{ course.category.name|default:'General' }}">
+                <div class="card course-card">
+                    <div class="card-body">
+                        <div class="course-header">
+                            <div class="course-icon">
+                                {% if course.category.name == 'Mathematics' %}
+                                    <i class="fas fa-calculator"></i>
+                                {% elif course.category.name == 'Programming' %}
+                                    <i class="fas fa-code"></i>
+                                {% elif course.category.name == 'Science' %}
+                                    <i class="fas fa-atom"></i>
+                                {% else %}
+                                    <i class="fas fa-book"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <h5 class="card-title mb-1" style="color: white;">{{ course.title }}</h5>
+                                <span class="badge">{{ course.category.name|default:'General' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="course-meta">
+                            {% if course.duration %}
+                                <span><i class="far fa-clock me-1"></i> {{ course.duration }} weeks</span>
+                            {% endif %}
+                            <span><i class="fas fa-users me-1"></i> {{ course.students.count }} students</span>
+                        </div>
+
+                        <p class="course-description">
+                            {{ course.description|truncatechars:120 }}
+                        </p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </span>
+                                <span class="ms-1" style="color: #0EC9C8;">4.5</span>
+                            </div>
+                            <span style="color: #25F0E5; font-weight: 600;">Free</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-top" style="border-color: rgba(14, 201, 200, 0.2) !important;">
+                        <a href="{% url 'course_notes' course.id %}" class="btn btn-primary w-100">
+                            <i class="fas fa-file-alt me-2"></i>View Notes
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="text-center py-5 empty-state">
+                    <i class="fas fa-book-open fa-3x mb-3"></i>
+                    <h4>No Courses Available</h4>
+                    <p>Courses will be added soon. Check back later!</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Course pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">
+                        <i class="fas fa-chevron-left me-1"></i>Previous
+                    </a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">
+                        Next<i class="fas fa-chevron-right ms-1"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>EduAI Platform</h5>
+                    <p>Transforming education through artificial intelligence and personalized learning experiences.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'about' %}">About Us</a></li>
+                        <li><a href="{% url 'courses' %}">Courses</a></li>
+                        <li><a href="{% url 'resources' %}">Resources</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Connect With Us</h5>
+                    <div class="d-flex justify-content-center">
+                        <a href="#" class="me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr style="border-color: rgba(14, 201, 200, 0.2);">
+            <p class="mb-0">&copy; 2025 EduAI Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Mobile sidebar functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navbarCollapse = document.querySelector('.navbar-collapse');
+            const closeSidebar = document.querySelector('.close-sidebar');
+            const overlay = document.querySelector('.overlay');
+            
+            function toggleSidebar() {
+                navbarCollapse.classList.toggle('show');
+                overlay.classList.toggle('show');
+                document.body.style.overflow = navbarCollapse.classList.contains('show') ? 'hidden' : '';
+            }
+            
+            if (navbarToggler) {
+                navbarToggler.addEventListener('click', toggleSidebar);
+            }
+            if (closeSidebar) {
+                closeSidebar.addEventListener('click', toggleSidebar);
+            }
+            if (overlay) {
+                overlay.addEventListener('click', toggleSidebar);
+            }
+            
+            // Close sidebar when clicking on a nav link
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 992) {
+                        toggleSidebar();
+                    }
+                });
+            });
+            
+            // Filter functionality
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const courseItems = document.querySelectorAll('.course-item');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active button
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('btn-primary');
+                        btn.classList.add('btn-outline-primary');
+                    });
+                    this.classList.remove('btn-outline-primary');
+                    this.classList.add('btn-primary');
+                    
+                    const filter = this.textContent.trim();
+                    
+                    // Filter courses
+                    courseItems.forEach(item => {
+                        if (filter === 'All' || item.dataset.category === filter) {
+                            item.style.display = 'block';
+                            item.style.animation = 'fadeIn 0.5s ease-out';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('input[type="text"]');
+            const searchButton = document.querySelector('.btn-primary .fa-search')?.closest('.btn');
+            
+            if (searchInput && searchButton) {
+                searchButton.addEventListener('click', function() {
+                    const searchTerm = searchInput.value.toLowerCase().trim();
+                    
+                    courseItems.forEach(item => {
+                        const title = item.querySelector('.card-title').textContent.toLowerCase();
+                        const description = item.querySelector('.course-description').textContent.toLowerCase();
+                        
+                        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                            item.style.display = 'block';
+                            item.style.animation = 'fadeIn 0.5s ease-out';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+                
+                searchInput.addEventListener('keyup', function(event) {
+                    if (event.key === 'Enter') {
+                        searchButton.click();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

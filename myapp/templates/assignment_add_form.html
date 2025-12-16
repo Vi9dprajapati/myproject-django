@@ -1,0 +1,680 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Assignment - EduAI Question Bank</title>
+    <!-- Cyberpunk CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/cyberpunk.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --dark-green: #077b32;
+            --light-green: #05a645;
+            --gradient-start: #0EC9C8;
+            --gradient-end: #25F0E5;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+           
+            background-size: cover;
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Cyberpunk Card Styling */
+        .cyber-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+        }
+        
+        .cyber-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 30px rgba(37, 240, 229, 0.8),
+                0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Header Styling */
+        .cyber-header {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+            position: relative;
+        }
+        
+        .cyber-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #25F0E5, transparent);
+            animation: scanline 2s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .cyber-header h2 {
+            font-weight: 500;
+            margin: 10px 0 5px;
+            color: white;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cyber-header h3 {
+            font-weight: 500;
+            margin: 5px 0;
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .header-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .header-info span {
+            color: #0EC9C8;
+            font-weight: 600;
+        }
+        
+        .header-info input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            border-radius: 6px;
+            padding: 4px 8px;
+            color: white;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .header-info input:focus {
+            border-color: var(--gradient-end);
+            box-shadow: 0 0 8px rgba(37, 240, 229, 0.7);
+            outline: none;
+        }
+        
+        /* Form Styling */
+        .cyber-form {
+            padding: 20px;
+            background: rgba(10, 10, 10, 0.8);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #0EC9C8;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .cyber-input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            border-radius: 8px;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-input:focus {
+            border-color: var(--gradient-end);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+            outline: none;
+        }
+        
+        textarea.cyber-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* Table Styling */
+        .cyber-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .cyber-table th {
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.8), rgba(37, 240, 229, 0.8));
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(37, 240, 229, 0.5);
+        }
+        
+        .cyber-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(14, 201, 200, 0.2);
+            vertical-align: top;
+        }
+        
+        .cyber-table tr:hover {
+            background: rgba(14, 201, 200, 0.1);
+        }
+        
+        /* Column widths */
+        .sno-col { width: 5%; }
+        .question-col { width: 55%; }
+        .bloom-col { width: 15%; }
+        .co-col { width: 15%; }
+        .action-col { width: 10%; }
+        
+        /* Question Container */
+        .question-container {
+            position: relative;
+        }
+        
+        .question-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            border-radius: 6px;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+        
+        .question-textarea:focus {
+            border-color: var(--gradient-end);
+            box-shadow: 0 0 8px rgba(37, 240, 229, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+            outline: none;
+        }
+        
+        .question-display {
+            white-space: pre-wrap;
+            min-height: 60px;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* Button Styling */
+        .cyber-button {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 5px;
+        }
+        
+        .cyber-button:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+        }
+        
+        .cyber-button.delete {
+            background: linear-gradient(90deg, #ff4444, #ff6b6b);
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        }
+        
+        .cyber-button.delete:hover {
+            background: linear-gradient(90deg, #ff6b6b, #ff4444);
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.7);
+        }
+        
+        /* Controls Container */
+        .controls-container {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+        
+        /* Unit Section */
+        .unit-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 8px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+        
+        .unit-heading {
+            color: #25F0E5;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            text-shadow: 0 0 5px rgba(37, 240, 229, 0.5);
+            border-bottom: 2px solid rgba(37, 240, 229, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        /* File Input Styling */
+        input[type="file"] {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            border-radius: 6px;
+            padding: 8px;
+            color: white;
+            width: 100%;
+            margin-top: 5px;
+            cursor: pointer;
+        }
+        
+        input[type="file"]::file-selector-button {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: white;
+            cursor: pointer;
+            margin-right: 10px;
+            font-weight: 600;
+        }
+        
+        /* Image Preview */
+        .img-preview img {
+            max-width: 100%;
+            max-height: 150px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            padding: 3px;
+        }
+        
+        /* Platform Info */
+        .platform-info {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .platform-info p {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #25F0E5;
+        }
+        
+        .platform-info small {
+            opacity: 0.8;
+        }
+        
+        /* Hide in Print/PDF */
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            .cyber-input,
+            input[type="file"],
+            .cyber-button {
+                display: none !important;
+            }
+            
+            .question-display {
+                display: block !important;
+            }
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .cyber-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .header-info {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .cyber-button {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+        
+        /* Glow Animation */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+        }
+        
+        .cyber-card {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form method="post" id="assignmentForm">
+            {% csrf_token %}
+            
+            <!-- Assignment Details Card -->
+            <div class="cyber-card">
+                <div class="cyber-header">
+                    <i class="fas fa-file-alt" style="font-size: 2rem;"></i>
+                    <h2>Add Assignment - Question Bank</h2>
+                    <p>Create and manage your academic assignments</p>
+                </div>
+                
+                <div class="cyber-form">
+                    <div class="form-group">
+                        <label class="form-label" for="topic">
+                            <i class="fas fa-bookmark"></i> Topic
+                        </label>
+                        <input type="text" id="topic" name="topic" class="cyber-input" placeholder="Enter assignment topic" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="description">
+                            <i class="fas fa-align-left"></i> Description
+                        </label>
+                        <textarea id="description" name="description" class="cyber-input" placeholder="Enter assignment description" required></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Question Bank Card -->
+            <div class="cyber-card">
+                <div class="cyber-header">
+                    <img src="{% static 'img/SISTec_Logo.png' %}" width="80" style="position: absolute; left: 20px; top: 20px;">
+                    <h2 contenteditable="true" class="no-print">SAGAR INSTITUTE OF SCIENCE & TECHNOLOGY</h2>
+                    <h3 contenteditable="true" class="no-print">DEPARTMENT OF CSE (AI & DS)</h3>
+                    <h3 contenteditable="true" id="questionBankHeading" class="no-print">QUESTION BANK</h3>
+                    
+                    <div class="header-info">
+                        <div>
+                            <b>Subject Code:</b>
+                            <input type="text" id="subjectCode" value="AD-501" size="8" class="no-print">
+                        </div>
+                        <div>
+                            <b>Subject:</b>
+                            <input type="text" id="subjectName" value="Theory of Computation" size="25" class="no-print">
+                        </div>
+                        <div>
+                            <b>Branch:</b>
+                            <input type="text" id="branch" value="CSE-AI&DS" size="10" class="no-print">
+                        </div>
+                        <div>
+                            <b>Session:</b>
+                            <input type="text" id="session" value="2025-26" size="8" class="no-print">
+                        </div>
+                        <div>
+                            <b>Semester:</b>
+                            <input type="text" id="semester" value="V" size="2" class="no-print">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cyber-form">
+                    <!-- Unit Section -->
+                    <div class="unit-section">
+                        <h3 contenteditable="true" id="unitHeading" class="unit-heading no-print">UNIT 1</h3>
+                        
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th class="sno-col">S.No</th>
+                                    <th class="question-col">Question</th>
+                                    <th class="bloom-col">Bloom's Taxonomy</th>
+                                    <th class="co-col">CO's</th>
+                                    <th class="action-col no-print">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="questionTableBody">
+                                <!-- Questions will be added here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="controls-container no-print">
+                        <button type="button" class="cyber-button" onclick="addQuestion()">
+                            <i class="fas fa-plus"></i> Add Question
+                        </button>
+                        <button type="button" class="cyber-button" onclick="downloadPDF()">
+                            <i class="fas fa-download"></i> Download PDF
+                        </button>
+                        <button type="button" class="cyber-button" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print Page
+                        </button>
+                        <button type="submit" class="cyber-button">
+                            <i class="fas fa-save"></i> Save Assignment
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <input type="hidden" id="html_content" name="html_content">
+        </form>
+        
+        <!-- Platform Info -->
+        <div class="platform-info">
+            <p class="mb-2">EduAI - AI-Powered Learning Platform</p>
+            <small>© 2025 EduAI. All rights reserved.</small>
+        </div>
+    </div>
+
+    <!-- Include JS Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    
+    <script>
+        let questionCount = 1;
+        
+        function addQuestion() {
+            const tableBody = document.getElementById('questionTableBody');
+            const row = tableBody.insertRow();
+            
+            // S.No column
+            const snoCell = row.insertCell(0);
+            snoCell.innerHTML = `<div style="text-align: center; font-weight: bold;">${questionCount++}</div>`;
+            
+            // Question column
+            const questionCell = row.insertCell(1);
+            questionCell.innerHTML = `
+                <div class="question-container">
+                    <textarea class="question-textarea no-print" 
+                              placeholder="Enter your question here..." 
+                              oninput="updateQuestionDisplay(this)"
+                              rows="3"></textarea>
+                    <div class="question-display"></div>
+                    <input type="file" class="no-print" 
+                           accept="image/*" 
+                           onchange="previewImage(event)"
+                           style="margin-top: 10px;">
+                    <div class="img-preview"></div>
+                </div>
+            `;
+            
+            // Bloom's Taxonomy column
+            const bloomCell = row.insertCell(2);
+            bloomCell.innerHTML = `<input type="text" class="cyber-input" placeholder="e.g., 3 (Apply)">`;
+            
+            // CO's column
+            const coCell = row.insertCell(3);
+            coCell.innerHTML = `<input type="text" class="cyber-input" placeholder="CO1">`;
+            
+            // Actions column
+            const actionCell = row.insertCell(4);
+            actionCell.className = 'no-print';
+            actionCell.innerHTML = `
+                <button class="cyber-button delete" onclick="deleteQuestion(this)">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            `;
+            
+            // Add hover effect to the new row
+            row.style.transition = 'background 0.3s ease';
+        }
+        
+        function deleteQuestion(button) {
+            const row = button.closest('tr');
+            if (confirm('Are you sure you want to delete this question?')) {
+                row.remove();
+                updateSerialNumbers();
+            }
+        }
+        
+        function updateSerialNumbers() {
+            const rows = document.querySelectorAll('#questionTableBody tr');
+            questionCount = 1;
+            rows.forEach(row => {
+                row.cells[0].innerHTML = `<div style="text-align: center; font-weight: bold;">${questionCount++}</div>`;
+            });
+        }
+        
+        function updateQuestionDisplay(textarea) {
+            const displayDiv = textarea.nextElementSibling;
+            displayDiv.textContent = textarea.value;
+            
+            // Auto-resize textarea
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+            
+            // Add cyberpunk glow effect on input
+            textarea.style.boxShadow = '0 0 15px rgba(37, 240, 229, 0.5)';
+            setTimeout(() => {
+                if (textarea !== document.activeElement) {
+                    textarea.style.boxShadow = '';
+                }
+            }, 500);
+        }
+        
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewDiv = event.target.nextElementSibling;
+                    previewDiv.innerHTML = `<img src="${e.target.result}" alt="Question Image">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const elements = document.querySelectorAll('.no-print');
+            elements.forEach(el => el.style.display = 'none');
+            
+            // Show question display divs
+            document.querySelectorAll('.question-display').forEach(div => {
+                div.style.display = 'block';
+            });
+            
+            const canvas = await html2canvas(document.querySelector('.container'), { 
+                scale: 2, 
+                useCORS: true,
+                backgroundColor: '#0a0a0a'
+            });
+            
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('Cyberpunk_Question_Bank.pdf');
+            
+            elements.forEach(el => el.style.display = '');
+            document.querySelectorAll('.question-display').forEach(div => {
+                div.style.display = 'none';
+            });
+        }
+        
+        // Form submission handler
+        document.getElementById('assignmentForm').addEventListener('submit', function(e) {
+            const elements = document.querySelectorAll('.no-print');
+            elements.forEach(el => el.style.display = 'none');
+            
+            document.querySelectorAll('.question-display').forEach(div => {
+                div.style.display = 'block';
+            });
+            
+            const htmlContent = document.documentElement.outerHTML;
+            document.getElementById('html_content').value = htmlContent;
+            
+            elements.forEach(el => el.style.display = '');
+            document.querySelectorAll('.question-display').forEach(div => {
+                div.style.display = 'none';
+            });
+        });
+        
+        // Initialize with one question
+        document.addEventListener('DOMContentLoaded', function() {
+            addQuestion();
+            
+            // Add hover effects to all inputs
+            document.querySelectorAll('.cyber-input').forEach(input => {
+                input.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                input.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

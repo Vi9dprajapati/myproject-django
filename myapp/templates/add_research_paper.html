@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5" style="max-width: 700px;">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-primary text-white text-center py-3">
+            <h3 class="mb-0"><i class="fas fa-file-alt me-2"></i>Add Research Paper</h3>
+        </div>
+        <div class="card-body p-4">
+            <form method="post" action="{% url 'add_research_paper' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Title -->
+                <div class="mb-3">
+                    <label for="title" class="form-label fw-bold">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="Enter paper title" required>
+                </div>
+
+                <!-- Authors -->
+                <div class="mb-3">
+                    <label for="authors" class="form-label fw-bold">Authors</label>
+                    <input type="text" class="form-control" id="authors" name="authors" placeholder="Enter authors (comma separated)" required>
+                </div>
+
+                <!-- Abstract -->
+                <div class="mb-3">
+                    <label for="abstract" class="form-label fw-bold">Abstract</label>
+                    <textarea class="form-control" id="abstract" name="abstract" rows="4" placeholder="Enter abstract"></textarea>
+                </div>
+
+                <!-- File Upload -->
+                <div class="mb-3">
+                    <label for="file" class="form-label fw-bold">Upload Paper File</label>
+                    <input type="file" class="form-control" id="file" name="file" accept=".pdf,.docx">
+                    <div class="form-text">Accepted formats: PDF, DOCX</div>
+                </div>
+
+                <!-- Published Date -->
+                <div class="mb-3">
+                    <label for="published_date" class="form-label fw-bold">Published Date</label>
+                    <input type="date" class="form-control" id="published_date" name="published_date">
+                </div>
+
+                <!-- Journal -->
+                <div class="mb-3">
+                    <label for="journal" class="form-label fw-bold">Journal</label>
+                    <input type="text" class="form-control" id="journal" name="journal" placeholder="Enter journal name">
+                </div>
+
+                <!-- DOI -->
+                <div class="mb-3">
+                    <label for="doi" class="form-label fw-bold">DOI</label>
+                    <input type="text" class="form-control" id="doi" name="doi" placeholder="Enter DOI">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-plus-circle me-2"></i>Add Research Paper
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

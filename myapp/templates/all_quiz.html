@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Quizzes — EduAI Platform</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --dark-green: #077b32;
+            --light-green: #05a645;
+            --gradient-start: #0EC9C8;
+            --gradient-end: #25F0E5;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Cyberpunk Card */
+        .auth-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .auth-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 30px rgba(37, 240, 229, 0.8),
+                0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Header */
+        .auth-header {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+        }
+        
+        .auth-header i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+            color: white;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .auth-header h2 {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: white;
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .auth-header p {
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+        
+        .auth-body {
+            padding: 25px;
+            background: rgba(10, 10, 10, 0.8);
+        }
+        
+        /* Form Elements */
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            padding: 10px 15px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+        
+        .form-control:focus {
+            border-color: var(--gradient-end);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+            background: rgba(0, 0, 0, 0.7);
+        }
+        
+        .form-control::placeholder {
+            color: #aaa;
+        }
+        
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #0EC9C8;
+            z-index: 2;
+        }
+        
+        .search-box input {
+            padding-left: 45px;
+            width: 100%;
+        }
+        
+        /* Category Filter */
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%230EC9C8' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px 12px;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+        
+        /* Quiz Cards */
+        #quizList {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 10px 5px 20px;
+            scrollbar-width: thin;
+            scrollbar-color: #0EC9C8 rgba(0, 0, 0, 0.3);
+        }
+        
+        #quizList::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        #quizList::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        #quizList::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 10px;
+        }
+        
+        .quiz-card {
+            min-width: 250px;
+            max-width: 250px;
+            height: 280px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        }
+        
+        .quiz-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gradient-end);
+            box-shadow: 0 5px 20px rgba(37, 240, 229, 0.4);
+        }
+        
+        .quiz-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        
+        .quiz-desc {
+            font-size: 14px;
+            color: #aaa;
+            flex-grow: 1;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .info {
+            font-size: 13px;
+            color: #0EC9C8;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info i {
+            margin-right: 8px;
+            width: 16px;
+            text-align: center;
+        }
+        
+        /* Start Button */
+        .start-btn {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .start-btn:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 240, 229, 0.4);
+            color: white;
+        }
+        
+        /* Platform Info */
+        .platform-info {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .platform-info p {
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #25F0E5;
+        }
+        
+        .platform-info small {
+            opacity: 0.8;
+        }
+        
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #aaa;
+            font-size: 16px;
+        }
+        
+        .no-results i {
+            font-size: 2rem;
+            color: #ff4444;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        /* Role Badge */
+        .role-badge {
+            display: inline-block;
+            background: rgba(37, 240, 229, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            color: white;
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.3), rgba(37, 240, 229, 0.3));
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .auth-body {
+                padding: 20px 15px;
+            }
+            
+            .quiz-card {
+                min-width: 220px;
+                max-width: 220px;
+                height: 260px;
+                padding: 15px;
+            }
+            
+            .quiz-title {
+                font-size: 16px;
+            }
+            
+            .quiz-desc {
+                font-size: 13px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .quiz-card {
+                min-width: 180px;
+                max-width: 180px;
+                height: 240px;
+                padding: 12px;
+            }
+            
+            .auth-header {
+                padding: 15px;
+            }
+            
+            .auth-header h2 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .auth-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Glow Animation */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+            50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+        }
+        
+        .auth-card {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+        
+        /* Category Badge */
+        .category-badge {
+            display: inline-block;
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Main Card -->
+        <div class="auth-card">
+            <!-- Header -->
+            <div class="auth-header">
+                <i class="fas fa-brain"></i>
+                <h2>Available Quizzes</h2>
+                <p>Test your knowledge with AI-powered assessments</p>
+                <div class="role-badge">
+                    <i class="fas fa-graduation-cap me-1"></i>Interactive Learning
+                </div>
+            </div>
+            
+            <!-- Body -->
+            <div class="auth-body">
+                <!-- Search Box -->
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchQuiz" class="form-control" placeholder="Search quizzes...">
+                </div>
+
+                <!-- Category Filter -->
+                <select id="filterCategory" class="form-control mb-4">
+                    <option value="">📂 All Categories</option>
+                    <option value="Programming">Programming</option>
+                    <option value="AI">AI</option>
+                    <option value="Web">Web Development</option>
+                    <option value="Database">Database</option>
+                    <option value="Security">Cyber Security</option>
+                </select>
+
+                <!-- Quiz List -->
+                <div id="quizList">
+                    <!-- Quiz cards will be dynamically inserted here -->
+                </div>
+                
+                <!-- No Results Message -->
+                <div id="noResults" class="no-results" style="display: none;">
+                    <i class="fas fa-search"></i>
+                    <p>No quizzes found matching your search</p>
+                    <p style="font-size: 14px; color: #0EC9C8;">Try adjusting your search or filter</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Platform Info -->
+        <div class="platform-info">
+            <p class="mb-2">EduAI - AI-Powered Learning Platform</p>
+            <small>© 2025 EduAI. All rights reserved.</small>
+        </div>
+    </div>
+
+    <script>
+        // Quiz Data from Django context
+        let quizzes = [
+            {% for quiz in quizzes %}
+            {
+                id: {{ quiz.id }},
+                title: "{{ quiz.title|escapejs }}",
+                category: "{{ quiz.course.category.name|default:'General'|escapejs }}",
+                desc: "{{ quiz.description|default:'No description available'|escapejs }}",
+                marks: {{ quiz.total_marks }},
+                timer: {{ quiz.time_limit }},
+                date: "{{ quiz.created_at|date:'Y-m-d'|escapejs }}"
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+
+        function loadQuizzes(filter=""){
+            const category = document.getElementById("filterCategory").value;
+            const list = document.getElementById("quizList");
+            const noResults = document.getElementById("noResults");
+            list.innerHTML = "";
+
+            const filteredQuizzes = quizzes
+                .filter(q => q.title.toLowerCase().includes(filter.toLowerCase()))
+                .filter(q => category ? q.category === category : true)
+                .sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            if (filteredQuizzes.length === 0) {
+                noResults.style.display = "block";
+                return;
+            }
+            
+            noResults.style.display = "none";
+
+            filteredQuizzes.forEach((q)=>{
+                let div = document.createElement("div");
+                div.className = "quiz-card";
+                
+                // Get category color
+                let categoryColor = "#0EC9C8";
+                if (q.category === "Programming") categoryColor = "#ff4444";
+                else if (q.category === "AI") categoryColor = "#00ff88";
+                else if (q.category === "Web") categoryColor = "#ffaa00";
+                else if (q.category === "Database") categoryColor = "#aa00ff";
+                else if (q.category === "Security") categoryColor = "#ff00aa";
+                
+                div.innerHTML = `
+                    <div>
+                        <div class="category-badge" style="border-color: ${categoryColor}33; color: ${categoryColor}; background: ${categoryColor}11;">
+                            ${q.category}
+                        </div>
+                        <div class="quiz-title">${q.title}</div>
+                        <div class="quiz-desc">${q.desc}</div>
+                    </div>
+                    <div>
+                        <div class="info">
+                            <i class="fas fa-star" style="color: #ffaa00;"></i>Marks: ${q.marks}
+                        </div>
+                        <div class="info">
+                            <i class="fas fa-clock" style="color: #0EC9C8;"></i>Time: ${q.timer} minutes
+                        </div>
+                        <div class="info">
+                            <i class="fas fa-calendar" style="color: #aa00ff;"></i>${q.date}
+                        </div>
+                        <button class="start-btn" onclick="startQuiz(${q.id})">
+                            <i class="fas fa-play me-2"></i>Start Quiz
+                        </button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function startQuiz(quizId){
+            window.location.href = "/quiz/attempt/" + quizId + "/";
+        }
+
+        // Event Listeners
+        document.getElementById("searchQuiz").addEventListener("keyup", (e)=>{
+            loadQuizzes(e.target.value);
+        });
+
+        document.getElementById("filterCategory").addEventListener("change", ()=>{
+            loadQuizzes(document.getElementById("searchQuiz").value);
+        });
+
+        // Initial load
+        loadQuizzes();
+        
+        // Add input focus effect
+        const searchInput = document.getElementById("searchQuiz");
+        searchInput.addEventListener("focus", function() {
+            this.style.transform = "translateY(-2px)";
+            this.style.boxShadow = "0 5px 15px rgba(14, 201, 200, 0.3)";
+        });
+        
+        searchInput.addEventListener("blur", function() {
+            this.style.transform = "translateY(0)";
+            this.style.boxShadow = "";
+        });
+    </script>
+</body>
+</html>

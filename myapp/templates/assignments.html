@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Assignments{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Assignments</h2>
+    <div class="list-group">
+        {% for assignment in assignments %}
+        <div class="list-group-item">
+            <h5>{{ assignment.topic }}</h5>
+            <p>{{ assignment.description }}</p>
+            {% if assignment.file %}
+            <p><a href="{{ assignment.file.url }}" target="_blank" class="btn btn-primary">Download Assignment</a></p>
+            {% endif %}
+            <p><strong>Uploaded:</strong> {{ assignment.uploaded_at|date:"M d, Y" }}</p>
+            <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-info">View</a>
+        </div>
+        {% empty %}
+        <div class="alert alert-info" role="alert">
+            No assignments available.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

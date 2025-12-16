@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📅 Today Only Reminder System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a237e, #4a148c);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 1100px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a237e, #4a148c);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            color: #1a237e;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #4a148c;
+        }
+
+        .section-title i {
+            color: #4a148c;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #1a237e;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .label-hint {
+            font-size: 0.95rem;
+            color: #666;
+            font-weight: normal;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #cbd5e0;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            background: white;
+            min-height: 120px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            border-color: #4a148c;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(74, 20, 140, 0.2);
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .example-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #4a148c;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .example-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-left-color: #ff6b6b;
+        }
+
+        .example-text {
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .example-details {
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .example-details span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .today-date-box {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+            border: 2px solid #a5d6a7;
+        }
+
+        .today-date-box h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        #todayDateDisplay {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a237e;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 5px;
+        }
+
+        #todayTimeDisplay {
+            font-size: 1.8rem;
+            color: #4a148c;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .reminder-info {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 2px solid #90caf9;
+            display: none;
+        }
+
+        .reminder-info.show {
+            display: block;
+            animation: slideIn 0.5s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reminder-title {
+            color: #1565c0;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #1976d2;
+        }
+
+        .info-label {
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #1a237e;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .strict-rules {
+            background: linear-gradient(135deg, #fff8e1, #ffecb3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 2px solid #ffd54f;
+            text-align: center;
+        }
+
+        .strict-rules h3 {
+            color: #ff8f00;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .strict-rules p {
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn {
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #ff6b6b, #ff8e53);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(to right, #4a148c, #7b1fa2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(74, 20, 140, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 65, 108, 0.3);
+        }
+
+        .btn i {
+            font-size: 1.2rem;
+        }
+
+        .mic-btn.recording {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+
+        .reminder-list {
+            margin-top: 15px;
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .reminder-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid #4a148c;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .reminder-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .reminder-item.active {
+            border-left-color: #00b894;
+            background: linear-gradient(to right, #f1fff9, #e8f8f3);
+        }
+
+        .reminder-item.completed {
+            border-left-color: #ff7675;
+            background: linear-gradient(to right, #fff5f5, #ffeaea);
+            opacity: 0.8;
+        }
+
+        .reminder-text {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1a237e;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .reminder-extracted {
+            color: #ff6b6b;
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .reminder-time {
+            color: #555;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .reminder-date {
+            color: #777;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .time-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #4a148c;
+            color: white;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #777;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #d1d8e0;
+        }
+
+        .empty-state h3 {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .empty-state p {
+            font-size: 1.05rem;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 480px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #4a148c, #7b1fa2);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 25px rgba(74, 20, 140, 0.3);
+        }
+
+        .stat-card:nth-child(2) {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: white;
+            color: #1a237e;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+            transform: translateX(400px);
+            opacity: 0;
+            transition: all 0.5s;
+            max-width: 400px;
+            border-left: 5px solid #4a148c;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification i {
+            font-size: 2rem;
+            color: #4a148c;
+        }
+
+        .notification-content h3 {
+            margin-bottom: 8px;
+            color: #1a237e;
+        }
+
+        .notification-content p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .notification.voice {
+            border-left-color: #ff6b6b;
+            background: linear-gradient(to right, #fff5f5, #ffebee);
+        }
+
+        .notification.voice i {
+            color: #ff6b6b;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 0.95rem;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 2px solid #ef9a9a;
+            text-align: center;
+        }
+
+        .warning-box h3 {
+            color: #d32f2f;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+
+        .warning-box p {
+            color: #555;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4a148c;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1a237e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calendar-day"></i> Today Only Reminder System</h1>
+            <p>✅ ALWAYS uses TODAY's date ONLY! Never accepts future dates from user. 📅</p>
+        </div>
+
+        <div class="content">
+            <div class="main-content">
+                <!-- Left: Input Section -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-microphone"></i> Your Task with Time (Today Only)</h2>
+                    
+                    <div class="input-group">
+                        <label for="reminderText"><i class="fas fa-keyboard"></i> Type or Speak Your Task</label>
+                        <span class="label-hint">Only time is extracted. Date is ALWAYS today's current PC date. Examples:</span>
+                        <textarea id="reminderText" placeholder="Example: 'Subah 10 baje meeting', 'Sham 7 baje gym jaana', '2 ghante baad medicine lena', 'Adhe 4 baje call'..."></textarea>
+                    </div>
+
+                    <div class="examples-grid">
+                        <div class="example-card" onclick="useExample(this)">
+                            <div class="example-text">Subah 10 baje meeting hai</div>
+                            <div class="example-details">
+                                <span><i class="fas fa-calendar-day"></i> Date: TODAY ONLY</span>
+                                <span><i class="far fa-clock"></i> Time: 10:00 AM</span>
+                            </div>
+                        </div>
+                        <div class="example-card" onclick="useExample(this)">
+                            <div class="example-text">Sham 7 baje gym jaana</div>
+                            <div class="example-details">
+                                <span><i class="fas fa-calendar-day"></i> Date: TODAY ONLY</span>
+                                <span><i class="far fa-clock"></i> Time: 7:00 PM</span>
+                            </div>
+                        </div>
+                        <div class="example-card" onclick="useExample(this)">
+                            <div class="example-text">2 ghante baad medicine lena</div>
+                            <div class="example-details">
+                                <span><i class="fas fa-calendar-day"></i> Date: TODAY ONLY</span>
+                                <span><i class="far fa-clock"></i> Time: 2 hours from now</span>
+                            </div>
+                        </div>
+                        <div class="example-card" onclick="useExample(this)">
+                            <div class="example-text">Adhe 4 baje call karna</div>
+                            <div class="example-details">
+                                <span><i class="fas fa-calendar-day"></i> Date: TODAY ONLY</span>
+                                <span><i class="far fa-clock"></i> Time: 4:30 PM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="strict-rules">
+                        <h3><i class="fas fa-exclamation-triangle"></i> STRICT RULES:</h3>
+                        <p>✓ Date: ALWAYS TODAY'S DATE (current PC date)<br>
+                           ✓ Time: Extracted from your task<br>
+                           ✓ If time already passed today → Shows error<br>
+                           ✓ Future dates like "kal", "15 December" → IGNORED, uses TODAY</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h3><i class="fas fa-ban"></i> IMPORTANT:</h3>
+                        <p>System will NEVER accept future dates. Even if you say "kal", "tomorrow", "15 December" - it will use TODAY'S date only!</p>
+                    </div>
+
+                    <div class="today-date-box">
+                        <h3><i class="fas fa-calendar-alt"></i> TODAY'S DATE (Will Always Be Used)</h3>
+                        <div id="todayDateDisplay">Loading...</div>
+                        <div id="todayTimeDisplay">Loading...</div>
+                    </div>
+
+                    <div class="reminder-info" id="reminderInfo">
+                        <div class="reminder-title">
+                            <i class="fas fa-calculator"></i> Today's Reminder Calculation
+                        </div>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <div class="info-label">Date Used</div>
+                                <div class="info-value" id="dateUsed">TODAY</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Extracted Time</div>
+                                <div class="info-value" id="extractedTime">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Final Date & Time</div>
+                                <div class="info-value" id="finalDateTime">-</div>
+                            </div>
+                            <div class="info-item">
+                                <div class="info-label">Time Remaining</div>
+                                <div class="info-value" id="timeRemaining">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button id="micButton" class="btn btn-secondary">
+                            <i class="fas fa-microphone-alt"></i> Speak Task
+                        </button>
+                        
+                        <button id="setReminderBtn" class="btn btn-primary">
+                            <i class="fas fa-bell"></i> Set Today's Reminder
+                        </button>
+                    </div>
+                    
+                    <button id="clearAllBtn" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i> Clear All Reminders
+                    </button>
+                </div>
+
+                <!-- Right: Active Reminders -->
+                <div class="section">
+                    <h2 class="section-title"><i class="fas fa-history"></i> Today's Reminders</h2>
+                    <div id="reminderList" class="reminder-list">
+                        <div class="empty-state">
+                            <i class="fas fa-calendar-day"></i>
+                            <h3>No Today's Reminders Yet</h3>
+                            <p>Speak or type a task with time above</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalReminders">0</div>
+                            <div class="stat-label">Today's Reminders</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="activeReminders">0</div>
+                            <div class="stat-label">Active Now</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <p>Made with <i class="fas fa-heart" style="color:#ff6b6b;"></i> Strict Today-Only Reminder System</p>
+                <p style="margin-top: 5px; font-size: 0.9rem; color: #888;">✅ ALWAYS uses TODAY's date - NEVER accepts future dates!</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notification" class="notification">
+        <i class="fas fa-bell"></i>
+        <div class="notification-content">
+            <h3>Today's Reminder Alert!</h3>
+            <p id="notificationText">Your reminder text will appear here</p>
+        </div>
+    </div>
+
+    <div id="voiceNotification" class="notification voice">
+        <i class="fas fa-volume-up"></i>
+        <div class="notification-content">
+            <h3>Voice Reminder!</h3>
+            <p id="voiceNotificationText">Awaz mein sunai de raha hoon...</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const reminderText = document.getElementById('reminderText');
+        const micButton = document.getElementById('micButton');
+        const setReminderBtn = document.getElementById('setReminderBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const reminderList = document.getElementById('reminderList');
+        const notification = document.getElementById('notification');
+        const voiceNotification = document.getElementById('voiceNotification');
+        const notificationText = document.getElementById('notificationText');
+        const voiceNotificationText = document.getElementById('voiceNotificationText');
+        const reminderInfo = document.getElementById('reminderInfo');
+        const extractedTimeEl = document.getElementById('extractedTime');
+        const finalDateTimeEl = document.getElementById('finalDateTime');
+        const timeRemainingEl = document.getElementById('timeRemaining');
+        const totalRemindersEl = document.getElementById('totalReminders');
+        const activeRemindersEl = document.getElementById('activeReminders');
+        const todayDateDisplay = document.getElementById('todayDateDisplay');
+        const todayTimeDisplay = document.getElementById('todayTimeDisplay');
+
+        // Speech Recognition Setup
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+        let isRecording = false;
+
+        // Speech Synthesis Setup
+        const speechSynthesis = window.speechSynthesis;
+
+        // Reminders array
+        let reminders = [];
+        let reminderTimeouts = {};
+
+        // Current date (TODAY only)
+        let todayDate = new Date();
+
+        // Update today's date display
+        function updateTodayDateTime() {
+            todayDate = new Date();
+            
+            // Format date
+            const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            todayDateDisplay.textContent = todayDate.toLocaleDateString('en-IN', optionsDate);
+            
+            // Format time
+            let hours = todayDate.getHours();
+            const minutes = todayDate.getMinutes().toString().padStart(2, '0');
+            const seconds = todayDate.getSeconds().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            
+            todayTimeDisplay.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+        }
+
+        // Initialize speech recognition
+        function initSpeechRecognition() {
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'hi-IN';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onstart = function() {
+                    isRecording = true;
+                    micButton.classList.add('recording');
+                    micButton.innerHTML = '<i class="fas fa-microphone"></i> Listening...';
+                };
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    reminderText.value = transcript;
+                    isRecording = false;
+                    micButton.classList.remove('recording');
+                    micButton.innerHTML = '<i class="fas fa-microphone-alt"></i> Speak Task';
+                    
+                    // Automatically extract time
+                    setTimeout(() => {
+                        extractAndDisplayTime(transcript);
+                    }, 500);
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error', event.error);
+                    isRecording = false;
+                    micButton.classList.remove('recording');
+                    micButton.innerHTML = '<i class="fas fa-microphone-alt"></i> Speak Task';
+                    showNotification('Microphone access issue. Please allow permission.', false);
+                };
+
+                recognition.onend = function() {
+                    if (isRecording) {
+                        isRecording = false;
+                        micButton.classList.remove('recording');
+                        micButton.innerHTML = '<i class="fas fa-microphone-alt"></i> Speak Task';
+                    }
+                };
+            } else {
+                micButton.disabled = true;
+                micButton.innerHTML = '<i class="fas fa-microphone-slash"></i> Voice not supported';
+                micButton.style.opacity = '0.7';
+            }
+        }
+
+        // Extract ONLY time from text (completely ignore any date mentioned)
+        function extractTimeFromText(text) {
+            const now = todayDate;
+            const result = {
+                extractedTime: null,
+                extractedTimeText: '',
+                finalDateTime: null,
+                isValid: true,
+                errorMessage: ''
+            };
+            
+            const textLower = text.toLowerCase();
+            
+            // COMPLETELY IGNORE any date words - replace them with empty string
+            const dateWords = ['kal', 'tomorrow', 'parso', 'day after tomorrow', 'monday', 'tuesday', 
+                               'wednesday', 'thursday', 'friday', 'saturday', 'sunday', 'january',
+                               'february', 'march', 'april', 'may', 'june', 'july', 'august',
+                               'september', 'october', 'november', 'december'];
+            
+            let cleanedText = textLower;
+            dateWords.forEach(word => {
+                const regex = new RegExp(word, 'gi');
+                cleanedText = cleanedText.replace(regex, '');
+            });
+            
+            // Also remove any numbers that look like dates (e.g., 15, 25, 2023)
+            cleanedText = cleanedText.replace(/\b(\d{1,2})\b/g, '');
+            
+            // ========== TIME EXTRACTION ONLY ==========
+            let hour = null;
+            let minute = 0;
+            let period = null; // AM or PM
+            let relativeMinutes = null;
+            
+            // Check for relative time (minutes/hours from now)
+            const minuteMatch = cleanedText.match(/(\d+)\s*(minute|min)/);
+            const hourMatch = cleanedText.match(/(\d+)\s*(ghante|hour)/);
+            
+            if (minuteMatch) {
+                relativeMinutes = parseInt(minuteMatch[1]);
+                result.extractedTimeText = `${relativeMinutes} minute${relativeMinutes > 1 ? 's' : ''} from now`;
+            } else if (hourMatch) {
+                const hours = parseInt(hourMatch[1]);
+                relativeMinutes = hours * 60;
+                result.extractedTimeText = `${hours} hour${hours > 1 ? 's' : ''} from now`;
+            } else {
+                // Check for exact time with minutes (HH:MM)
+                const exactTimeMatch = text.match(/(\d+)[.:](\d+)/);
+                if (exactTimeMatch) {
+                    hour = parseInt(exactTimeMatch[1]);
+                    minute = parseInt(exactTimeMatch[2]);
+                    result.extractedTimeText = `${hour}:${minute.toString().padStart(2, '0')}`;
+                }
+                
+                // Check for exact hour (8 baje)
+                const bajeMatch = cleanedText.match(/(\d+)\s*baje/);
+                if (bajeMatch && !exactTimeMatch) {
+                    hour = parseInt(bajeMatch[1]);
+                    result.extractedTimeText = `${hour} o'clock`;
+                }
+                
+                // Check for "adhe" (half past)
+                if (cleanedText.includes('adhe')) {
+                    const adheMatch = cleanedText.match(/(\d+)\s*adhe/);
+                    if (adheMatch) {
+                        hour = parseInt(adheMatch[1]);
+                        minute = 30;
+                        result.extractedTimeText = `${hour}:30`;
+                    }
+                }
+                
+                // Check for "sava" (quarter past)
+                if (cleanedText.includes('sava')) {
+                    const savaMatch = cleanedText.match(/(\d+)\s*sava/);
+                    if (savaMatch) {
+                        hour = parseInt(savaMatch[1]);
+                        minute = 15;
+                        result.extractedTimeText = `${hour}:15`;
+                    }
+                }
+                
+                // Check for "paune" (quarter to)
+                if (cleanedText.includes('paune')) {
+                    const pauneMatch = cleanedText.match(/(\d+)\s*paune/);
+                    if (pauneMatch) {
+                        hour = parseInt(pauneMatch[1]) - 1;
+                        minute = 45;
+                        result.extractedTimeText = `${hour}:45`;
+                    }
+                }
+                
+                // Check for time period (subah, shaam, etc.)
+                if (cleanedText.includes('subah') || cleanedText.includes('morning')) {
+                    period = 'AM';
+                    if (hour === null) hour = 8; // Default morning time
+                } else if (cleanedText.includes('dopahar') || cleanedText.includes('afternoon')) {
+                    period = 'PM';
+                    if (hour === null) hour = 14; // Default 2 PM
+                } else if (cleanedText.includes('shaam') || cleanedText.includes('evening')) {
+                    period = 'PM';
+                    if (hour === null) hour = 18; // Default 6 PM
+                } else if (cleanedText.includes('raat') || cleanedText.includes('night')) {
+                    period = 'PM';
+                    if (hour === null) hour = 21; // Default 9 PM
+                } else if (cleanedText.includes('pm') && hour !== null) {
+                    period = 'PM';
+                } else if (cleanedText.includes('am') && hour !== null) {
+                    period = 'AM';
+                }
+                
+                // Adjust hour based on period for exact times
+                if (hour !== null && period === 'PM' && hour < 12) {
+                    hour += 12;
+                } else if (hour !== null && period === 'AM' && hour === 12) {
+                    hour = 0; // 12 AM is midnight
+                }
+            }
+            
+            // Calculate final date time - ALWAYS use TODAY'S date
+            let finalDateTime = new Date(todayDate);
+            
+            if (relativeMinutes !== null) {
+                // Relative time from now
+                finalDateTime = new Date(todayDate.getTime() + relativeMinutes * 60000);
+                result.extractedTime = result.extractedTimeText;
+            } else if (hour !== null) {
+                // Exact time
+                finalDateTime.setHours(hour, minute, 0, 0);
+                
+                // Format extracted time for display
+                const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+                const ampm = hour >= 12 ? 'PM' : 'AM';
+                result.extractedTime = `${displayHour}:${minute.toString().padStart(2, '0')} ${ampm}`;
+            } else {
+                // No time found
+                result.isValid = false;
+                result.errorMessage = 'No time found in your task. Please include time like "8 baje", "6:30", or "2 ghante baad"';
+                return result;
+            }
+            
+            // Check if time is in the past for TODAY
+            if (finalDateTime <= todayDate) {
+                result.isValid = false;
+                result.errorMessage = `Time ${result.extractedTime} has already passed today. Please set a future time for today.`;
+                return result;
+            }
+            
+            result.finalDateTime = finalDateTime;
+            return result;
+        }
+
+        // Extract and display time information
+        function extractAndDisplayTime(text) {
+            if (!text.trim()) {
+                reminderInfo.classList.remove('show');
+                return;
+            }
+            
+            const result = extractTimeFromText(text);
+            
+            if (!result.isValid) {
+                reminderInfo.classList.remove('show');
+                showNotification(result.errorMessage, false);
+                return;
+            }
+            
+            if (!result.finalDateTime) {
+                reminderInfo.classList.remove('show');
+                return;
+            }
+            
+            // Update reminder info display
+            extractedTimeEl.textContent = result.extractedTime;
+            finalDateTimeEl.textContent = result.finalDateTime.toLocaleString('en-IN', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            // Calculate remaining time
+            const timeDiff = result.finalDateTime.getTime() - todayDate.getTime();
+            const minutesRemaining = Math.max(0, Math.floor(timeDiff / 60000));
+            const hoursRemaining = Math.floor(minutesRemaining / 60);
+            const daysRemaining = Math.floor(hoursRemaining / 24);
+            
+            if (daysRemaining > 0) {
+                timeRemainingEl.textContent = `${daysRemaining} day${daysRemaining > 1 ? 's' : ''} ${hoursRemaining % 24} hour${hoursRemaining % 24 > 1 ? 's' : ''}`;
+            } else if (hoursRemaining > 0) {
+                timeRemainingEl.textContent = `${hoursRemaining} hour${hoursRemaining > 1 ? 's' : ''} ${minutesRemaining % 60} minute${minutesRemaining % 60 > 1 ? 's' : ''}`;
+            } else if (minutesRemaining > 0) {
+                timeRemainingEl.textContent = `${minutesRemaining} minute${minutesRemaining > 1 ? 's' : ''}`;
+            } else {
+                timeRemainingEl.textContent = 'Less than 1 minute';
+            }
+            
+            reminderInfo.classList.add('show');
+        }
+
+        // Show notification
+        function showNotification(text, isVoice = false) {
+            if (isVoice) {
+                voiceNotificationText.textContent = text;
+                voiceNotification.classList.add('show');
+                
+                setTimeout(() => {
+                    voiceNotification.classList.remove('show');
+                }, 5000);
+            } else {
+                notificationText.textContent = text;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 4000);
+            }
+        }
+
+        // Speak text
+        function speakText(text) {
+            if (speechSynthesis) {
+                speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'hi-IN';
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Add reminder for TODAY only
+        function addReminderForToday(text) {
+            const result = extractTimeFromText(text);
+            
+            if (!result.isValid) {
+                showNotification(result.errorMessage, false);
+                return null;
+            }
+            
+            if (!result.finalDateTime) {
+                showNotification('Could not extract time from your task. Please include time in your task.', false);
+                return null;
+            }
+            
+            const reminderId = Date.now();
+            const reminder = {
+                id: reminderId,
+                text: text,
+                extractedTime: result.extractedTime,
+                datetime: result.finalDateTime.getTime(),
+                active: true,
+                created: new Date().toLocaleString(),
+                dateUsed: 'TODAY'
+            };
+            
+            reminders.push(reminder);
+            saveReminders();
+            updateReminderList();
+            
+            // Calculate time difference
+            const timeDiff = result.finalDateTime.getTime() - todayDate.getTime();
+            
+            if (timeDiff > 0) {
+                const timeoutId = setTimeout(() => {
+                    triggerReminder(reminderId);
+                }, timeDiff);
+                
+                reminderTimeouts[reminderId] = timeoutId;
+            } else {
+                // This shouldn't happen due to validation, but just in case
+                showNotification('Cannot set reminder for past time. Please choose a future time for today.', false);
+                return null;
+            }
+            
+            // Show confirmation
+            const confirmMsg = `Today's reminder set for ${result.extractedTime}`;
+            showNotification(`✅ Today's reminder set! ${confirmMsg}`, false);
+            
+            // Speak confirmation
+            const speechText = `Reminder set for today at ${result.extractedTime}`;
+            speakText(speechText);
+            
+            // Clear the text area
+            reminderText.value = '';
+            reminderInfo.classList.remove('show');
+            
+            return reminderId;
+        }
+
+        // Trigger reminder
+        function triggerReminder(id) {
+            const reminderIndex = reminders.findIndex(r => r.id === id);
+            
+            if (reminderIndex !== -1) {
+                const reminder = reminders[reminderIndex];
+                reminder.active = false;
+                
+                // Show visual notification
+                notificationText.textContent = reminder.text;
+                notification.classList.add('show');
+                
+                // Speak the reminder
+                const speechText = `Today's reminder: ${reminder.text}`;
+                speakText(speechText);
+                
+                // Show voice notification
+                voiceNotificationText.textContent = `Today's Reminder: ${reminder.text.substring(0, 60)}...`;
+                voiceNotification.classList.add('show');
+                
+                // Update reminder list
+                updateReminderList();
+                
+                // Remove notifications after 8 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    voiceNotification.classList.remove('show');
+                }, 8000);
+                
+                // Remove timeout from storage
+                delete reminderTimeouts[id];
+                saveReminders();
+            }
+        }
+
+        // Update reminder list display
+        function updateReminderList() {
+            // Filter reminders for today only
+            const todayReminders = reminders.filter(reminder => {
+                const reminderDate = new Date(reminder.datetime);
+                const today = new Date();
+                return reminderDate.getDate() === today.getDate() &&
+                       reminderDate.getMonth() === today.getMonth() &&
+                       reminderDate.getFullYear() === today.getFullYear();
+            });
+            
+            if (todayReminders.length === 0) {
+                reminderList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-day"></i>
+                        <h3>No Today's Reminders Yet</h3>
+                        <p>Speak or type a task with time above</p>
+                    </div>
+                `;
+                updateStats();
+                return;
+            }
+            
+            // Sort reminders by time (soonest first)
+            const sortedReminders = [...todayReminders].sort((a, b) => a.datetime - b.datetime);
+            
+            let html = '';
+            const now = Date.now();
+            
+            sortedReminders.forEach(reminder => {
+                const isActive = reminder.active;
+                const reminderDate = new Date(reminder.datetime);
+                const timeDiff = reminder.datetime - now;
+                const minutesRemaining = Math.max(0, Math.floor(timeDiff / 60000));
+                const hoursRemaining = Math.floor(minutesRemaining / 60);
+                
+                let timeRemainingText = '';
+                if (isActive) {
+                    if (hoursRemaining > 0) {
+                        timeRemainingText = `${hoursRemaining}h ${minutesRemaining % 60}m`;
+                    } else if (minutesRemaining > 0) {
+                        timeRemainingText = `${minutesRemaining} minutes`;
+                    } else {
+                        timeRemainingText = 'Less than 1 minute';
+                    }
+                }
+                
+                html += `
+                    <div class="reminder-item ${isActive ? 'active' : 'completed'}">
+                        <div class="reminder-text">${reminder.text}</div>
+                        <div class="reminder-extracted">
+                            <i class="fas fa-calendar-day"></i>
+                            DATE: TODAY ONLY | Time: ${reminder.extractedTime}
+                        </div>
+                        <div class="reminder-time">
+                            <i class="far fa-clock"></i>
+                            ${reminderDate.toLocaleTimeString('en-IN', {hour: '2-digit', minute:'2-digit'})}
+                        </div>
+                        <div class="reminder-date">
+                            <i class="far fa-calendar"></i>
+                            ${reminderDate.toLocaleDateString('en-IN', {weekday: 'long', day: 'numeric', month: 'long'})}
+                        </div>
+                        ${isActive ? `
+                            <div class="time-badge">
+                                <i class="fas fa-hourglass-half"></i>
+                                ${timeRemainingText} remaining
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            reminderList.innerHTML = html;
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            const todayReminders = reminders.filter(reminder => {
+                const reminderDate = new Date(reminder.datetime);
+                const today = new Date();
+                return reminderDate.getDate() === today.getDate() &&
+                       reminderDate.getMonth() === today.getMonth() &&
+                       reminderDate.getFullYear() === today.getFullYear();
+            });
+            
+            const activeReminders = todayReminders.filter(r => r.active).length;
+            
+            totalRemindersEl.textContent = todayReminders.length;
+            activeRemindersEl.textContent = activeReminders;
+        }
+
+        // Save reminders to localStorage
+        function saveReminders() {
+            localStorage.setItem('todayOnlyReminders', JSON.stringify(reminders));
+        }
+
+        // Load reminders from localStorage
+        function loadReminders() {
+            const saved = localStorage.getItem('todayOnlyReminders');
+            if (saved) {
+                reminders = JSON.parse(saved);
+                
+                const now = Date.now();
+                const today = new Date();
+                
+                reminders.forEach(reminder => {
+                    const reminderDate = new Date(reminder.datetime);
+                    const isToday = reminderDate.getDate() === today.getDate() &&
+                                   reminderDate.getMonth() === today.getMonth() &&
+                                   reminderDate.getFullYear() === today.getFullYear();
+                    
+                    if (reminder.active && isToday) {
+                        if (reminder.datetime < now) {
+                            // Time has passed, mark as completed
+                            reminder.active = false;
+                        } else {
+                            // Set timeout for future reminders
+                            const timeDiff = reminder.datetime - now;
+                            if (timeDiff > 0) {
+                                const timeoutId = setTimeout(() => {
+                                    triggerReminder(reminder.id);
+                                }, timeDiff);
+                                
+                                reminderTimeouts[reminder.id] = timeoutId;
+                            }
+                        }
+                    } else if (!isToday) {
+                        // Remove reminders that are not for today
+                        reminder.active = false;
+                    }
+                });
+                
+                updateReminderList();
+            }
+        }
+
+        // Clear all reminders
+        function clearAllReminders() {
+            if (reminders.length === 0) {
+                showNotification('No reminders to clear', false);
+                return;
+            }
+            
+            if (confirm('Are you sure you want to clear ALL reminders?')) {
+                Object.values(reminderTimeouts).forEach(timeoutId => {
+                    clearTimeout(timeoutId);
+                });
+                
+                reminderTimeouts = {};
+                reminders = [];
+                saveReminders();
+                updateReminderList();
+                showNotification('All reminders cleared successfully', false);
+                speakText("All reminders cleared");
+            }
+        }
+
+        // Example usage function
+        function useExample(element) {
+            const exampleText = element.querySelector('.example-text').textContent;
+            reminderText.value = exampleText;
+            
+            // Extract and display time
+            extractAndDisplayTime(exampleText);
+            
+            // Scroll to top
+            reminderText.focus();
+            
+            showNotification('Example loaded. Click "Set Today\'s Reminder" to set it!', false);
+        }
+
+        // Event Listeners
+        micButton.addEventListener('click', function() {
+            if (!recognition) {
+                showNotification('Voice input not supported in your browser', false);
+                return;
+            }
+            
+            if (isRecording) {
+                recognition.stop();
+                isRecording = false;
+                micButton.classList.remove('recording');
+                micButton.innerHTML = '<i class="fas fa-microphone-alt"></i> Speak Task';
+            } else {
+                try {
+                    recognition.start();
+                } catch (error) {
+                    showNotification('Please allow microphone access', false);
+                }
+            }
+        });
+
+        setReminderBtn.addEventListener('click', function() {
+            const text = reminderText.value.trim();
+            
+            if (!text) {
+                showNotification('Please speak or type a task with time', false);
+                return;
+            }
+            
+            addReminderForToday(text);
+        });
+
+        reminderText.addEventListener('input', function() {
+            extractAndDisplayTime(this.value);
+        });
+
+        clearAllBtn.addEventListener('click', clearAllReminders);
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            // Initialize today's date & time display
+            updateTodayDateTime();
+            setInterval(updateTodayDateTime, 1000);
+            
+            // Initialize speech recognition
+            initSpeechRecognition();
+            
+            // Load saved reminders
+            loadReminders();
+            
+            // Request microphone permission
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function(stream) {
+                        console.log('Microphone access granted');
+                        stream.getTracks().forEach(track => track.stop());
+                    })
+                    .catch(function(error) {
+                        console.log('Microphone access error:', error);
+                    });
+            }
+            
+            // Show welcome message
+            setTimeout(() => {
+                showNotification('✅ TODAY-ONLY Reminder System Ready! All reminders use today\'s date only!', false);
+                speakText("Today only reminder system ready. All reminders will use today's date only.");
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

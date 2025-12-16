@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}Course Notes{% endblock %}
+
+{% block content %}
+<div class="container mt-3 mt-md-4">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+        <div class="mb-3 mb-md-0">
+            <h2 class="fw-bold text-primary mb-1">Course Notes</h2>
+            <p class="text-muted mb-0">Access notes for your enrolled courses</p>
+        </div>
+        {% if enrolled_courses %}
+        <div class="dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle d-flex align-items-center" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-filter me-2"></i>
+                <span>Filter by Course</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="filterDropdown">
+                <li><a class="dropdown-item active" href="#" data-course="all">All Courses</a></li>
+                {% for course in enrolled_courses %}
+                <li><a class="dropdown-item" href="#" data-course="{{ course.id }}">{{ course.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if enrolled_courses %}
+        <!-- Notes List -->
+        <div class="table-responsive" id="notes-container">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Course</th>
+                        <th scope="col">Topic</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Uploaded At</th>
+                        <th scope="col">File Size</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for note in notes %}
+                    <tr class="note-row" data-course="{{ note.course.id }}">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="course-icon me-2">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ note.course.title }}</div>
+                                    <small class="text-muted">{{ note.course.code }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <h6 class="mb-0 fw-bold">{{ note.topic }}</h6>
+                        </td>
+                        <td>
+                            <p class="mb-0 text-muted small">{{ note.description|truncatewords:20 }}</p>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center text-muted small">
+                                <i class="far fa-calendar me-1"></i>
+                                <span>{{ note.uploaded_at|date:"M d, Y" }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if note.file %}
+                            <div class="d-flex align-items-center text-muted small">
+                                <i class="far fa-file me-1"></i>
+                                <span>{{ note.file.size|filesizeformat }}</span>
+                            </div>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if note.file %}
+                            <a href="{{ note.file.url }}" class="btn btn-primary btn-sm" download title="Download Note">
+                                <i class="fas fa-download"></i>
+                            </a>
+                            {% else %}
+                            <div class="text-warning small">
+                                <i class="fas fa-exclamation-triangle me-1"></i>File not available
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="alert alert-info text-center py-5 mb-0" role="alert">
+                                <div class="mb-3">
+                                    <i class="fas fa-book-open fa-3x text-info mb-3"></i>
+                                </div>
+                                <h5 class="fw-bold">No notes available</h5>
+                                <p class="mb-2">You are enrolled in {{ enrolled_courses|length }} course(s), but no notes have been uploaded yet.</p>
+                                <p class="mb-0 text-muted">Check back later or contact your instructor.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- No Results Message (Hidden by default) -->
+        <div class="d-none" id="no-results">
+            <div class="alert alert-warning text-center py-5" role="alert">
+                <div class="mb-3">
+                    <i class="fas fa-search fa-3x text-warning mb-3"></i>
+                </div>
+                <h5 class="fw-bold">No notes found</h5>
+                <p class="mb-0">There are no notes available for the selected course filter.</p>
+            </div>
+        </div>
+    {% else %}
+        <!-- No Enrolled Courses Message -->
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="alert alert-warning text-center py-5" role="alert">
+                    <div class="mb-3">
+                        <i class="fas fa-graduation-cap fa-3x text-warning mb-3"></i>
+                    </div>
+                    <h5 class="fw-bold">No enrolled courses</h5>
+                    <p class="mb-3">You need to enroll in courses to access their notes.</p>
+                    <a href="{% url 'courses' %}" class="btn btn-primary px-4">
+                        <i class="fas fa-book me-2"></i>Browse Courses
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+
+
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3a0ca3;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
+    }
+
+    .course-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(67, 97, 238, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        color: var(--primary);
+    }
+
+    .btn {
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        border: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--secondary), var(--primary));
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+    }
+
+    .btn-outline-primary {
+        border: 1.5px solid var(--primary);
+        color: var(--primary);
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary);
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .dropdown-item.active {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+    }
+
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(67, 97, 238, 0.05);
+    }
+
+    /* Mobile Optimizations */
+    @media (max-width: 768px) {
+        .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .dropdown-menu {
+            width: 100%;
+        }
+
+        .modal-dialog {
+            margin: 1rem;
+        }
+
+        .course-icon {
+            width: 28px;
+            height: 28px;
+            font-size: 0.8rem;
+        }
+
+        .btn-group-sm .btn {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .table-responsive {
+            font-size: 0.8rem;
+        }
+
+        .btn {
+            font-size: 0.875rem;
+        }
+
+        .btn i {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Course filter functionality
+        const filterDropdownItems = document.querySelectorAll('.dropdown-item[data-course]');
+        const noteRows = document.querySelectorAll('.note-row');
+        const noResults = document.getElementById('no-results');
+        const notesContainer = document.getElementById('notes-container');
+        const filterButton = document.querySelector('#filterDropdown');
+
+        filterDropdownItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Update active state
+                filterDropdownItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+
+                // Update button text
+                const courseName = this.textContent;
+                if (this.getAttribute('data-course') === 'all') {
+                    filterButton.innerHTML = '<i class="fas fa-filter me-2"></i><span>Filter by Course</span>';
+                } else {
+                    filterButton.innerHTML = `<i class="fas fa-filter me-2"></i><span>${courseName}</span>`;
+                }
+
+                const selectedCourse = this.getAttribute('data-course');
+
+                // Show/hide notes with animation
+                let visibleCount = 0;
+                noteRows.forEach(row => {
+                    if (selectedCourse === 'all' || row.getAttribute('data-course') === selectedCourse) {
+                        row.style.display = '';
+                        visibleCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Show no results message if needed
+                if (visibleCount === 0) {
+                    notesContainer.classList.add('d-none');
+                    noResults.classList.remove('d-none');
+                } else {
+                    notesContainer.classList.remove('d-none');
+                    noResults.classList.add('d-none');
+                }
+            });
+        });
+
+
+
+        // Add loading animation to download buttons
+        document.querySelectorAll('a[href*="download"]').forEach(link => {
+            link.addEventListener('click', function() {
+                const originalContent = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i><span>Downloading...</span>';
+                this.classList.add('disabled');
+
+                setTimeout(() => {
+                    this.innerHTML = originalContent;
+                    this.classList.remove('disabled');
+                }, 2000);
+            });
+        });
+    });
+</script>
+{% endblock %}

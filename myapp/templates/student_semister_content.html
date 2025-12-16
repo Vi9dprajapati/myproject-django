@@ -1,0 +1,767 @@
+{% extends 'base.html' %}
+
+{% block title %}Semester Content - EduAI{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --neon-green: #00ff88;
+        --dark-green: #077b32;
+        --light-green: #05a645;
+        --gradient-start: #0EC9C8;
+        --gradient-end: #25F0E5;
+    }
+    
+    body {
+        background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+        background-size: cover;
+        color: white;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1400px;
+    }
+
+    /* Cyberpunk Header */
+    .page-header {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 
+            0 0 25px rgba(14, 201, 200, 0.7),
+            0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        padding: 20px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+    }
+
+    .page-header h2 {
+        color: #25F0E5;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-shadow: 0 0 8px rgba(37, 240, 229, 0.5);
+    }
+
+    .page-header .lead {
+        color: #aaa;
+        font-size: 0.9rem;
+    }
+
+    .current-semester-badge {
+        background: linear-gradient(90deg, rgba(14, 201, 200, 0.3), rgba(37, 240, 229, 0.3));
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+
+    /* Filters Card */
+    .card {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 
+            0 0 25px rgba(14, 201, 200, 0.7),
+            0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        color: white;
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)) !important;
+        border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+        color: white !important;
+        padding: 15px;
+    }
+
+    .card-header h5 {
+        color: white !important;
+        font-weight: 600;
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-body {
+        background: rgba(10, 10, 10, 0.8);
+    }
+
+    /* Form Controls */
+    .form-control, .form-select {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        border-radius: 8px;
+        color: white;
+        padding: 8px 10px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--gradient-end);
+        box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+    }
+
+    .form-label {
+        color: #0EC9C8;
+        font-weight: 600;
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    /* Buttons */
+    .btn-primary {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        border-radius: 8px;
+        padding: 8px 15px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+        transform: translateY(-1px);
+        box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+    }
+
+    .btn-outline-secondary {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        color: #0EC9C8;
+        border-radius: 8px;
+        padding: 8px 15px;
+    }
+
+    .btn-outline-secondary:hover {
+        background: rgba(14, 201, 200, 0.1);
+        color: #25F0E5;
+    }
+
+    /* Content Cards */
+    .content-card {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 
+            0 0 25px rgba(14, 201, 200, 0.7),
+            0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .content-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 
+            0 0 30px rgba(37, 240, 229, 0.8),
+            0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .content-card .card-header {
+        background: rgba(0, 0, 0, 0.6) !important;
+        border-bottom: 1px solid rgba(14, 201, 200, 0.3);
+    }
+
+    .content-type-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .content-card .card-title {
+        color: #25F0E5;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .content-details {
+        background: rgba(0, 0, 0, 0.5);
+        padding: 8px;
+        border-radius: 6px;
+        border-left: 2px solid var(--gradient-start);
+        font-size: 12px;
+    }
+
+    .content-details strong {
+        color: #0EC9C8;
+    }
+
+    .content-details span {
+        color: #aaa;
+    }
+
+    .content-card .card-text {
+        color: #ccc;
+        font-size: 13px;
+    }
+
+    /* Badges */
+    .badge {
+        background: linear-gradient(90deg, rgba(14, 201, 200, 0.3), rgba(37, 240, 229, 0.3));
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        color: white;
+        font-weight: 500;
+        font-size: 11px;
+    }
+
+    /* Action Buttons */
+    .view-btn, .download-btn {
+        border-radius: 8px;
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .view-btn {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        color: #0EC9C8;
+    }
+
+    .view-btn:hover {
+        background: rgba(14, 201, 200, 0.1);
+        color: #25F0E5;
+    }
+
+    .download-btn {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        color: white;
+    }
+
+    .download-btn:hover {
+        background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+        color: white;
+    }
+
+    /* Teacher Info */
+    .teacher-avatar img, .teacher-avatar div {
+        border: 1px solid rgba(14, 201, 200, 0.5);
+    }
+
+    .teacher-avatar div {
+        background: rgba(0, 0, 0, 0.5);
+        color: #0EC9C8;
+    }
+
+    .teacher-info small {
+        color: #aaa;
+        font-size: 11px;
+    }
+
+    .teacher-info strong {
+        color: #0EC9C8;
+    }
+
+    /* Empty State */
+    .empty-state {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        padding: 40px 20px;
+    }
+
+    .empty-state i {
+        color: #25F0E5;
+        text-shadow: 0 0 15px rgba(37, 240, 229, 0.5);
+    }
+
+    .empty-state h4 {
+        color: #25F0E5;
+        font-weight: 600;
+    }
+
+    .empty-state p {
+        color: #aaa;
+    }
+
+    /* Alert */
+    .alert-warning {
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #f59e0b;
+        border-radius: 8px;
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    /* Modal */
+    .modal-content {
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        border-radius: 12px;
+        box-shadow: 
+            0 0 30px rgba(37, 240, 229, 0.8),
+            0 12px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+        color: white;
+    }
+
+    .modal-title {
+        color: white;
+        font-weight: 600;
+    }
+
+    .btn-close-white {
+        filter: brightness(0) invert(1);
+    }
+
+    .modal-body {
+        background: rgba(10, 10, 10, 0.8);
+    }
+
+    #document-viewer {
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        border: 1px solid rgba(14, 201, 200, 0.3);
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header, .card, .content-card {
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+        50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+    }
+
+    .page-header, .card, .content-card {
+        animation: pulseGlow 3s infinite ease-in-out;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .container {
+            padding: 10px;
+        }
+        
+        .page-header {
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .card-header {
+            padding: 12px;
+        }
+        
+        .card-body {
+            padding: 15px !important;
+        }
+        
+        .form-control, .form-select {
+            padding: 6px 8px;
+            font-size: 13px;
+        }
+        
+        .btn-primary {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        
+        .content-card .card-title {
+            font-size: 0.9rem;
+        }
+        
+        .content-details {
+            font-size: 11px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container {
+            padding: 8px;
+        }
+        
+        .page-header {
+            padding: 12px;
+        }
+        
+        .row.g-2 {
+            margin-left: -5px;
+            margin-right: -5px;
+        }
+        
+        .col-12 {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+    }
+
+    /* Platform Info */
+    .platform-info {
+        color: white;
+        text-align: center;
+        margin-top: 20px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .platform-info p {
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #25F0E5;
+        font-size: 14px;
+    }
+
+    .platform-info small {
+        opacity: 0.8;
+        font-size: 11px;
+    }
+</style>
+
+<div class="container mt-3 mt-md-4">
+    <!-- Page Header -->
+    <div class="page-header mb-3 mb-md-4">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-8 mb-2 mb-md-0">
+                <h2 class="fw-bold mb-1">Semester Content</h2>
+                <p class="lead mb-0">Welcome, {{ student_profile.user.first_name }}! Here is the content for your semester.</p>
+            </div>
+            <div class="col-12 col-md-4 text-md-end">
+                <div class="current-semester-badge">
+                    <span class="me-1">Current Semester:</span>
+                    <span class="fw-bold">{{ student_profile.semester }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Card -->
+    <div class="card mb-3 mb-md-4">
+        <div class="card-header py-2 py-md-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <h5 class="mb-0 fw-bold"><i class="fas fa-filter me-2"></i>Filter Content</h5>
+                <button type="button" class="btn btn-sm btn-light d-md-none" id="filterToggle">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-2 p-md-3" id="filterBody">
+            <form method="get" class="row g-2 g-md-3">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <label for="department" class="form-label">Department</label>
+                    <select name="department" id="department" class="form-select form-select-sm">
+                        <option value="">All Departments</option>
+                        {% for dept in departments %}
+                            <option value="{{ dept }}" {% if dept == department_filter %}selected{% endif %}>{{ dept }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <label for="semester" class="form-label">Semester</label>
+                    <select name="semester" id="semester" class="form-select form-select-sm">
+                        <option value="">All Semesters</option>
+                        {% for sem in semesters %}
+                            <option value="{{ sem }}" {% if sem|stringformat:"s" == semester_filter %}selected{% endif %}>{{ sem }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <label for="section" class="form-label">Section</label>
+                    <select name="section" id="section" class="form-select form-select-sm">
+                        <option value="">All Sections</option>
+                        {% for sec in sections %}
+                            <option value="{{ sec }}" {% if sec == section_filter %}selected{% endif %}>{{ sec }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <label for="year" class="form-label">Year</label>
+                    <select name="year" id="year" class="form-select form-select-sm">
+                        <option value="">All Years</option>
+                        {% for yr in years %}
+                            <option value="{{ yr }}" {% if yr|stringformat:"s" == year_filter %}selected{% endif %}>{{ yr }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <label for="subject" class="form-label">Subject</label>
+                    <input type="text" name="subject" id="subject" class="form-control form-control-sm" value="{{ subject_filter }}" placeholder="Search subject">
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <label for="content_type" class="form-label">Content Type</label>
+                    <select name="content_type" id="content_type" class="form-select form-control-sm">
+                        <option value="">All Content Types</option>
+                        {% for ct in content_types %}
+                            <option value="{{ ct }}" {% if ct == content_type_filter %}selected{% endif %}>{{ ct }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12">
+                    <div class="d-flex flex-column flex-sm-row gap-2 pt-2 pt-md-3 border-top">
+                        <button type="submit" class="btn btn-primary btn-sm d-flex align-items-center justify-content-center flex-fill">
+                            <i class="fas fa-filter me-2"></i>Apply Filters
+                        </button>
+                        <a href="{% url 'student_semister_content' %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center flex-fill">
+                            <i class="fas fa-times me-2"></i>Clear Filters
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Content Display -->
+    <div class="row g-2 g-md-3" id="content-container">
+        {% if contents %}
+            {% for content in contents %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card content-card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-start py-2 py-md-3">
+                            <div class="flex-grow-1 me-2">
+                                <div class="d-flex align-items-center mb-1 mb-md-2">
+                                    <div class="content-type-icon me-2">
+                                        <i class="fas 
+                                            {% if content.content_type == 'notes' %}fa-sticky-note
+                                            {% elif content.content_type == 'papers' %}fa-file-alt
+                                            {% elif content.content_type == 'assignments' %}fa-tasks
+                                            {% elif content.content_type == 'syllabus' %}fa-clipboard-list
+                                            {% elif content.content_type == 'presentations' %}fa-desktop
+                                            {% elif content.content_type == 'labs' %}fa-flask
+                                            {% else %}fa-file{% endif %}">
+                                        </i>
+                                    </div>
+                                    <h6 class="mb-0 fw-bold text-truncate">{{ content.get_content_type_display }}</h6>
+                                </div>
+                                <h5 class="card-title fw-bold mb-0">{{ content.subject }}</h5>
+                            </div>
+                            <span class="badge">{{ content.content_type }}</span>
+                        </div>
+                        <div class="card-body d-flex flex-column p-2 p-md-3">
+                            <!-- Details Line -->
+                            <div class="content-details mb-2 mb-md-3">
+                                <p class="mb-0">
+                                    <strong>Dept:</strong> {{ content.department }} 
+                                    <span class="d-none d-sm-inline">|</span>
+                                    <strong>Sem:</strong> {{ content.semester }}
+                                    <span class="d-none d-sm-inline">|</span>
+                                    <strong>Sec:</strong> {{ content.section }}
+                                    <span class="d-none d-sm-inline">|</span>
+                                    <strong>Year:</strong> {{ content.year }}
+                                </p>
+                            </div>
+                            
+                            {% if content.description %}
+                                <p class="card-text flex-grow-1">{{ content.description|truncatewords:20 }}</p>
+                            {% else %}
+                                <p class="card-text text-muted flex-grow-1">No description available</p>
+                            {% endif %}
+                            
+                            <div class="mt-auto">
+                                <!-- Action Buttons -->
+                                {% if content.file %}
+                                    <div class="d-grid gap-1 gap-md-2 mb-2 mb-md-3">
+                                        <a href="{{ content.file.url }}" target="_blank" class="btn view-btn d-flex align-items-center justify-content-center" data-file-url="{{ content.file.url }}">
+                                            <i class="fas fa-eye me-1 me-md-2"></i>
+                                            <span>View</span>
+                                        </a>
+                                        <a href="{{ content.file.url }}" download class="btn btn-primary d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-download me-1 me-md-2"></i>
+                                            <span>Download</span>
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-warning py-1 px-2 mt-2 d-flex align-items-center" role="alert">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        File not available
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Uploader Info -->
+                                <div class="d-flex align-items-center pt-2 border-top">
+                                    <div class="teacher-avatar me-2">
+                                        {% if content.profile_photo %}
+                                            <img src="{{ content.profile_photo.url }}" alt="{{ content.teacher_name }}" class="rounded-circle" width="32" height="32">
+                                        {% else %}
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1 teacher-info">
+                                        <small class="d-block">
+                                            By: <strong>{{ content.teacher_name }}</strong>
+                                        </small>
+                                        <small class="d-block">
+                                            Submission Date: {{ content.uploaded_at|date:"M d, Y" }}
+                                        </small>
+                                        {% if content.submission_data %}
+                                            <small class="d-block">
+                                                Submission Data: {{ content.submission_data|truncatewords:10 }}
+                                            </small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="empty-state text-center py-4 py-md-5">
+                    <div class="mb-3 mb-md-4">
+                        <i class="fas fa-folder-open fa-3x fa-4x mb-2 mb-md-3"></i>
+                    </div>
+                    <h4 class="fw-bold h5 h4-md">No Content Available</h4>
+                    <p class="mb-3 mb-md-4">No content found for the selected filters. Try adjusting your filters or check back later.</p>
+                    <a href="{% url 'student_semister_content' %}" class="btn btn-primary">
+                        <i class="fas fa-redo me-2"></i>Reset Filters
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Platform Info -->
+    <div class="platform-info mt-4">
+        <p class="mb-2">EduAI - AI-Powered Learning Platform</p>
+        <small>© 2025 EduAI. All rights reserved.</small>
+    </div>
+</div>
+
+<!-- Mobile Document Viewer Modal -->
+<div class="modal fade" id="documentViewerModal" tabindex="-1" aria-labelledby="documentViewerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header py-2 py-md-3">
+                <h5 class="modal-title fw-bold h6 h5-md" id="documentViewerModalLabel">
+                    <i class="fas fa-eye me-2"></i>Document Viewer
+                </h5>
+                <div class="d-flex align-items-center gap-1">
+                    <button class="btn btn-sm btn-light d-none d-md-inline-flex" id="zoom-out-btn">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <button class="btn btn-sm btn-light d-none d-md-inline-flex" id="zoom-in-btn">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+                    <a href="#" class="btn btn-sm btn-light d-flex align-items-center" id="download-from-viewer">
+                        <i class="fas fa-download me-1"></i>
+                        <span class="d-none d-md-inline">Download</span>
+                    </a>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="modal-body p-0 d-flex flex-column">
+                <div class="d-flex align-items-center justify-content-between p-2 p-md-3 border-bottom">
+                    <div class="flex-grow-1 me-2">
+                        <h6 class="fw-bold mb-0" id="viewer-file-name">Document Preview</h6>
+                        <small class="text-muted" id="viewer-content-info">Loading document...</small>
+                    </div>
+                    <div class="d-flex gap-1 d-md-none">
+                        <button class="btn btn-sm btn-outline-secondary" id="mobile-zoom-out">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" id="mobile-zoom-in">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="document-viewer" class="flex-grow-1 p-2 p-md-3" style="min-height: 0; overflow: auto;">
+                    <div class="text-center py-4 py-md-5">
+                        <div class="spinner-border" role="status" style="color: #25F0E5;">
+                            <span class="visually-hidden">Loading document...</span>
+                        </div>
+                        <p class="text-muted">Loading document viewer...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile filter toggle
+        const filterToggle = document.getElementById('filterToggle');
+        const filterBody = document.getElementById('filterBody');
+        
+        if (filterToggle && filterBody) {
+            filterToggle.addEventListener('click', function() {
+                filterBody.classList.toggle('show');
+                const icon = this.querySelector('i');
+                if (filterBody.classList.contains('show')) {
+                    icon.className = 'fas fa-chevron-up';
+                } else {
+                    icon.className = 'fas fa-chevron-down';
+                }
+            });
+        }
+        
+        // Mobile document viewer
+        const viewButtons = document.querySelectorAll('.view-btn');
+        const documentViewerModal = new bootstrap.Modal(document.getElementById('documentViewerModal'));
+        const documentViewer = document.getElementById('document-viewer');
+        
+        viewButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const fileUrl = this.getAttribute('data-file-url');
+                
+                // For mobile, simply open in new tab for better experience
+                if (window.innerWidth <= 768) {
+                    window.open(fileUrl, '_blank');
+                } else {
+                    // Desktop view in modal
+                    window.open(fileUrl, '_blank');
+                }
+            });
+        });
+        
+        // Add glow effect to cards on hover
+        const cards = document.querySelectorAll('.content-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 0 30px rgba(37, 240, 229, 0.8), 0 12px 40px rgba(0, 0, 0, 0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.boxShadow = '0 0 25px rgba(14, 201, 200, 0.7), 0 8px 32px rgba(0, 0, 0, 0.1)';
+            });
+        });
+        
+        // Mobile-specific optimizations
+        if (window.innerWidth <= 768) {
+            // Hide filters by default on mobile
+            if (filterBody) {
+                filterBody.style.display = 'none';
+            }
+        }
+    });
+</script>
+{% endblock %}

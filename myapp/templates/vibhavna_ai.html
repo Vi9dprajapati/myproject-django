@@ -1,0 +1,1431 @@
+{% extends 'base.html' %}
+
+{% block title %}Vibhavna AI Chatbot{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --neon-green: #00ff88;
+        --dark-green: #077b32;
+        --light-green: #05a645;
+        --gradient-start: #0EC9C8;
+        --gradient-end: #25F0E5;
+    }
+    
+    body {
+        background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+       
+        background-size: cover;
+        color: white;
+    }
+
+    .container-fluid {
+        padding: 20px;
+    }
+
+    /* Cyberpunk Card */
+    .chat-card {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 
+            0 0 25px rgba(14, 201, 200, 0.7),
+            0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        color: white;
+    }
+    
+    .chat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 
+            0 0 30px rgba(37, 240, 229, 0.8),
+            0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Header */
+    .card-header {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)) !important;
+        color: white !important;
+        padding: 15px !important;
+        text-align: center;
+        border-bottom: 1px solid rgba(37, 240, 229, 0.5) !important;
+        border: none !important;
+    }
+    
+    .card-header i {
+        color: white;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .card-title {
+        font-weight: 500;
+        color: white;
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Dashboard Menu */
+    .dashboard-menu {
+        background: rgba(10, 10, 10, 0.8) !important;
+        border-bottom: 1px solid rgba(14, 201, 200, 0.3) !important;
+    }
+    
+    /* Quick Actions */
+    .quick-actions {
+        background: rgba(0, 0, 0, 0.6) !important;
+        border-bottom: 1px solid rgba(14, 201, 200, 0.3) !important;
+    }
+    
+    /* Chat Wrapper */
+    .chat-wrapper {
+        background: rgba(10, 10, 10, 0.8);
+    }
+    
+    /* Form Elements */
+    .form-select, .form-control {
+        border-radius: 8px !important;
+        border: 1px solid rgba(14, 201, 200, 0.5) !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        color: white !important;
+        transition: all 0.3s ease;
+    }
+    
+    .form-select:focus, .form-control:focus {
+        border-color: var(--gradient-end) !important;
+        box-shadow: 0 0 10px rgba(37, 240, 229, 0.7) !important;
+        background: rgba(0, 0, 0, 0.7) !important;
+        color: white !important;
+    }
+    
+    /* Buttons */
+    .btn-primary {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end)) !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 8px 15px !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 0 10px rgba(14, 201, 200, 0.5) !important;
+        color: white !important;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start)) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 0 15px rgba(37, 240, 229, 0.7) !important;
+    }
+    
+    .btn-outline-primary, .btn-outline-success, .btn-outline-info, 
+    .btn-outline-warning, .btn-outline-dark, .btn-outline-secondary {
+        border: 1px solid rgba(14, 201, 200, 0.5) !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        color: white !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .btn-outline-primary:hover, .btn-outline-success:hover, .btn-outline-info:hover,
+    .btn-outline-warning:hover, .btn-outline-dark:hover, .btn-outline-secondary:hover {
+        background: rgba(14, 201, 200, 0.2) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    /* Chat Messages */
+    .chat-container {
+        background: rgba(0, 0, 0, 0.6) !important;
+        border: 1px solid rgba(14, 201, 200, 0.3) !important;
+        border-radius: 12px !important;
+    }
+    
+    .chat-messages {
+        background: transparent !important;
+    }
+    
+    /* Message Bubbles */
+    .message {
+        display: flex;
+        margin-bottom: 1.5rem;
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .message-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+        color: white;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 8px rgba(14, 201, 200, 0.3);
+    }
+    
+    .user-message .message-avatar {
+        background: linear-gradient(90deg, #25F0E5, #0EC9C8);
+    }
+    
+    .user-message {
+        justify-content: flex-end;
+    }
+    
+    .user-message .message-content {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+        border-radius: 20px 20px 6px 20px;
+        padding: 1rem 1.25rem;
+        max-width: 75%;
+        margin-left: auto;
+        box-shadow: 0 4px 12px rgba(14, 201, 200, 0.2);
+    }
+    
+    .bot-message .message-content {
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border-radius: 20px 20px 20px 6px;
+        padding: 1rem 1.25rem;
+        max-width: 90%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+    }
+    
+    .message-text {
+        margin-bottom: 0.5rem;
+        line-height: 1.5;
+        word-wrap: break-word;
+    }
+    
+    .message-time {
+        font-size: 0.75rem;
+        opacity: 0.7;
+        color: #0EC9C8;
+    }
+    
+    /* Quick Actions Grid */
+    .quick-actions .btn {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.25rem;
+        white-space: nowrap;
+        border-radius: 8px !important;
+    }
+    
+    /* Format Badges */
+    .format-examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0.5rem 0;
+    }
+    
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 8px;
+        background: rgba(37, 240, 229, 0.2) !important;
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        color: white;
+    }
+    
+    .bg-quiz { background: linear-gradient(90deg, rgba(220, 53, 69, 0.3), rgba(200, 35, 51, 0.3)) !important; }
+    .bg-list { background: linear-gradient(90deg, rgba(40, 167, 69, 0.3), rgba(30, 126, 52, 0.3)) !important; }
+    .bg-table { background: linear-gradient(90deg, rgba(23, 162, 184, 0.3), rgba(19, 132, 150, 0.3)) !important; }
+    .bg-steps { background: linear-gradient(90deg, rgba(255, 193, 7, 0.3), rgba(224, 168, 0, 0.3)) !important; color: white !important; }
+    .bg-explanation { background: linear-gradient(90deg, rgba(111, 66, 193, 0.3), rgba(90, 45, 156, 0.3)) !important; }
+    
+    /* Content Format Styles */
+    .content-quiz, .content-list, .content-table, .content-steps, .content-explanation {
+        position: relative;
+        background: rgba(0, 0, 0, 0.5) !important;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border-left: 4px solid;
+        box-shadow: 0 2px 8px rgba(14, 201, 200, 0.1);
+    }
+    
+    .content-quiz { border-left-color: #dc3545; }
+    .content-list { border-left-color: #28a745; }
+    .content-table { border-left-color: #17a2b8; }
+    .content-steps { border-left-color: #ffc107; }
+    .content-explanation { border-left-color: #6f42c1; }
+    
+    /* Copy Button */
+    .copy-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        opacity: 0;
+        transition: all 0.2s ease;
+        background: rgba(14, 201, 200, 0.2);
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        border-radius: 6px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        color: white;
+    }
+    
+    .message-content:hover .copy-btn,
+    .content-quiz:hover .copy-btn,
+    .content-list:hover .copy-btn,
+    .content-table:hover .copy-btn,
+    .content-steps:hover .copy-btn,
+    .content-explanation:hover .copy-btn {
+        opacity: 1;
+    }
+    
+    .copy-btn:hover {
+        background: rgba(37, 240, 229, 0.3);
+        border-color: #25F0E5;
+    }
+    
+    .copy-btn.copied {
+        background: rgba(40, 167, 69, 0.3);
+        border-color: #28a745;
+    }
+    
+    /* Quiz Specific */
+    .quiz-question {
+        font-weight: 600;
+        color: #25F0E5;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+    }
+    
+    .quiz-options {
+        display: grid;
+        gap: 0.5rem;
+        margin-left: 1rem;
+    }
+    
+    .quiz-option {
+        padding: 0.5rem;
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        transition: all 0.2s ease;
+        color: white;
+    }
+    
+    .quiz-option:hover {
+        background: rgba(14, 201, 200, 0.1);
+        transform: translateX(4px);
+    }
+    
+    /* Steps */
+    .step-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        border-left: 3px solid #ffc107;
+    }
+    
+    .step-number {
+        background: rgba(255, 193, 7, 0.3);
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+    
+    /* Tables */
+    .structured-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        color: white;
+    }
+    
+    .structured-table th {
+        background: linear-gradient(90deg, rgba(23, 162, 184, 0.5), rgba(19, 132, 150, 0.5));
+        color: white;
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    
+    .structured-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid rgba(14, 201, 200, 0.2);
+    }
+    
+    .structured-table tr:nth-child(even) {
+        background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .structured-table tr:hover {
+        background: rgba(14, 201, 200, 0.1);
+    }
+    
+    /* Lists */
+    .bullet-list, .numbered-list {
+        list-style: none;
+        padding: 0;
+        color: white;
+    }
+    
+    .bullet-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid rgba(14, 201, 200, 0.2);
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .bullet-list li:before {
+        content: "•";
+        color: #25F0E5;
+        font-weight: bold;
+        margin-right: 0.75rem;
+        font-size: 1.2rem;
+    }
+    
+    .numbered-list li {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(14, 201, 200, 0.2);
+        display: flex;
+        align-items: flex-start;
+    }
+    
+    .numbered-list li:before {
+        color: #25F0E5;
+        font-weight: bold;
+        margin-right: 0.75rem;
+        min-width: 1.5rem;
+    }
+    
+    /* Chat Input Area */
+    .chat-input-area {
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 12px;
+        padding: 1rem;
+        border: 1px solid rgba(14, 201, 200, 0.3);
+    }
+    
+    .input-group-lg {
+        border-radius: 12px !important;
+    }
+    
+    .model-select {
+        max-width: 160px;
+        border-radius: 10px 0 0 10px !important;
+    }
+    
+    .message-input {
+        border-radius: 0 !important;
+    }
+    
+    .send-btn, .clear-btn {
+        border-radius: 0 !important;
+        padding: 0.75rem 1.25rem !important;
+        font-size: 1.1rem !important;
+    }
+    
+    .send-btn {
+        border-radius: 0 10px 10px 0 !important;
+    }
+    
+    .clear-btn {
+        background: rgba(0, 0, 0, 0.5) !important;
+        border-color: rgba(14, 201, 200, 0.5) !important;
+        color: white !important;
+        border-radius: 10px !important;
+        margin-left: 0.5rem !important;
+    }
+    
+    .clear-btn:hover {
+        background: rgba(14, 201, 200, 0.2) !important;
+    }
+    
+    /* Status Indicator */
+    .status-indicator {
+        font-size: 0.85rem;
+        color: #25F0E5;
+        text-align: center;
+    }
+    
+    /* Typing Indicator */
+    .typing-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: 0.5rem;
+    }
+    
+    .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #25F0E5;
+        animation: typing 1.4s infinite ease-in-out;
+    }
+    
+    .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+    .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes typing {
+        0%, 80%, 100% { 
+            transform: scale(0.8);
+            opacity: 0.5;
+        }
+        40% { 
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+    
+    /* Error Message */
+    .error-message {
+        background: linear-gradient(90deg, rgba(220, 53, 69, 0.3), rgba(200, 35, 51, 0.3)) !important;
+        border: 1px solid rgba(220, 53, 69, 0.5) !important;
+        color: #ff6b6b !important;
+    }
+    
+    /* Toast Notification */
+    .copy-toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+        z-index: 1060;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+    
+    .copy-toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    
+    /* Custom Scrollbar */
+    .chat-messages::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.1);
+        border-radius: 3px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border-radius: 3px;
+    }
+    
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+    }
+    
+    /* Glow Animation */
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 25px rgba(14, 201, 200, 0.7); }
+        50% { box-shadow: 0 0 30px rgba(37, 240, 229, 0.8); }
+    }
+    
+    .chat-card {
+        animation: pulseGlow 3s infinite ease-in-out;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .chat-wrapper {
+            height: calc(100vh - 400px);
+            min-height: 500px;
+        }
+        
+        .user-message .message-content,
+        .bot-message .message-content {
+            max-width: 85%;
+        }
+        
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            font-size: 1rem;
+        }
+        
+        .model-select {
+            max-width: 120px;
+        }
+        
+        .quick-actions .btn {
+            font-size: 0.7rem;
+            padding: 0.4rem 0.2rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .dashboard-menu .btn-group {
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .input-group-lg {
+            flex-wrap: nowrap;
+        }
+        
+        .model-select {
+            max-width: 100px;
+            font-size: 0.8rem;
+        }
+        
+        .format-examples {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Main Chat Area (Full Width) -->
+        <div class="col-12">
+            <div class="card chat-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-robot me-2"></i>Vibhavna AI - Smart Content Generator
+                    </h3>
+                    <div class="header-actions">
+                        <button id="export-chat" class="btn btn-sm btn-outline-light" title="Export Current Chat">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Quick Access Dashboard Menu -->
+                    <div class="dashboard-menu p-3 border-bottom">
+                        <div class="d-flex justify-content-center">
+                            <div class="btn-group" role="group" aria-label="Dashboard Quick Access">
+                                {% if user.is_staff %}
+                                    <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-cog me-1"></i>Admin Dashboard
+                                    </a>
+                                {% elif user.teacherprofile %}
+                                    <a href="{% url 'teacher_dashboard' %}" class="btn btn-outline-success btn-sm">
+                                        <i class="fas fa-chalkboard-teacher me-1"></i>Teacher Dashboard
+                                    </a>
+                                {% elif user.studentprofile %}
+                                    <a href="{% url 'student_dashboard' %}" class="btn btn-outline-info btn-sm">
+                                        <i class="fas fa-user-graduate me-1"></i>Student Dashboard
+                                    </a>
+                                {% endif %}
+                                {% if user.teacherprofile or user.studentprofile %}
+                                    <a href="{% url 'vibhavna_ai' %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-robot me-1"></i>Vibhavna AI
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Action Buttons -->
+                    <div class="quick-actions p-3 border-bottom">
+                        <div class="row g-2">
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <button class="btn btn-outline-primary w-100 quick-prompt" data-prompt="Create 5 quiz questions about science with 4 options each">
+                                    <i class="fas fa-question-circle me-1"></i>Science Quiz
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <button class="btn btn-outline-success w-100 quick-prompt" data-prompt="Make a numbered list of top 10 programming languages">
+                                    <i class="fas fa-list-ol me-1"></i>Top List
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <button class="btn btn-outline-info w-100 quick-prompt" data-prompt="Create a comparison table between iPhone and Android with 5 features">
+                                    <i class="fas fa-table me-1"></i>Comparison
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <button class="btn btn-outline-warning w-100 quick-prompt" data-prompt="Provide step-by-step instructions for setting up a web server">
+                                    <i class="fas fa-footsteps me-1"></i>Step Guide
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <button class="btn btn-outline-dark w-100 quick-prompt" data-prompt="Explain machine learning in clear bullet points">
+                                    <i class="fas fa-bullseye me-1"></i>Explanation
+                                </button>
+                            </div>
+                            <div class="col-6 col-md-4 col-lg-2">
+                                <button class="btn btn-outline-secondary w-100 quick-prompt" data-prompt="Create a table of planets with their size and distance from sun">
+                                    <i class="fas fa-planet me-1"></i>Data Table
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Container -->
+                    <div class="chat-wrapper p-3">
+                        <div id="chat-container" class="chat-container">
+                            <div id="chat-messages" class="chat-messages">
+                                <!-- Welcome Message -->
+                                <div class="message bot-message">
+                                    <div class="message-avatar">
+                                        <i class="fas fa-robot"></i>
+                                    </div>
+                                    <div class="message-content">
+                                        <div class="message-text">
+                                            <strong>Hello! I'm Vibhavna AI - Smart Content Generator</strong><br>
+                                            I automatically understand your requests and format outputs perfectly:<br><br>
+                                            
+                                            <div class="format-examples">
+                                                <span class="badge bg-quiz">Quiz → Q + 4 Options</span>
+                                                <span class="badge bg-list">List → Numbered/Bullet</span>
+                                                <span class="badge bg-table">Comparison → Table</span>
+                                                <span class="badge bg-steps">Steps → Step-by-step</span>
+                                                <span class="badge bg-explanation">Explanation → Clean Points</span>
+                                            </div>
+                                            
+                                            <br>Try the quick buttons above or type anything!
+                                        </div>
+                                        <small class="message-time">Just now</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Input Area -->
+                        <div class="chat-input-area mt-3">
+                            <div class="input-group input-group-lg">
+                                <select id="model-select" class="form-select model-select">
+                                    <option value="llama3:latest">Llama 3</option>
+                                    <option value="mistral:latest">Mistral</option>
+                                    <option value="codellama:latest">Code Llama</option>
+                                </select>
+                                <input type="text" id="message-input" class="form-control message-input" placeholder="Ask for quizzes, lists, tables, steps, explanations..." maxlength="1000">
+                                <button id="send-button" class="btn btn-primary send-btn" type="button">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                                <button id="clear-button" class="btn btn-outline-secondary clear-btn" type="button">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+
+                            <!-- Status Indicator -->
+                            <div id="status-indicator" class="status-indicator mt-2">
+                                <i class="fas fa-circle text-success"></i> Connected to Ollama - Smart Formatting Active
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const clearButton = document.getElementById('clear-button');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatContainer = document.getElementById('chat-container');
+    const modelSelect = document.getElementById('model-select');
+    const statusIndicator = document.getElementById('status-indicator');
+    const quickPromptButtons = document.querySelectorAll('.quick-prompt');
+    const exportChatBtn = document.getElementById('export-chat');
+
+    let isTyping = false;
+    let currentBotMessage = null;
+    let currentChatMessages = [];
+
+    // Universal Smart Prompt
+    const SMART_PROMPT = `You are a Smart Content Generator AI. Your job is to understand the user's request and automatically format the output in the best structured format based on the type of request.
+
+RULES:
+- Detect the user's intent automatically (quiz, list, table, steps, explanation, comparison, etc.)
+- Do NOT write any summary, paragraph, introduction, or explanation text.
+- Only output structured formatted content based on request.
+
+FORMATTING RULES:
+- For QUIZ: Format as "Q1: Question?" then "A) Option A", "B) Option B", etc. (4 options)
+- For LISTS: Use numbered (1. 2. 3.) or bullet points with clear items
+- For TABLES: Use pipe | format or markdown table format for comparisons
+- For STEPS: Use "Step 1:", "Step 2:" format
+- For EXPLANATIONS: Use clear bullet points or numbered points
+- For COMPARISONS: Use table format with clear columns
+
+ONLY OUTPUT THE STRUCTURED CONTENT, NOTHING ELSE.`;
+
+    // Export current chat
+    function exportChat() {
+        if (currentChatMessages.length === 0) {
+            showToast('No messages to export');
+            return;
+        }
+
+        let exportText = 'Vibhavna AI Chat Export\n';
+        exportText += 'Generated on: ' + new Date().toLocaleString() + '\n\n';
+        
+        currentChatMessages.forEach(message => {
+            const sender = message.sender === 'user' ? 'You' : 'AI';
+            exportText += `${sender}: ${message.text}\n\n`;
+        });
+
+        const blob = new Blob([exportText], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `vibhavna_chat_${new Date().toISOString().split('T')[0]}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('Chat exported successfully');
+    }
+
+    // Copy text to clipboard
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            showToast('Failed to copy text');
+        });
+    }
+
+    // Show toast notification
+    function showToast(message) {
+        // Remove existing toast
+        const existingToast = document.querySelector('.copy-toast');
+        if (existingToast) {
+            existingToast.remove();
+        }
+
+        const toast = document.createElement('div');
+        toast.className = 'copy-toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
+    }
+
+    // Auto-scroll to bottom function
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Quick prompt buttons
+    quickPromptButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const prompt = this.getAttribute('data-prompt');
+            messageInput.value = prompt;
+            messageInput.focus();
+        });
+    });
+
+    // Send message function
+    function sendMessage() {
+        const userMessage = messageInput.value.trim();
+        if (!userMessage || isTyping) return;
+
+        // Add user message to current chat
+        currentChatMessages.push({
+            sender: 'user',
+            text: userMessage,
+            timestamp: new Date().toISOString()
+        });
+
+        // Add user message to UI
+        addMessage(userMessage, 'user');
+        messageInput.value = '';
+        sendButton.disabled = true;
+
+        // Show typing indicator
+        showTypingIndicator();
+
+        // Prepare the enhanced prompt
+        const enhancedPrompt = `${SMART_PROMPT}\n\nUser Request: ${userMessage}`;
+
+        // Send to server
+        const selectedModel = modelSelect.value;
+        fetch('/ollama-stream/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                prompt: enhancedPrompt,
+                model: selectedModel
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.body;
+        })
+        .then(body => {
+            const reader = body.getReader();
+            const decoder = new TextDecoder();
+            let botResponse = '';
+
+            return reader.read().then(function processText({ done, value }) {
+                if (done) {
+                    hideTypingIndicator();
+                    sendButton.disabled = false;
+                    
+                    // Auto-detect format and render structured content
+                    if (botResponse.trim()) {
+                        const contentType = detectContentType(botResponse);
+                        renderStructuredContent(botResponse, contentType);
+                        
+                        // Add bot response to current chat
+                        currentChatMessages.push({
+                            sender: 'bot',
+                            text: botResponse,
+                            contentType: contentType,
+                            timestamp: new Date().toISOString()
+                        });
+                    }
+                    return;
+                }
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') {
+                            hideTypingIndicator();
+                            sendButton.disabled = false;
+                            
+                            // Auto-detect format and render structured content
+                            if (botResponse.trim()) {
+                                const contentType = detectContentType(botResponse);
+                                renderStructuredContent(botResponse, contentType);
+                                
+                                // Add bot response to current chat
+                                currentChatMessages.push({
+                                    sender: 'bot',
+                                    text: botResponse,
+                                    contentType: contentType,
+                                    timestamp: new Date().toISOString()
+                                });
+                            }
+                            return;
+                        }
+
+                        try {
+                            const parsed = JSON.parse(data);
+                            if (parsed.error) {
+                                hideTypingIndicator();
+                                addMessage('Error: ' + parsed.error, 'bot', true);
+                                sendButton.disabled = false;
+                                return;
+                            }
+
+                            if (parsed.response) {
+                                botResponse += parsed.response;
+                                updateBotMessage(botResponse);
+                            }
+
+                            if (parsed.done) {
+                                hideTypingIndicator();
+                                sendButton.disabled = false;
+                                
+                                // Auto-detect format and render structured content
+                                if (botResponse.trim()) {
+                                    const contentType = detectContentType(botResponse);
+                                    renderStructuredContent(botResponse, contentType);
+                                    
+                                    // Add bot response to current chat
+                                    currentChatMessages.push({
+                                        sender: 'bot',
+                                        text: botResponse,
+                                        contentType: contentType,
+                                        timestamp: new Date().toISOString()
+                                    });
+                                }
+                                return;
+                            }
+                        } catch (e) {
+                            console.error('Error parsing JSON:', e);
+                        }
+                    }
+                }
+
+                return reader.read().then(processText);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            hideTypingIndicator();
+            addMessage('Sorry, I encountered an error. Please try again.', 'bot', true);
+            sendButton.disabled = false;
+            statusIndicator.innerHTML = '<i class="fas fa-circle text-danger"></i> Connection error';
+        });
+    }
+
+    // Detect content type
+    function detectContentType(content) {
+        const normalizedContent = content.trim();
+        
+        if (normalizedContent.match(/Q\d+:.*/i) && normalizedContent.match(/[A-D]\)/g)) {
+            return 'quiz';
+        } else if (normalizedContent.match(/^\d+\.\s+/m)) {
+            return 'list';
+        } else if (normalizedContent.match(/^[•\-\*]\s+/m)) {
+            return 'list';
+        } else if (normalizedContent.includes('|') || normalizedContent.match(/^-{3,}/)) {
+            return 'table';
+        } else if (normalizedContent.match(/Step\s+\d+:?/gi)) {
+            return 'steps';
+        } else {
+            return 'explanation';
+        }
+    }
+
+    // Auto-detect content type and render structured format
+    function renderStructuredContent(content, contentType = null) {
+        const normalizedContent = content.trim();
+        
+        if (!contentType) {
+            contentType = detectContentType(normalizedContent);
+        }
+        
+        // Remove existing bot message
+        if (currentBotMessage) {
+            currentBotMessage.remove();
+            currentBotMessage = null;
+        }
+
+        let formattedContent = '';
+
+        switch (contentType) {
+            case 'quiz':
+                formattedContent = renderQuizFormat(normalizedContent);
+                break;
+            case 'list':
+                if (normalizedContent.match(/^\d+\.\s+/m)) {
+                    formattedContent = renderNumberedList(normalizedContent);
+                } else {
+                    formattedContent = renderBulletList(normalizedContent);
+                }
+                break;
+            case 'table':
+                formattedContent = renderTableFormat(normalizedContent);
+                break;
+            case 'steps':
+                formattedContent = renderStepsFormat(normalizedContent);
+                break;
+            default:
+                formattedContent = renderExplanationFormat(normalizedContent);
+        }
+
+        // Create structured message
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message bot-message`;
+
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'message-avatar';
+        avatarDiv.innerHTML = '<i class="fas fa-robot"></i>';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+
+        // Add format badge and copy button
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'd-flex justify-content-between align-items-center mb-2';
+        headerDiv.innerHTML = `
+            <span class="badge bg-${contentType}">${contentType.toUpperCase()}</span>
+            <button class="copy-btn" data-content="${normalizedContent.replace(/"/g, '&quot;')}">
+                <i class="fas fa-copy"></i> Copy
+            </button>
+        `;
+        contentDiv.appendChild(headerDiv);
+
+        // Add structured content
+        const structuredDiv = document.createElement('div');
+        structuredDiv.className = `content-${contentType}`;
+        structuredDiv.innerHTML = formattedContent;
+
+        // Add copy button to structured content as well
+        const structuredCopyBtn = document.createElement('button');
+        structuredCopyBtn.className = 'copy-btn';
+        structuredCopyBtn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+        structuredCopyBtn.setAttribute('data-content', normalizedContent.replace(/"/g, '&quot;'));
+        structuredDiv.appendChild(structuredCopyBtn);
+
+        contentDiv.appendChild(structuredDiv);
+
+        const timeDiv = document.createElement('small');
+        timeDiv.className = 'message-time';
+        timeDiv.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        contentDiv.appendChild(timeDiv);
+
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(contentDiv);
+        chatMessages.appendChild(messageDiv);
+
+        // Add copy functionality
+        addCopyFunctionality();
+
+        scrollToBottom();
+    }
+
+    // Add copy functionality to all copy buttons
+    function addCopyFunctionality() {
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const content = this.getAttribute('data-content');
+                copyToClipboard(content);
+                
+                // Visual feedback
+                const originalHTML = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                this.classList.add('copied');
+                
+                setTimeout(() => {
+                    this.innerHTML = originalHTML;
+                    this.classList.remove('copied');
+                }, 2000);
+            });
+        });
+    }
+
+    // Render Quiz Format
+    function renderQuizFormat(content) {
+        const lines = content.split('\n').filter(line => line.trim());
+        let html = '';
+        
+        lines.forEach(line => {
+            if (line.match(/Q\d+:.*/i)) {
+                if (!html.endsWith('</div>')) {
+                    html += '</div>';
+                }
+                html += `<div class="quiz-question">${line.trim()}</div><div class="quiz-options">`;
+            } else if (line.match(/[A-D]\)/)) {
+                html += `<div class="quiz-option">${line.trim()}</div>`;
+            }
+        });
+        
+        if (html.endsWith('</div>')) {
+            html += '</div>';
+        }
+        
+        return html || content;
+    }
+
+    // Render Numbered List
+    function renderNumberedList(content) {
+        const lines = content.split('\n').filter(line => line.trim());
+        let html = '<ol class="numbered-list">';
+        
+        lines.forEach(line => {
+            if (line.match(/^\d+\.\s+/)) {
+                const text = line.replace(/^\d+\.\s+/, '');
+                html += `<li>${text}</li>`;
+            }
+        });
+        
+        html += '</ol>';
+        return html !== '<ol class="numbered-list"></ol>' ? html : content;
+    }
+
+    // Render Bullet List
+    function renderBulletList(content) {
+        const lines = content.split('\n').filter(line => line.trim());
+        let html = '<ul class="bullet-list">';
+        
+        lines.forEach(line => {
+            const text = line.replace(/^[•\-\*]\s+/, '');
+            html += `<li>${text}</li>`;
+        });
+        
+        html += '</ul>';
+        return html !== '<ul class="bullet-list"></ol>' ? html : content;
+    }
+
+    // Render Table Format
+    function renderTableFormat(content) {
+        const lines = content.split('\n').filter(line => line.trim() && !line.match(/^-{3,}/));
+        let html = '<table class="structured-table"><tbody>';
+        
+        lines.forEach((line, index) => {
+            if (line.includes('|')) {
+                const cells = line.split('|').filter(cell => cell.trim());
+                if (index === 0) {
+                    // Header row
+                    html += '<thead><tr>';
+                    cells.forEach(cell => {
+                        html += `<th>${cell.trim()}</th>`;
+                    });
+                    html += '</tr></thead><tbody>';
+                } else {
+                    // Data row
+                    html += '<tr>';
+                    cells.forEach(cell => {
+                        html += `<td>${cell.trim()}</td>`;
+                    });
+                    html += '</tr>';
+                }
+            }
+        });
+        
+        html += '</tbody></table>';
+        return html !== '<table class="structured-table"><tbody></tbody></table>' ? html : content;
+    }
+
+    // Render Steps Format
+    function renderStepsFormat(content) {
+        const lines = content.split('\n').filter(line => line.trim());
+        let html = '';
+        let stepCount = 0;
+        
+        lines.forEach(line => {
+            if (line.match(/Step\s+\d+:?/gi)) {
+                const stepText = line.replace(/Step\s+\d+:?\s*/gi, '');
+                stepCount++;
+                html += `
+                    <div class="step-item">
+                        <div class="step-number">${stepCount}</div>
+                        <div class="step-text">${stepText}</div>
+                    </div>
+                `;
+            }
+        });
+        
+        return html || content;
+    }
+
+    // Render Explanation Format
+    function renderExplanationFormat(content) {
+        const lines = content.split('\n').filter(line => line.trim());
+        if (lines.length <= 1) {
+            return `<p>${content}</p>`;
+        }
+        
+        let html = '<ul class="bullet-list">';
+        lines.forEach(line => {
+            html += `<li>${line}</li>`;
+        });
+        html += '</ul>';
+        return html;
+    }
+
+    // Add message to chat (for user messages and simple bot responses)
+    function addMessage(text, sender, isError = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'message-avatar';
+
+        if (sender === 'user') {
+            avatarDiv.innerHTML = '<i class="fas fa-user"></i>';
+        } else {
+            avatarDiv.innerHTML = '<i class="fas fa-robot"></i>';
+        }
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+
+        // Add copy button for user messages
+        if (sender === 'user') {
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.innerHTML = '<i class="fas fa-copy"></i>';
+            copyBtn.setAttribute('data-content', text);
+            contentDiv.appendChild(copyBtn);
+        }
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'message-text';
+        textDiv.textContent = text;
+
+        const timeDiv = document.createElement('small');
+        timeDiv.className = 'message-time';
+        timeDiv.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        contentDiv.appendChild(textDiv);
+        contentDiv.appendChild(timeDiv);
+
+        if (isError) {
+            contentDiv.classList.add('error-message');
+        }
+
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(contentDiv);
+
+        chatMessages.appendChild(messageDiv);
+        
+        // Add copy functionality
+        addCopyFunctionality();
+        scrollToBottom();
+    }
+
+    // Update bot message during streaming (for real-time display)
+    function updateBotMessage(text) {
+        if (!currentBotMessage) {
+            currentBotMessage = document.createElement('div');
+            currentBotMessage.className = 'message bot-message';
+
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'message-avatar';
+            avatarDiv.innerHTML = '<i class="fas fa-robot"></i>';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+
+            const textDiv = document.createElement('div');
+            textDiv.className = 'message-text';
+            textDiv.textContent = text;
+
+            const timeDiv = document.createElement('small');
+            timeDiv.className = 'message-time';
+            timeDiv.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            contentDiv.appendChild(textDiv);
+            contentDiv.appendChild(timeDiv);
+
+            currentBotMessage.appendChild(avatarDiv);
+            currentBotMessage.appendChild(contentDiv);
+
+            chatMessages.appendChild(currentBotMessage);
+        } else {
+            const textDiv = currentBotMessage.querySelector('.message-text');
+            textDiv.textContent = text;
+        }
+
+        scrollToBottom();
+    }
+
+    // Show typing indicator
+    function showTypingIndicator() {
+        isTyping = true;
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot-message';
+        typingDiv.id = 'typing-indicator';
+
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = 'message-avatar';
+        avatarDiv.innerHTML = '<i class="fas fa-robot"></i>';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.innerHTML = '<div class="typing-indicator"><span></span><span></span><span></span></div>';
+
+        typingDiv.appendChild(avatarDiv);
+        typingDiv.appendChild(contentDiv);
+
+        chatMessages.appendChild(typingDiv);
+        scrollToBottom();
+    }
+
+    // Hide typing indicator
+    function hideTypingIndicator() {
+        isTyping = false;
+        const typingIndicator = document.getElementById('typing-indicator');
+        if (typingIndicator) {
+            typingIndicator.remove();
+        }
+        currentBotMessage = null;
+    }
+
+    // Clear chat
+    function clearChat() {
+        chatMessages.innerHTML = `
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content">
+                    <div class="message-text">
+                        <strong>Hello! I'm Vibhavna AI - Smart Content Generator</strong><br>
+                        I automatically understand your requests and format outputs perfectly:<br><br>
+                        
+                        <div class="format-examples">
+                            <span class="badge bg-quiz">Quiz → Q + 4 Options</span>
+                            <span class="badge bg-list">List → Numbered/Bullet</span>
+                            <span class="badge bg-table">Comparison → Table</span>
+                            <span class="badge bg-steps">Steps → Step-by-step</span>
+                            <span class="badge bg-explanation">Explanation → Clean Points</span>
+                        </div>
+                        
+                        <br>Try the quick buttons above or type anything!
+                    </div>
+                    <small class="message-time">Just now</small>
+                </div>
+            </div>
+        `;
+        currentChatMessages = [];
+        scrollToBottom();
+    }
+
+    // Get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Event listeners
+    sendButton.addEventListener('click', sendMessage);
+    clearButton.addEventListener('click', clearChat);
+    exportChatBtn.addEventListener('click', exportChat);
+
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    });
+
+    // Enable/disable send button based on input
+    messageInput.addEventListener('input', function() {
+        sendButton.disabled = !this.value.trim() || isTyping;
+    });
+
+    // Focus input on load
+    messageInput.focus();
+    
+    // Initial scroll to bottom
+    setTimeout(scrollToBottom, 100);
+});
+</script>
+
+{% endblock %}

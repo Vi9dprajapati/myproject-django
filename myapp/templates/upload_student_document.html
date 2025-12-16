@@ -1,0 +1,1042 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Document - EduAI{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --neon-green: #00ff88;
+        --dark-green: #077b32;
+        --light-green: #05a645;
+        --gradient-start: #0EC9C8;
+        --gradient-end: #25F0E5;
+        --cyber-purple: #9d4edd;
+    }
+    
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        color: white;
+    }
+
+    /* YEH DEKH - MAIN CONTAINER KI WIDTH BADA DIYA */
+    .main-container {
+        width: 100%;
+        max-width: 1400px;  /* Purana 800px tha, ab 1400px */
+        margin: 0 auto;
+        padding: 20px;  /* Padding bhi bada diya */
+    }
+
+    /* Card ki width bhi badha diya */
+    .cyber-card {
+        width: 100%;
+        max-width: 1300px;  /* Naya width */
+        margin: 0 auto;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        box-shadow: 
+            0 0 25px rgba(14, 201, 200, 0.7),
+            0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(14, 201, 200, 0.3);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: fadeIn 0.5s ease-out;
+    }
+    
+    .cyber-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 0 25px rgba(37, 240, 229, 0.8),
+            0 8px 32px rgba(0, 0, 0, 0.15);
+    }
+    
+    /* Header */
+    .cyber-header {
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        color: white;
+        padding: 15px;  /* Padding bada diya */
+        text-align: center;
+        border-bottom: 1px solid rgba(37, 240, 229, 0.5);
+    }
+    
+    .cyber-header i {
+        font-size: 1.4rem;  /* Icon size bada diya */
+        margin-right: 10px;
+        color: white;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    .cyber-header h3 {
+        font-weight: 500;
+        margin-bottom: 0;
+        color: white;
+        text-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        font-size: 1.4rem;  /* Font size bada diya */
+    }
+    
+    .cyber-body {
+        padding: 25px;  /* Body padding bada diya */
+        background: rgba(10, 10, 10, 0.8);
+    }
+    
+    /* Form Controls - Width 100% kiya */
+    .form-control, .form-select, textarea.form-control {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        padding: 8px 12px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        height: 38px;
+    }
+    
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+        line-height: 1.5;
+    }
+    
+    .form-control:focus, .form-select:focus, textarea.form-control:focus {
+        border-color: var(--gradient-end);
+        box-shadow: 0 0 10px rgba(37, 240, 229, 0.7);
+        background: rgba(0, 0, 0, 0.7);
+        outline: none;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #0EC9C8;
+        margin-bottom: 6px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .form-label i {
+        margin-right: 8px;
+        width: 16px;
+        text-align: center;
+        color: #0EC9C8;
+        font-size: 13px;
+    }
+    
+    /* Buttons */
+    .btn-primary {
+        width: 100%;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        border: none;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(14, 201, 200, 0.5);
+        height: 42px;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(37, 240, 229, 0.7);
+    }
+    
+    .btn-outline-secondary {
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        border-radius: 8px;
+        padding: 10px 15px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        height: 42px;
+    }
+    
+    .btn-outline-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(14, 201, 200, 0.8);
+        color: #0EC9C8;
+    }
+    
+    /* 文件上传区域 - Aur bada kiya */
+    .file-upload-zone {
+        width: 100%;
+        border: 2px dashed rgba(14, 201, 200, 0.5);
+        border-radius: 10px;
+        padding: 25px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        min-height: 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .file-upload-zone:hover {
+        border-color: rgba(37, 240, 229, 0.8);
+        background: rgba(0, 0, 0, 0.6);
+        box-shadow: 0 0 20px rgba(37, 240, 229, 0.3);
+    }
+    
+    .file-upload-zone.dragover {
+        border-color: var(--neon-green);
+        background: rgba(0, 255, 136, 0.1);
+        box-shadow: 0 0 25px rgba(0, 255, 136, 0.4);
+    }
+    
+    .upload-icon {
+        font-size: 2.5rem;
+        color: rgba(14, 201, 200, 0.7);
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .file-upload-zone:hover .upload-icon {
+        color: var(--gradient-end);
+        transform: scale(1.1);
+    }
+    
+    .upload-text {
+        font-size: 16px;
+        color: #aaa;
+        margin-bottom: 8px;
+    }
+    
+    .browse-btn {
+        background: rgba(14, 201, 200, 0.2);
+        border: 1px solid rgba(14, 201, 200, 0.5);
+        color: #0EC9C8;
+        border-radius: 6px;
+        padding: 8px 20px;
+        font-size: 14px;
+        margin-top: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .browse-btn:hover {
+        background: rgba(37, 240, 229, 0.3);
+        border-color: var(--gradient-end);
+        color: white;
+    }
+    
+    .file-info {
+        margin-top: 15px;
+        padding: 10px 15px;
+        background: rgba(14, 201, 200, 0.1);
+        border-radius: 6px;
+        font-size: 13px;
+        color: #25F0E5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 32px;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .file-info.has-file {
+        background: rgba(37, 240, 229, 0.15);
+        border: 1px solid rgba(37, 240, 229, 0.3);
+    }
+    
+    .file-info i {
+        margin-right: 8px;
+    }
+    
+    /* 文件类型标签 */
+    .file-type-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 12px;
+    }
+    
+    .file-tag {
+        background: rgba(157, 78, 221, 0.2);
+        border: 1px solid rgba(157, 78, 221, 0.5);
+        color: #c77dff;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    /* 进度条 */
+    .upload-progress {
+        margin-top: 15px;
+        display: none;
+    }
+    
+    .progress-bar-container {
+        height: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 6px;
+    }
+    
+    .progress-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        width: 0%;
+        transition: width 0.3s ease;
+        border-radius: 3px;
+    }
+    
+    .progress-text {
+        font-size: 12px;
+        color: #aaa;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    /* Section Headers */
+    .section-header {
+        border-bottom: 1px solid rgba(14, 201, 200, 0.5);
+        padding-bottom: 8px;
+        margin-bottom: 20px;
+        color: #0EC9C8;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-header i {
+        margin-right: 10px;
+        color: #0EC9C8;
+        font-size: 1.1rem;
+    }
+    
+    /* Alerts */
+    .alert {
+        border-radius: 8px;
+        border: none;
+        padding: 12px 15px;
+        background: rgba(0, 0, 0, 0.7);
+        border-left: 3px solid;
+        font-size: 14px;
+        margin-bottom: 15px;
+    }
+    
+    .alert-success {
+        border-color: var(--gradient-end);
+        color: #25F0E5;
+        background: rgba(37, 240, 229, 0.1);
+    }
+    
+    .alert-danger {
+        border-color: #ff4444;
+        color: #ff4444;
+        background: rgba(255, 68, 68, 0.1);
+    }
+    
+    .alert i {
+        margin-right: 10px;
+        font-size: 1rem;
+    }
+    
+    /* Invalid State */
+    .is-invalid {
+        border-color: #ff4444 !important;
+        box-shadow: 0 0 8px #ff4444 !important;
+    }
+    
+    /* Form Text */
+    .form-text {
+        color: #aaa;
+        font-size: 12px;
+        margin-top: 4px;
+        margin-left: 6px;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 20px rgba(14, 201, 200, 0.7); }
+        50% { box-shadow: 0 0 25px rgba(37, 240, 229, 0.8); }
+    }
+    
+    .cyber-card {
+        animation: pulseGlow 3s infinite ease-in-out;
+    }
+    
+    /* 文件预览 */
+    .file-preview {
+        display: none;
+        margin-top: 15px;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 8px;
+        border: 1px solid rgba(14, 201, 200, 0.3);
+    }
+    
+    .preview-icon {
+        font-size: 2.5rem;
+        color: var(--gradient-start);
+        margin-bottom: 8px;
+    }
+    
+    .preview-filename {
+        font-size: 14px;
+        color: white;
+        word-break: break-all;
+        margin-bottom: 5px;
+    }
+    
+    .preview-size {
+        font-size: 12px;
+        color: #aaa;
+    }
+    
+    .remove-file {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(255, 68, 68, 0.8);
+        border: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        color: white;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .remove-file:hover {
+        background: #ff4444;
+    }
+    
+    /* Form Row Spacing */
+    .row {
+        margin-bottom: 10px;
+    }
+    
+    .mb-3 {
+        margin-bottom: 15px !important;
+    }
+    
+    /* Compact spacing */
+    .col-md-6 {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    /* Platform Info */
+    .platform-info {
+        color: white;
+        text-align: center;
+        margin-top: 15px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .platform-info p {
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #25F0E5;
+        font-size: 14px;
+    }
+    
+    .platform-info small {
+        opacity: 0.8;
+        font-size: 12px;
+    }
+    
+    /* YEH DEKH - Column class change kiya hai */
+    .row.justify-content-center > .col-lg-10 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .main-container {
+            padding: 15px;
+        }
+        
+        .cyber-header {
+            padding: 12px;
+        }
+        
+        .cyber-body {
+            padding: 20px;
+        }
+        
+        .file-upload-zone {
+            min-height: 150px;
+            padding: 20px;
+        }
+        
+        .upload-icon {
+            font-size: 2rem;
+        }
+        
+        .btn-primary, .btn-outline-secondary {
+            padding: 8px 12px;
+            font-size: 13px;
+            height: 38px;
+        }
+        
+        .form-control, .form-select, textarea.form-control {
+            font-size: 14px;
+            height: 36px;
+            padding: 7px 10px;
+        }
+        
+        textarea.form-control {
+            min-height: 90px;
+        }
+        
+        .form-label {
+            font-size: 13px;
+        }
+        
+        .section-header {
+            font-size: 1rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .main-container {
+            padding: 10px;
+        }
+        
+        .cyber-header h3 {
+            font-size: 1.2rem;
+        }
+        
+        .cyber-body {
+            padding: 15px;
+        }
+        
+        .file-upload-zone {
+            min-height: 130px;
+            padding: 15px;
+        }
+        
+        .upload-icon {
+            font-size: 1.8rem;
+        }
+        
+        .row {
+            margin-bottom: 8px;
+        }
+        
+        .mb-3 {
+            margin-bottom: 12px !important;
+        }
+        
+        .col-md-6 {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+        
+        .btn-primary, .btn-outline-secondary {
+            padding: 6px 10px;
+            font-size: 13px;
+            height: 36px;
+        }
+        
+        .browse-btn {
+            padding: 6px 15px;
+            font-size: 13px;
+        }
+    }
+    
+    /* Touch device optimizations */
+    @media (hover: none) and (pointer: coarse) {
+        .cyber-card:hover {
+            transform: none;
+        }
+        
+        .btn:hover {
+            transform: none;
+        }
+        
+        /* Larger touch targets */
+        .form-control,
+        .form-select,
+        .btn {
+            min-height: 44px;
+        }
+        
+        .btn-sm {
+            min-height: 38px;
+        }
+        
+        .file-upload-zone {
+            min-height: 180px;
+        }
+    }
+</style>
+
+<div class="main-container mt-4">
+    <div class="row justify-content-center">
+        <!-- YEH DEKH - col-lg-10 kar diya col-lg-8 ki jagah -->
+        <div class="col-lg-10">
+            <!-- Cyberpunk Card Container -->
+            <div class="cyber-card">
+                <!-- Header -->
+                <div class="cyber-header">
+                    <h3><i class="fas fa-file-upload"></i>Upload Student Document</h3>
+                </div>
+                
+                <!-- Body -->
+                <div class="cyber-body">
+                    <form method="post" action="{% url 'upload_student_document' %}" enctype="multipart/form-data" id="uploadForm" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- 文件上传区域 -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-file"></i>Document File
+                            </label>
+                            
+                            <div class="file-upload-zone" id="fileDropZone">
+                                <input type="file" name="file" id="fileInput" class="d-none" accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png" onchange="handleFileSelect(this)">
+                                
+                                <div class="upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                
+                                <div class="upload-text">
+                                    Drag & drop your file here
+                                </div>
+                                
+                                <div class="upload-text" style="font-size: 14px;">
+                                    or click below to browse
+                                </div>
+                                
+                                <button type="button" class="browse-btn" onclick="document.getElementById('fileInput').click()">
+                                    <i class="fas fa-folder-open me-1"></i>Browse Files
+                                </button>
+                                
+                                <div class="file-info" id="fileInfo">
+                                    <i class="fas fa-info-circle"></i>
+                                    <span>No file selected</span>
+                                </div>
+                                
+                                <!-- 支持的格式标签 -->
+                                <div class="file-type-tags">
+                                    <span class="file-tag">PDF</span>
+                                    <span class="file-tag">DOC</span>
+                                    <span class="file-tag">DOCX</span>
+                                    <span class="file-tag">TXT</span>
+                                    <span class="file-tag">PPT</span>
+                                    <span class="file-tag">JPG</span>
+                                    <span class="file-tag">PNG</span>
+                                    <span class="file-tag">XLS</span>
+                                </div>
+                            </div>
+                            
+                            <!-- 文件预览 -->
+                            <div class="file-preview" id="filePreview">
+                                <button type="button" class="remove-file" onclick="removeFile()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <div class="preview-icon">
+                                    <i class="fas fa-file-pdf"></i>
+                                </div>
+                                <div class="preview-filename" id="previewFilename"></div>
+                                <div class="preview-size" id="previewSize"></div>
+                            </div>
+                            
+                            <!-- 进度条 -->
+                            <div class="upload-progress" id="uploadProgress">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="progressBarFill"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span>Uploading...</span>
+                                    <span id="progressPercentage">0%</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-text">
+                                Max file size: 10MB • Supported formats: PDF, DOC, DOCX, TXT, PPT, PPTX, XLS, XLSX, JPG, PNG
+                            </div>
+                        </div>
+
+                        <!-- 文档信息 -->
+                        <h5 class="section-header">
+                            <i class="fas fa-info-circle"></i>Document Information
+                        </h5>
+                        
+                        <!-- 标题 -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label">
+                                <i class="fas fa-heading"></i>Document Title
+                            </label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   placeholder="Enter document title (e.g., Calculus Assignment 1)" required>
+                        </div>
+                        
+                        <!-- 描述 -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="fas fa-align-left"></i>Description
+                            </label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="4" placeholder="Describe the document content, purpose, or any important notes..."></textarea>
+                        </div>
+                        
+                        <!-- 文档类型 -->
+                        <div class="mb-3">
+                            <label for="doc_type" class="form-label">
+                                <i class="fas fa-file-alt"></i>Document Type
+                            </label>
+                            <select class="form-select" id="doc_type" name="doc_type">
+                                <option value="">Select document type</option>
+                                <option value="assignment">Assignment</option>
+                                <option value="notes">Study Notes</option>
+                                <option value="project">Project Report</option>
+                                <option value="presentation">Presentation</option>
+                                <option value="research">Research Paper</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <!-- 科目/课程 -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="subject" class="form-label">
+                                    <i class="fas fa-book"></i>Subject/Course
+                                </label>
+                                <input type="text" class="form-control" id="subject" name="subject" 
+                                       placeholder="e.g., Calculus, Physics, Programming">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="semester" class="form-label">
+                                    <i class="fas fa-calendar-alt"></i>Semester
+                                </label>
+                                <select class="form-select" id="semester" name="semester">
+                                    <option value="">Select Semester</option>
+                                    {% for i in "12345678" %}
+                                        <option value="{{ i }}">Sem {{ i }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-2">
+                                <a href="{% url 'documents' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-1"></i>Cancel
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <i class="fas fa-upload me-1"></i>
+                                    <span id="submitText">Upload Document</span>
+                                    <span class="spinner-border spinner-border-sm ms-2 d-none" id="submitSpinner"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                <div class="mt-4">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %}"></i>
+                            <span class="ms-2">{{ message }}</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!---->
+            {% if form.errors %}
+                <div class="mt-4">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span class="ms-2">{{ field.label }}: {{ error }}</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Platform Info -->
+            <div class="platform-info mt-4">
+                <p class="mb-2">EduAI - AI-Powered Learning Platform</p>
+                <small>Secure document upload • Academic use only • © 2025 EduAI</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 
+    const fileInput = document.getElementById('fileInput');
+    const fileDropZone = document.getElementById('fileDropZone');
+    const fileInfo = document.getElementById('fileInfo');
+    const filePreview = document.getElementById('filePreview');
+    const uploadForm = document.getElementById('uploadForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitText = document.getElementById('submitText');
+    const submitSpinner = document.getElementById('submitSpinner');
+    const uploadProgress = document.getElementById('uploadProgress');
+    const progressBarFill = document.getElementById('progressBarFill');
+    const progressPercentage = document.getElementById('progressPercentage');
+    const previewFilename = document.getElementById('previewFilename');
+    const previewSize = document.getElementById('previewSize');
+    
+    // 
+    const fileIcons = {
+        'pdf': 'file-pdf',
+        'doc': 'file-word',
+        'docx': 'file-word',
+        'txt': 'file-alt',
+        'ppt': 'file-powerpoint',
+        'pptx': 'file-powerpoint',
+        'xls': 'file-excel',
+        'xlsx': 'file-excel',
+        'jpg': 'file-image',
+        'jpeg': 'file-image',
+        'png': 'file-image',
+        'default': 'file'
+    };
+    
+    // 
+    window.handleFileSelect = function(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+            const fileExt = file.name.split('.').pop().toLowerCase();
+            
+        
+            if (file.size > 10 * 1024 * 1024) { // 10MB
+                alert('File size exceeds 10MB limit. Please choose a smaller file.');
+                input.value = '';
+                return;
+            }
+            
+           
+            fileInfo.innerHTML = `
+                <i class="fas fa-file me-1"></i>
+                <span>${file.name} (${fileSizeMB} MB)</span>
+            `;
+            fileInfo.classList.add('has-file');
+    
+            const iconClass = fileIcons[fileExt] || fileIcons['default'];
+            previewFilename.textContent = file.name;
+            previewSize.textContent = `${fileSizeMB} MB • ${fileExt.toUpperCase()} file`;
+            
+            const previewIcon = filePreview.querySelector('.preview-icon i');
+            previewIcon.className = `fas fa-${iconClass}`;
+            
+            filePreview.style.display = 'block';
+            
+
+            fileDropZone.style.borderColor = 'rgba(37, 240, 229, 0.8)';
+            fileDropZone.style.background = 'rgba(0, 0, 0, 0.7)';
+            
+            const uploadIcon = fileDropZone.querySelector('.upload-icon i');
+            uploadIcon.className = 'fas fa-check-circle';
+            uploadIcon.style.color = '#00ff88';
+        }
+    };
+ 
+    window.removeFile = function() {
+        fileInput.value = '';
+        fileInfo.innerHTML = '<i class="fas fa-info-circle"></i><span>No file selected</span>';
+        fileInfo.classList.remove('has-file');
+        filePreview.style.display = 'none';
+        
+   
+        fileDropZone.style.borderColor = '';
+        fileDropZone.style.background = '';
+        
+        const uploadIcon = fileDropZone.querySelector('.upload-icon i');
+        uploadIcon.className = 'fas fa-cloud-upload-alt';
+        uploadIcon.style.color = '';
+    };
+    
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileDropZone.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        fileDropZone.addEventListener(eventName, () => {
+            fileDropZone.classList.add('dragover');
+        }, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        fileDropZone.addEventListener(eventName, () => {
+            fileDropZone.classList.remove('dragover');
+        }, false);
+    });
+    
+    fileDropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files.length) {
+            fileInput.files = files;
+            handleFileSelect(fileInput);
+        }
+    }, false);
+    
+    uploadForm.addEventListener('submit', function(e) {
+
+        if (!fileInput.files.length) {
+            e.preventDefault();
+            showError('Please select a file to upload.');
+            fileDropZone.style.borderColor = '#ff4444';
+            return;
+        }
+        
+      
+        const titleInput = document.getElementById('title');
+        if (!titleInput.value.trim()) {
+            e.preventDefault();
+            showError('Please enter a document title.');
+            titleInput.classList.add('is-invalid');
+            return;
+        }
+    
+        submitBtn.disabled = true;
+        submitText.textContent = 'Uploading...';
+        submitSpinner.classList.remove('d-none');
+        
+    
+        uploadProgress.style.display = 'block';
+        
+    
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress > 95) progress = 95;
+            
+            progressBarFill.style.width = progress + '%';
+            progressPercentage.textContent = Math.round(progress) + '%';
+        }, 200);
+        
+   ）
+        this.addEventListener('submit', () => {
+            clearInterval(progressInterval);
+        });
+    });
+    
+ 
+    function showError(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-danger alert-dismissible fade show mt-2';
+        alertDiv.innerHTML = `
+            <i class="fas fa-exclamation-triangle"></i>
+            <span class="ms-2">${message}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        const existingAlerts = uploadForm.parentNode.querySelectorAll('.alert');
+        if (existingAlerts.length > 0) {
+            existingAlerts[0].parentNode.insertBefore(alertDiv, existingAlerts[0]);
+        } else {
+            uploadForm.parentNode.insertBefore(alertDiv, uploadForm);
+        }
+        
+    
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.classList.remove('show');
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.parentNode.removeChild(alertDiv);
+                    }
+                }, 300);
+            }
+        }, 5000);
+    }
+    
+ 
+    window.clearForm = function() {
+        if (confirm('Are you sure you want to clear all form fields?')) {
+            uploadForm.reset();
+            removeFile();
+            
+            
+            submitBtn.disabled = false;
+            submitText.textContent = 'Upload Document';
+            submitSpinner.classList.add('d-none');
+            
+           
+            uploadProgress.style.display = 'none';
+            progressBarFill.style.width = '0%';
+            progressPercentage.textContent = '0%';
+            
+         
+            document.querySelectorAll('.is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+            
+          
+            const uploadIcon = fileDropZone.querySelector('.upload-icon i');
+            uploadIcon.className = 'fas fa-cloud-upload-alt';
+            uploadIcon.style.color = '';
+        }
+    };
+    
+   
+    document.querySelectorAll('input[required], textarea[required]').forEach(input => {
+        input.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+        
+        input.addEventListener('input', function() {
+            if (this.value.trim()) {
+                this.classList.remove('is-invalid');
+            }
+        });
+    });
+    
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleInput = document.getElementById('title');
+        if (titleInput) {
+            setTimeout(() => {
+                titleInput.focus();
+            }, 300);
+        }
+    });
+</script>
+
+<!-- Font Awesome-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+{% endblock %}

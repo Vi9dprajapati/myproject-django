@@ -1,0 +1,89 @@
+<div class="profile-header">
+    <h2>Welcome back, {{ request.user.username }}!</h2>
+    <p class="lead">Continue your learning journey with personalized recommendations</p>
+</div>
+
+<!-- Stats -->
+<div class="row">
+    <div class="col-md-3"><div class="card dashboard-card"><i class="fas fa-book-open"></i><h3>{{ stats.active_courses|default:0 }}</h3><p>Active Courses</p></div></div>
+    <div class="col-md-3"><div class="card dashboard-card"><i class="fas fa-tasks"></i><h3>{{ stats.assignments|default:0 }}</h3><p>Assignments</p></div></div>
+    <div class="col-md-3"><div class="card dashboard-card"><i class="fas fa-check-circle"></i><h3>{{ stats.completed|default:0 }}</h3><p>Completed</p></div></div>
+    <div class="col-md-3"><div class="card dashboard-card"><i class="fas fa-chart-line"></i><h3>{{ stats.progress|default:0 }}%</h3><p>Avg. Progress</p></div></div>
+</div>
+
+<!-- Recommended Courses -->
+<div class="card mt-3">
+    <div class="card-header">Recommended Courses</div>
+    <div class="card-body">
+        <div class="row">
+            {% for course in courses %}
+            <div class="col-md-4 mb-3">
+                <div class="card course-card">
+                    <div class="card-body">
+                        <span class="badge bg-primary mb-2">{{ course.category }}</span>
+                        <h5>{{ course.title }}</h5>
+                        <p>{{ course.description }}</p>
+                        <div class="progress mb-2"><div class="progress-bar" style="width: {{ course.progress|default:0 }}%"></div></div>
+                        <small class="text-muted">{{ course.progress|default:0 }}% Complete</small>
+                        <a href="#" class="btn btn-sm btn-outline-primary float-end">Continue</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No courses available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Quiz Results -->
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Recent Quiz Results</div>
+            <div class="card-body">
+                {% for quiz in quizzes %}
+                <div class="list-group-item d-flex justify-content-between">
+                    <div><h6>{{ quiz.title }}</h6><small>{{ quiz.course }}</small></div>
+                    <span class="badge bg-success">{{ quiz.score }}%</span>
+                </div>
+                {% empty %}
+                <p>No quiz results yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Deadlines -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Upcoming Deadlines</div>
+            <div class="card-body">
+                {% for deadline in deadlines %}
+                <div class="list-group-item d-flex justify-content-between">
+                    <div><h6>{{ deadline.title }}</h6><small>{{ deadline.course }}</small></div>
+                    <small class="text-muted">{{ deadline.due_in }}</small>
+                </div>
+                {% empty %}
+                <p>No upcoming deadlines.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Recommendations -->
+<div class="card mt-4">
+    <div class="card-header">AI-Powered Recommendations</div>
+    <div class="card-body">
+        {% if recommendations %}
+        <ul>
+            {% for rec in recommendations %}
+                <li>{{ rec }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No recommendations available.</p>
+        {% endif %}
+    </div>
+</div>

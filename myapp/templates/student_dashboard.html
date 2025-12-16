@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - EduAI Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-green: #00ff88;
+            --dark-green: #077b32;
+            --light-green: #05a645;
+            --gradient-start: #0EC9C8;
+            --gradient-end: #25F0E5;
+            --primary: #0EC9C8;
+            --secondary: #25F0E5;
+            --accent: #ff4444;
+            --success: #00ff88;
+            --warning: #f59e0b;
+            --error: #ff4444;
+        }
+        
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background:url('/static/img/ChatGPT Image Nov 22, 2025, 01_13_21 AM.jpg') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            color: white;
+        }
+
+        /* Navbar - Cyberpunk Style */
+        .navbar {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 20px rgba(14, 201, 200, 0.5);
+            padding: 10px 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: white !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-brand i {
+            color: #0EC9C8;
+            text-shadow: 0 0 10px rgba(14, 201, 200, 0.7);
+        }
+        
+        /* Main Layout */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+        
+        /* Sidebar - Cyberpunk Card */
+        .sidebar-card {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 
+                0 0 25px rgba(14, 201, 200, 0.7),
+                0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        /* Profile Section */
+        .profile-section {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(37, 240, 229, 0.3);
+            background: rgba(10, 10, 10, 0.8);
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #0EC9C8;
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.5);
+            margin-bottom: 12px;
+        }
+        
+        .profile-name {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .profile-role {
+            color: #aaa;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        
+        .profile-badge {
+            display: inline-block;
+            background: rgba(37, 240, 229, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            color: white;
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.3), rgba(37, 240, 229, 0.3));
+        }
+        
+        /* Navigation */
+        .nav-section {
+            padding: 15px;
+        }
+        
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #0EC9C8;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .nav-item {
+            margin-bottom: 8px;
+        }
+        
+        .nav-link-custom {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            color: #aaa;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+        }
+        
+        .nav-link-custom:hover {
+            background: rgba(14, 201, 200, 0.1);
+            color: #25F0E5;
+            border-color: rgba(37, 240, 229, 0.3);
+            transform: translateX(3px);
+        }
+        
+        .nav-link-custom.active {
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.2), rgba(37, 240, 229, 0.2));
+            color: #25F0E5;
+            border: 1px solid rgba(37, 240, 229, 0.5);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.3);
+        }
+        
+        .nav-link-custom i {
+            width: 20px;
+            margin-right: 10px;
+            color: #0EC9C8;
+        }
+        
+        /* Progress Section */
+        .progress-section {
+            padding: 15px;
+        }
+        
+        .progress-item {
+            margin-bottom: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+        
+        .progress-bar-custom {
+            height: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            border: 1px solid rgba(14, 201, 200, 0.2);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+        
+        /* Welcome Card */
+        .welcome-card {
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.8), rgba(37, 240, 229, 0.8));
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(37, 240, 229, 0.5);
+            box-shadow: 0 0 25px rgba(37, 240, 229, 0.5);
+            margin-bottom: 20px;
+        }
+        
+        .welcome-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 10px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .welcome-subtitle {
+            opacity: 0.95;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(37, 240, 229, 0.4);
+            border-color: rgba(37, 240, 229, 0.5);
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            background: rgba(14, 201, 200, 0.2);
+            color: #0EC9C8;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #25F0E5;
+        }
+        
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #0EC9C8;
+            position: relative;
+            padding-bottom: 8px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        }
+        
+        /* Courses Grid */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .course-card {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(37, 240, 229, 0.4);
+            border-color: rgba(37, 240, 229, 0.5);
+        }
+        
+        .course-header {
+            padding: 15px;
+            border-bottom: 1px solid rgba(14, 201, 200, 0.2);
+        }
+        
+        .course-category {
+            display: inline-block;
+            background: rgba(37, 240, 229, 0.2);
+            color: #25F0E5;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            border: 1px solid rgba(37, 240, 229, 0.3);
+        }
+        
+        .course-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .course-description {
+            color: #aaa;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+        
+        .course-progress {
+            padding: 12px 15px;
+        }
+        
+        .course-actions {
+            padding: 15px;
+            border-top: 1px solid rgba(14, 201, 200, 0.2);
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Buttons */
+        .btn-primary-custom {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 0 10px rgba(14, 201, 200, 0.3);
+        }
+        
+        .btn-primary-custom:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(37, 240, 229, 0.5);
+            color: white;
+        }
+        
+        .btn-outline-custom {
+            background: transparent;
+            border: 1px solid rgba(14, 201, 200, 0.5);
+            color: #0EC9C8;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .btn-outline-custom:hover {
+            background: rgba(14, 201, 200, 0.1);
+            border-color: rgba(37, 240, 229, 0.7);
+            color: #25F0E5;
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px rgba(37, 240, 229, 0.3);
+        }
+        
+        /* Activities Grid */
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .activity-card {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(14, 201, 200, 0.3);
+            box-shadow: 0 0 15px rgba(14, 201, 200, 0.3);
+        }
+        
+        .activity-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            margin-right: 12px;
+            color: white;
+        }
+        
+        .quiz-icon {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+        }
+        
+        .deadline-icon {
+            background: linear-gradient(90deg, #ff4444, #ff6b6b);
+        }
+        
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 8px;
+            border: 1px solid rgba(14, 201, 200, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .activity-item:hover {
+            background: rgba(14, 201, 200, 0.1);
+            border-color: rgba(37, 240, 229, 0.3);
+            transform: translateX(3px);
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .activity-meta {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        
+        .activity-score {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #25F0E5;
+        }
+        
+        .activity-time {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #ff6b6b;
+        }
+        
+        /* AI Recommendations */
+        .ai-recommendations {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(37, 240, 229, 0.3);
+            box-shadow: 0 0 20px rgba(37, 240, 229, 0.3);
+            margin-bottom: 20px;
+        }
+        
+        .ai-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .ai-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, rgba(14, 201, 200, 0.3), rgba(37, 240, 229, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            color: #25F0E5;
+            border: 1px solid rgba(37, 240, 229, 0.5);
+        }
+        
+        .recommendations-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 10px;
+        }
+        
+        .recommendation-item {
+            background: rgba(37, 240, 229, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(37, 240, 229, 0.2);
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        
+        .recommendation-item:hover {
+            background: rgba(37, 240, 229, 0.15);
+            transform: translateY(-2px);
+            border-color: rgba(37, 240, 229, 0.4);
+        }
+        
+        .recommendation-item i {
+            color: #25F0E5;
+            margin-right: 8px;
+        }
+        
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px 0;
+            margin-top: 30px;
+            text-align: center;
+            border-top: 1px solid rgba(14, 201, 200, 0.3);
+        }
+        
+        .footer-brand {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #25F0E5;
+            margin-bottom: 5px;
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .sidebar-card, .welcome-card, .stat-card, .course-card, .activity-card, .ai-recommendations {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Glow Animation */
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(14, 201, 200, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(37, 240, 229, 0.6); }
+        }
+        
+        .sidebar-card, .welcome-card, .ai-recommendations {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .sidebar-card {
+                margin-bottom: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid,
+            .courses-grid,
+            .activities-grid,
+            .recommendations-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .welcome-card {
+                padding: 15px;
+            }
+            
+            .welcome-title {
+                font-size: 1.3rem;
+            }
+            
+            .dashboard-container {
+                padding: 0 10px;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+        }
+        
+        /* Profile Info Items */
+        .profile-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .profile-info-item span:first-child {
+            color: #aaa;
+        }
+        
+        .profile-info-item span:last-child {
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Custom Buttons */
+        .btn-outline-light {
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Back Button */
+        .back-button-container {
+            padding: 10px 15px;
+        }
+        
+        .btn-outline-primary {
+            border-color: #0EC9C8;
+            color: #0EC9C8;
+        }
+        
+        .btn-outline-primary:hover {
+            background: rgba(14, 201, 200, 0.1);
+            border-color: #25F0E5;
+            color: #25F0E5;
+        }
+        
+        /* Pulse Animation for Badge */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .badge-pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-graduation-cap"></i> EduAI
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="me-3 text-white-50 d-none d-md-block" style="font-size: 0.9rem;">
+                    <i class="fas fa-user-circle me-1"></i>{{ request.user.username }}
+                </span>
+                <a href="{% url 'logout' %}" class="btn-outline-custom">
+                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Back Button -->
+    <div class="back-button-container">
+        <button onclick="window.history.back()" class="btn-outline-custom">
+            <i class="fas fa-arrow-left me-2"></i>Back
+        </button>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside>
+            <!-- Profile Card -->
+            <div class="sidebar-card">
+                <div class="profile-section">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div></div>
+                        <a href="{% url 'edit_profile' %}" class="btn-outline-custom" style="padding: 5px 10px; font-size: 0.8rem;">
+                            <i class="fas fa-cog"></i>
+                        </a>
+                    </div>
+
+                    {% if student_profile and student_profile.image %}
+                        <img src="{{ student_profile.image.url }}" class="profile-avatar" alt="Profile">
+                    {% else %}
+                        <div class="profile-avatar d-flex align-items-center justify-content-center" 
+                             style="background: rgba(14, 201, 200, 0.2); border: 2px solid #0EC9C8;">
+                            <i class="fas fa-user" style="font-size: 2rem; color: #0EC9C8;"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <h4 class="profile-name">{{ request.user.username }}</h4>
+                    <p class="profile-role">Student</p>
+                    <span class="profile-badge badge-pulse">Active Learner</span>
+                </div>
+                
+                <!-- Profile Details -->
+                {% if student_profile %}
+                <div class="nav-section">
+                    <div class="nav-section-title">Academic Profile</div>
+                    <div class="profile-info-item">
+                        <span>Department:</span>
+                        <span>{{ student_profile.department }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span>Semester:</span>
+                        <span>{{ student_profile.semester }}</span>
+                    </div>
+                    <div class="profile-info-item">
+                        <span>Year:</span>
+                        <span>{{ student_profile.year }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Navigation -->
+            <div class="sidebar-card">
+                <div class="nav-section">
+                    <div class="nav-section-title">Dashboard</div>
+                    <div class="nav-item">
+                        <a href="{% url 'student_semister_content' %}" class="nav-link-custom active">
+                            <i class="fas fa-home"></i> MY-SEM-CONTENT
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url 'semester_progress' %}" class="nav-link-custom">
+                            <i class="fas fa-chart-line"></i> Semester Progress
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url 'img_to_text_ocr' %}" class="nav-link-custom">
+                            <i class="fas fa-magic"></i> Image to Text OCR
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url 'documents' %}" class="nav-link-custom">
+                            <i class="fas fa-file-alt"></i> Documents
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url 'vibhavna_ai' %}" class="nav-link-custom">
+                            <i class="fas fa-robot"></i> Vibhavna AI
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">Learning</div>
+                    <div class="nav-item">
+                        <a href="{% url 'courses' %}" class="nav-link-custom">
+                            <i class="fas fa-book"></i> My Courses
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url 'assignments' %}" class="nav-link-custom">
+                            <i class="fas fa-tasks"></i> Assignments
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url 'progress' %}" class="nav-link-custom">
+                            <i class="fas fa-chart-bar"></i> Progress
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url 'notes' %}" class="nav-link-custom">
+                            <i class="fas fa-sticky-note"></i> Notes
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{% url 'all_quiz' %}" class="nav-link-custom">
+                            <i class="fas fa-question-circle"></i> All Quizzes
+                        </a>
+                    </div>
+                   
+                </div>
+            </div>
+
+            <!-- Progress -->
+            <div class="sidebar-card">
+                <div class="progress-section">
+                    <div class="nav-section-title">Course Progress</div>
+                    {% for progress in progress_list %}
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>{{ progress.course_name|truncatechars:20 }}</span>
+                            <span>{{ progress.percentage }}%</span>
+                        </div>
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" style="width: {{ progress.percentage }}%"></div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted py-2" style="font-size: 0.85rem;">
+                        No progress data available
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Welcome Section -->
+            <div class="welcome-card">
+                <span class="welcome-badge">Welcome back! 🎉</span>
+                <h1 class="welcome-title">Hello, {{ request.user.username }}!</h1>
+                <p class="welcome-subtitle">
+                    Continue your learning journey with personalized AI recommendations and track your progress in real-time.
+                </p>
+                <a href="{% url 'semester_progress' %}" class="btn-outline-custom mt-2">
+                    <i class="fas fa-chart-line me-2"></i>View Semester Progress
+                </a>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="stat-value">{{ stats.active_courses }}</div>
+                    <div class="stat-label">Active Courses</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-value">{{ stats.assignments }}</div>
+                    <div class="stat-label">Pending Assignments</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-value">{{ stats.completed }}</div>
+                    <div class="stat-label">Completed Tasks</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-value">{{ stats.progress }}%</div>
+                    <div class="stat-label">Avg. Progress</div>
+                </div>
+            </div>
+
+            <!-- Recommended Courses -->
+            <section>
+                <div class="section-header">
+                    <h2 class="section-title">Recommended Courses</h2>
+                    <a href="{% url 'courses' %}" class="btn-primary-custom">View All Courses</a>
+                </div>
+                
+                <div class="courses-grid">
+                    {% for course in courses %}
+                    <div class="course-card">
+                        <div class="course-header">
+                            <span class="course-category">{{ course.category }}</span>
+                            <h3 class="course-title">{{ course.title }}</h3>
+                            <p class="course-description">{{ course.description|truncatechars:100 }}</p>
+                        </div>
+                        
+                        <div class="course-progress">
+                            <div class="progress-label">
+                                <span>Progress</span>
+                                <span>{{ course.progress }}%</span>
+                            </div>
+                            <div class="progress-bar-custom">
+                                <div class="progress-fill" style="width: {{ course.progress }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="course-actions">
+                            <a href="{% url 'course_notes' course.id %}" class="btn-outline-custom">
+                                <i class="fas fa-notes me-1"></i> Notes
+                            </a>
+                            <a href="#" class="btn-primary-custom">
+                                <i class="fas fa-play me-1"></i> Continue
+                            </a>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="course-card">
+                        <div class="course-header">
+                            <h3 class="course-title">No Courses Available</h3>
+                            <p class="course-description">Start by enrolling in some courses from the courses page.</p>
+                        </div>
+                        <div class="course-actions">
+                            <a href="{% url 'courses' %}" class="btn-primary-custom">Browse Courses</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Activities Grid -->
+            <div class="activities-grid">
+                <!-- Quiz Results -->
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-icon quiz-icon">
+                            <i class="fas fa-poll"></i>
+                        </div>
+                        <h3 style="color: white; font-size: 1.1rem;">Recent Quiz Results</h3>
+                    </div>
+                    
+                    <div class="activity-list">
+                        {% for quiz in quizzes %}
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <div class="activity-title">{{ quiz.title }}</div>
+                                <div class="activity-meta">{{ quiz.course }}</div>
+                            </div>
+                            <div class="activity-score">{{ quiz.score }}%</div>
+                        </div>
+                        {% empty %}
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <div class="activity-title">No quizzes taken yet</div>
+                                <div class="activity-meta">Start by taking your first quiz</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Deadlines -->
+                <div class="activity-card">
+                    <div class="activity-header">
+                        <div class="activity-icon deadline-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3 style="color: white; font-size: 1.1rem;">Upcoming Deadlines</h3>
+                    </div>
+                    
+                    <div class="activity-list">
+                        {% for deadline in deadlines %}
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <div class="activity-title">{{ deadline.title }}</div>
+                                <div class="activity-meta">{{ deadline.course }}</div>
+                            </div>
+                            <div class="activity-time">{{ deadline.due_in }}</div>
+                        </div>
+                        {% empty %}
+                        <div class="activity-item">
+                            <div class="activity-content">
+                                <div class="activity-title">No upcoming deadlines</div>
+                                <div class="activity-meta">You're all caught up!</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Recommendations -->
+            <div class="ai-recommendations">
+                <div class="ai-header">
+                    <div class="ai-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <h3 style="color: white; font-size: 1.1rem;">AI-Powered Recommendations</h3>
+                        <p style="color: #aaa; font-size: 0.85rem;">Personalized suggestions based on your learning patterns</p>
+                    </div>
+                </div>
+                
+                <div class="recommendations-list">
+                    {% if recommendations %}
+                        {% for rec in recommendations %}
+                        <div class="recommendation-item">
+                            <i class="fas fa-lightbulb"></i> {{ rec }}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="recommendation-item">
+                            <i class="fas fa-info-circle"></i> Complete more activities to receive personalized recommendations
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-brand">EduAI - AI-Powered Learning Platform</div>
+            <div style="color: #aaa; font-size: 0.85rem;">
+                &copy; 2025 EduAI. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add active class to current page
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link-custom');
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Progress bar animation
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.course-card, .stat-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
